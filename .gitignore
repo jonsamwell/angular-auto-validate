@@ -2,5 +2,5 @@
 node_modules
 components
 bower_components
-.idea
+.idea/*
 *.iml
