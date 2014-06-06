@@ -108,34 +108,6 @@
             copy: {
             },
 
-            useminPrepare: {
-                options: {
-                    dest: '<%= dist.root %>',
-                    root: '<%= srcfolder %>'
-                },
-                html: '<%= dist.root %>index.html'
-            },
-
-            usemin: {
-                html: ['<%= dist.root %>index.html']
-            },
-
-            // Change all deploy files to have cache hash prepended to filename to stop unwanted caching
-            filerev: {
-                options: {
-                    encoding: 'utf8',
-                    algorithm: 'md5',
-                    length: 6
-                },
-                all: {
-                    src: [
-                        '<%= dist.root %>js/*.js',
-                        '<%= dist.root %>css/{,*/}*.css'
-                        //'<%= dist.root %>assets/img/**/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                    ]
-                }
-            },
-
             uglify: {
                 options: {
                     sourceMap: false,
@@ -147,6 +119,18 @@
                             "DEBUG": false
                         },
                         dead_code: true
+                    }
+                }
+            },
+
+            plato: {
+                analysis: {
+                    options : {
+                        title: 'AnguarJS Auto-Validate Complexity Report',
+                        jshint : grunt.file.readJSON('.jshintrc')
+                    },
+                    files: {
+                        'tests/reports/complexity': ['src/**/*.js']
                     }
                 }
             }
@@ -161,12 +145,14 @@
         grunt.loadNpmTasks('grunt-contrib-copy');
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-uglify');
+        grunt.loadNpmTasks('grunt-plato');
 
         // Create Custom Tasks
         grunt.registerTask('default', [
             'jsbeautifier',
             'jshint',
-            'karma:unit'
+            'karma:unit',
+            'plato:analysis'
         ]);
     };
 }(module));
