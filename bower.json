@@ -1,0 +1,44 @@
+{
+  "name": "angular-auto-validate",
+  "version": "0.0.1",
+  "description": "An automatic validation module for AngularJS which gets rid of excess html in favour of dynamic element modification to notify the user of validation errors",
+  "main": "angular-auto-validate.min.js",
+  "keywords": [
+    "angularjs",
+    "validation",
+    "bootstrap",
+    "foundation",
+    "javascript"
+  ],
+  "authors": [
+    "Jon Samwell <jonsamwell@gmail.com>"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "homepage": "https://github.com/jonsamwell/angular-auto-validate",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jonsamwell/angular-auto-validate"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular-mocks": "1.2.17-build.230+sha.2e0464f",
+    "bootstrap": "~3.1.1",
+    "foundation": "~5.2.3"
+  },
+  "dependencies": {
+    "angular": "1.2.17-build.230+sha.2e0464f",
+    "lodash": "~2.4.1",
+    "jQuery": "1.11.1"
+  }
+}
