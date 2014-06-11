@@ -61,7 +61,7 @@
            validator.setDefaultElementModifier(foundation5ElementModifier.key);
        }]);</code></pre>
 
-            <p>If you are not using Bootstrap3 or Foundation5 you will need to create a custom elemenet modifier so <a href="custom_dom_modifiers">see the below section</a></p>
+            <p>If you are not using Bootstrap3 or Foundation5 you will need to create a custom element modifier so <a href="custom_dom_modifiers">see the below section</a></p>
 
             <h3 id="your_form">Your Form</h3>
             <p>Now that you are using auto-validate you haven't got to worry about putting your error messages in you html
@@ -88,6 +88,29 @@
 &lt;/form&gt;
 </code></pre>
 
+            <h4>Changing Element States</h4>
+            <p>If you want a certain element to appear differently to other elemenets when it is valid/invalid you can still do that by just specifying which element modifier
+                should be used to modifier the elements visual state. This can be achieve by using the attribute <code>element-modifier="elementModifierKey"</code>.</p>
+<pre><code class="language-markup">&lt;!-- auto-validate will use the default element modifier --&gt;
+&lt;input type=&quot;text&quot;
+    ng-model=&quot;model.firstname&quot;
+    required
+    ng-minlength=&quot;2&quot; /&gt;
+
+&lt;!-- auto-validate will try to find a custom modifier with the key 'myCustomModifier' --&gt;
+&lt;input type=&quot;text&quot;
+    ng-model=&quot;model.middlename&quot;
+    required
+    ng-minlength=&quot;2&quot;
+    element-modifier=&quot;myCustomModifier&quot; /&gt;
+
+&lt;!-- auto-validate will try to find a custom modifier with the key 'myOtherCustomModifier' --&gt;
+&lt;input type=&quot;text&quot;
+    ng-model=&quot;model.surname&quot;
+    required
+    ng-minlength=&quot;2&quot;
+    element-modifier=&quot;myOtherCustomModifier&quot; /&gt;
+</code></pre>
 
             <h3 id="error_message_resolver">Error Message Resolver</h3>
             <p>An error message resolver is an object that turns a validation error type (required, minlength etc) into an actual validation message
