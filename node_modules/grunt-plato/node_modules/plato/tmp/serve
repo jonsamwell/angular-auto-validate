@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+/*
+*
+* This couldn't get more basic and isn't meant for any extended use.
+*
+* This is unlikely to receive any support. If you need extended report
+* serving, try using Grunt and grunt-contrib-connect
+*
+* */
+
+var http = require('http'),
+    fs = require('fs');
+
+http.createServer(function (req, res) {
+  var file = req.url === '/' ? '/index.html' : req.url;
+
+  file = __dirname + file;
+
+  fs.readFile(file, function(err, source){
+    if (err) {
+      res.statusCode = 404;
+      res.end('');
+    } else {
+      var content = req.url.match(/\.css$/) ? 'text/css' :
+                      req.url.match(/\.js$/) ? 'application/javascript' : 'text/html';
+      res.setHeader('Content-Type', content);
+      res.end(source);
+    }
+  })
+}).listen(8080, '127.0.0.1');
+
+console.log('Server running at http://127.0.0.1:8080/');

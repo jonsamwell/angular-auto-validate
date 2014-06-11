@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="http://prismjs.com/themes/prism.css" />
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,200' rel='stylesheet' type='text/css'>
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -28,40 +29,208 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+          <h3 id="getting_started">Getting Started.</h3>
+            <div class="callout">
+                <p>For the best overview of the module and module architecture see my <a href="http://www.jonsamwell.com/angular-auto-validate">original blog post here</a>.</p>
+            </div>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+            <p>Install and manage AngularStrap with <a href="http://bower.io">Bower</a>.</p>
+            <pre><code class="language-javascript">$ bower install angular-auto-validate --save</code></pre>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+            <p>Load the required javascript libraries</p>
+            <pre><code class="language-markup">&lt;script src="bower_components/angular-auto-validate/dist/angular-auto-validate.min.js"&gt;&lt;/script&gt;</code></pre>
+
+            <p>Inject the jcs-auto-validate into your application</p>
+            <pre><code class="language-javascript">angular.module('my-app', ['jcs-auto-validate']);</code></pre>
+
+            <p>If you are using bootstrap 3 that's it, unless you wish the valid and invalid states of your controls to be
+                indicated via icons, otherwise auto-valiadte is setup!
+            <pre><code class="language-javascript">angular.module('my-app')
+        .run([
+        'bootStrap3ElementModifier',
+        function (bootStrap3ElementModifier) {
+            bootStrap3ElementModifier.useValidationIcons(true);
+       }]);</code></pre>
+
+            <p>if you are using Foundation 5 you will need to set the Foundation 5 element modifier as the default one</p>
+            <pre><code class="language-javascript">angular.module('my-app')
+       .run([
+       'validator',
+       'foundation5ElementModifier',
+       function (validator, foundation5ElementModifier) {
+           validator.setDefaultElementModifier(foundation5ElementModifier.key);
+       }]);</code></pre>
+
+            <p>If you are not using Bootstrap3 or Foundation5 you will need to create a custom elemenet modifier so <a href="custom_dom_modifiers">see the below section</a></p>
+
+            <h3 id="your_form">Your Form</h3>
+            <p>Now that you are using auto-validate you haven't got to worry about putting your error messages in you html
+            or using any angular expressions to show or hide them depending on the validation state.  So now your form markup remains
+            clean and maintainable</p>
+<pre><code class="language-markup">&lt;form name=&quot;signupFrm&quot; novalidate=&quot;novalidate&quot;&gt;
+    &lt;div classs=&quot;form-row&quot;&gt;
+        &lt;label&gt;Username:&lt;/label&gt;
+        &lt;input name=&quot;username&quot;
+            ng-model=&quot;model.username&quot;
+            ng-minlength=&quot;3&quot;
+            ng-maxlength=&quot;10&quot;
+            required/&gt;
+    &lt;/div&gt;
+    &lt;div classs=&quot;form-row&quot;&gt;
+        &lt;label&gt;Password:&lt;/label&gt;
+        &lt;input name=&quot;password&quot;
+            type=&quot;password&quot;
+            ng-model=&quot;model.username&quot;
+            ng-minlength=&quot;3&quot;
+            ng-maxlength=&quot;10&quot;
+            required/&gt;
+    &lt;/div&gt;
+&lt;/form&gt;
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+            <h3 id="error_message_resolver">Error Message Resolver</h3>
+            <p>An error message resolver is an object that turns a validation error type (required, minlength etc) into an actual validation message
+                that can be displayed to the user to help them rectify the validation error.  By default auto-validate has one built in that contains
+            English error messages for all the default angular validation types.  However if you have custom validation filters you will need to add them
+            to the default error message resolver in order to provide a custom error message when that validation type if triggered.</p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+            <pre><code class="language-javascript">angular.module('jcs-autoValidate')
+    .run([
+    'defaultErrorMessageResolver',
+    function (validator, defaultErrorMessageResolver) {
+        defaultErrorMessageResolver.errorMessages['myCustomError'] = 'My custom error message';
+        defaultErrorMessageResolver.errorMessages['anotherErrorMessage'] = 'An error message with the attribute value in {0}';
+    }
+]);
+            </code></pre>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+            <h4 id="custom_error_resolver">Custom Error Message Resolver</h4>
+            <p>If you need more fined grained control over how a validation error type is converted into an error message you may wish to create a
+            custom error message resolver.  This is really simple and you can do anything you like to resolve an error type into a error message.  You might
+            for instance need to provide a custom translation into the user's language or go to the server etc.</p>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<pre><code class="language-javascript">
+angular.module('my-app')
+    .factory('myCustomErrorMessageResolver', [
+    '$q',
+    function ($q) {
+        /**
+        * @ngdoc function
+        * @name defaultErrorMessageResolver#resolve
+        * @methodOf defaultErrorMessageResolver
+        *
+        * @description
+        * Resolves a validate error type into a user validation error message
+        *
+        * @param {String} errorType - The type of validation error that has occurred.
+        * @param {Element} el - The input element that is the source of the validation error.
+        * @returns {Promise} A promise that is resolved when the validation message has been produced.
+        */
+        var resolve = function (errorType, el) {
+            var defer = $q.defer();
+            // do something to get the error message
+            // then resolve the promise defer.resolve('some error message');
+            return defer.promise;
+        };
 
-<h3>
+        return {
+            resolve: resolve
+        };
+    }
+]);
+
+// now set the custom error resolver as the module's default one.
+angular.module('my-app')
+    .run([
+    'validator',
+    'myCustomErrorMessageResolver',
+    function (validator, myCustomErrorMessageResolver) {
+        validator.setDefaultErrorMessageResolver(myCustomErrorMessageResolver);
+    }
+]);
+</code></pre>
+
+            <h3 id="custom_dom_modifiers">Custom Element Modifier</h3>
+
+            <p>If you are not using Bootstrap3 or Foundation5 CSS libraries you will need to create a custom element modifier
+                which takes care of updating the visual state of an element, don't worry this is really easy! You can see a few example
+            of what to put in them <a href="" target="_blank">here</a> and <a href="" target="_blank">here</a>.</p>
+<pre><code class="language-javascript">angular.module('my-app')
+    .factory('myCustomElementModifier', [
+        function () {
+            var /**
+            * @ngdoc function
+            * @name myCustomElementModifier#makeValid
+            * @methodOf myCustomElementModifier
+            *
+            * @description
+            * Makes an element appear valid by apply custom styles and child elements.
+            *
+            * @param {Element} el - The input control element that is the target of the validation.
+            */
+            makeValid = function (el) {
+            // do some code here...
+            },
+
+            /**
+            * @ngdoc function
+            * @name myCustomElementModifier#makeInvalid
+            * @methodOf myCustomElementModifier
+            *
+            * @description
+            * Makes an element appear invalid by apply custom styles and child elements.
+            *
+            * @param {Element} el - The input control element that is the target of the validation.
+            * @param {String} errorMsg - The validation error message to display to the user.
+            */
+            makeInvalid = function (el, errorMsg) {
+            // do some code here...
+            };
+
+            return {
+                makeValid: makeValid,
+                makeInvalid: makeInvalid,
+                key: 'myCustomModifierKey'
+            };
+        }
+    ]);
+
+// now register the custom element modifer with the auto-validate module and set it as the deault one for all elements
+angular.module('my-app')
+    .run([
+    'validator',
+    'myCustomElementModifier',
+    function (validator, myCustomElementModifier) {
+        validator.registerDomModifier(myCustomElementModifier.key, myCustomElementModifier);
+        validator.setDefaultElementModifier(myCustomElementModifier.key);
+    }
+]);
+
+</code></pre>
+
+
+<h3 id="authors">
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Originally authored by <a href="http://www.jonsamwell.com" target="_blank">Jon Samwell</a> with help from <a href="mailto:kamalpatel4@gmail.com">Kamal Patel</a>.</p>
 
-<h3>
+<h3 id="issues">
 <a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Add all issues and feature ideas to the <a href="https://github.com/jonsamwell/angular-auto-validate">github repo</a></p>
         </section>
 
         <aside id="sidebar">
+            <h3>Menu</h3>
+            <ul>
+                <li><a href="#getting_started">Getting Started</a></li>
+                <li><a href="#your_form">Your Form</a></li>
+                <li><a href="#error_message_resolver">Error Message Resolver</a></li>
+                <li><a href="#custom_dom_modifiers">Custom Dom Modifiers</a></li>
+                <li><a href="#author">Author and Contributors</a></li>
+                <li><a href="#issues">Issues and Feature Requests</a></li>
+            </ul>
           <a href="https://github.com/jonsamwell/angular-auto-validate/zipball/master" class="button">
             <small>Download</small>
             .zip file
@@ -78,6 +247,6 @@ $ git checkout gh-pages
       </div>
     </div>
 
-  
+  <script type="text/javascript" src="http://prismjs.com/prism.js"></script>
   </body>
 </html>

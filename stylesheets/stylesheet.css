@@ -51,7 +51,7 @@ body {
   font-size: 15px;
   line-height: 1.5; 
   background: #fafafa url(../images/body-bg.jpg) 0 0 repeat;
-  font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+  font-family: Raleway, 'Helvetica Neue', Helvetica, Arial, serif;
   font-weight: 400;
   color: #666;
 }
@@ -66,7 +66,7 @@ a:hover {
 header {
   padding-top: 40px;
   padding-bottom: 40px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-family: Raleway, 'Helvetica Neue', Helvetica, Arial, serif;
   background: #2e7bcf url(../images/header-bg.jpg) 0 0 repeat-x;
   border-bottom: solid 1px #275da1;
 }
@@ -91,7 +91,7 @@ header h2 {
 
 .inner {
   position: relative;
-  width: 940px;
+  width: 1060px;
   margin: 0 auto;
 }
 
@@ -101,7 +101,7 @@ header h2 {
 }
 
 #main-content {
-  width: 690px;
+  width: 820px;
   float: left;
 }
 
@@ -117,6 +117,19 @@ aside#sidebar {
   background: transparent url(../images/sidebar-bg.jpg) 0 0 no-repeat;
   font-size: 12px;
   line-height: 1.3;
+}
+
+aside#sidebar ul {
+    margin-bottom: 50px;
+}
+
+aside#sidebar ul li {
+    list-style-type: none;
+    margin-bottom: 10px;
+}
+
+aside#sidebar ul li a {
+    font-size: 1.2em;
 }
 
 aside#sidebar p.repo-owner,
@@ -136,7 +149,7 @@ a.button {
   color: #fff;
   padding-left: 68px;
   padding-top: 22px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-family: Raleway, 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
 }
 a.button small {
   display: block;
@@ -157,32 +170,7 @@ aside a.button {
   font-size: 21px;
 }
 
-code, pre {
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  color: #222;
-  margin-bottom: 30px;
-  font-size: 13px;
-}
 
-code {
-  background-color: #f2f8fc;
-  border: solid 1px #dbe7f3;
-  padding: 0 3px;
-}
-
-pre {
-  padding: 20px;
-  background: #fff;
-  text-shadow: none;
-  overflow: auto;
-  border: solid 1px #f2f2f2;
-}
-pre code {
-  color: #2879d0;
-  background-color: #fff;
-  border: none;
-  padding: 0;
-}
 
 ul, ol, dl {
   margin-bottom: 20px;
@@ -225,7 +213,6 @@ form {
 /* GENERAL ELEMENT TYPE STYLES */
 
 #main-content h1 {
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-size: 2.8em;
   letter-spacing: -1px;
   color: #474747;
@@ -239,7 +226,6 @@ form {
 }
 
 #main-content h2 {
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 8px;
@@ -253,7 +239,6 @@ form {
 }
 
 #main-content h3 {
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-size: 18px;
   font-weight: bold;
   margin-top: 24px;
@@ -269,7 +254,6 @@ form {
 }
 
 #main-content h4 {
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-size: 15px;
   font-weight: bold;
   color: #474747;
@@ -283,7 +267,6 @@ h4:before {
 }
 
 #main-content h5 {
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-size: 14px;
   color: #474747;
 } 
@@ -295,7 +278,6 @@ h5:before {
 }
 
 #main-content h6 {
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
   font-size: .8em;
   color: #474747;
 } 
