@@ -1,0 +1,10 @@
+.DS_Store
+node_modules
+components
+bower_components
+.idea
+*/.idea/workspace.xml
+*/.idea/tasks.xml
+*.iml
+
+tests/reports
