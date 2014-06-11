@@ -30,14 +30,23 @@
                         number: 'Please enter a valid number',
                         url: 'Please enter a valid URL in the format of http(s)://wwww.google.com'
                     },
+                    /**
+                     * @ngdoc function
+                     * @name defaultErrorMessageResolver#resolve
+                     * @methodOf defaultErrorMessageResolver
+                     *
+                     * @description
+                     * Resolves a validate error type into a user validation error message
+                     *
+                     * @param {String} errorType - The type of validation error that has occurred.
+                     * @param {Element} el - The input element that is the source of the validation error.
+                     * @returns {Promise} A promise that is resolved when the validation message has been produced.
+                     */
                     resolve = function (errorType, el) {
                         var defer = $q.defer(),
                             errMsg = errorMessages[errorType],
                             parameters = [],
                             parameter;
-
-                        console.log(errorMessages);
-                        console.log(errorType);
 
                         if (errMsg === undefined) {
                             errMsg = errorMessages.defaultMsg.format(errorType);

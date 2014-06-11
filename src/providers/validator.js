@@ -4,7 +4,6 @@
     angular.module('jcs-autoValidate')
         .provider('validator', [
 
-
             function () {
                 var elementStateModifiers = {};
 

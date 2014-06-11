@@ -10,9 +10,11 @@
     "foundation",
     "javascript"
   ],
-  "authors": [
-    "Jon Samwell <jonsamwell@gmail.com>"
-  ],
+  "author": {
+    "name": "Jon Samwell",
+    "email": "jonsamwell@gmail.com",
+    "url": "https://github.com/jonsamwell"
+  },
   "licenses": [
     {
       "type": "MIT",
@@ -34,7 +36,14 @@
   "devDependencies": {
     "angular-mocks": "1.2.17-build.230+sha.2e0464f",
     "bootstrap": "~3.1.1",
-    "foundation": "~5.2.3"
+    "foundation": "~5.2.3",
+    "angular-strap": "~2.0.3",
+    "modernizr": "~2.8.2",
+    "respondJS": "~1.4.2",
+    "html5shiv": "~3.7.2",
+    "animate.css": "~3.1.1",
+    "font-awesome": "~4.1.0",
+    "lesshat": "~3.0.1"
   },
   "dependencies": {
     "angular": "1.2.17-build.230+sha.2e0464f",

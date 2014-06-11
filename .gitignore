@@ -7,4 +7,4 @@ bower_components
 */.idea/tasks.xml
 *.iml
 
-!tests/reports
+tests/reports

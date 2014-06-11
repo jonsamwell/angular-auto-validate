@@ -12,6 +12,7 @@
             rootfolder: './',
             distfolder: '<%= rootfolder %>/dist/',
             srcfolder: '<%= rootfolder %>/src/',
+            demofolder: '<%= rootfolder %>/demo/',
             vendorfolder: '<%= rootfolder %>/bower_components/',
             testsfolder: '<%= rootfolder %>/tests/',
             dist: {
@@ -62,6 +63,21 @@
                 }
             },
 
+            // LESS to CSS preprocessor
+            less: {
+                demo: {
+                    options: {
+                        paths: ['<%= demofolder %>less/', '<%= vendorfolder %>lesshat/build/'],
+                        cleancss: true,
+                        ieCompat: true,
+                        strictImports: true
+                    },
+                    files: {
+                        "<%= demofolder %>less/all.css": "<%= demofolder %>less/all.less"
+                    }
+                }
+            },
+
             // Unit Testing
             karma: {
                 unit: {
@@ -83,7 +99,7 @@
                         port: 8020,
                         protocol: 'http',
                         useAvailablePort: true,
-                        base: '../src',
+                        base: '',
                         open: true,
                         keepalive: true // setting this to true means this task is blocking
                     }
@@ -145,12 +161,14 @@
         grunt.loadNpmTasks('grunt-contrib-copy');
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-uglify');
+        grunt.loadNpmTasks('grunt-contrib-less');
         grunt.loadNpmTasks('grunt-plato');
 
         // Create Custom Tasks
         grunt.registerTask('default', [
             'jsbeautifier',
             'jshint',
+            'less:demo',
             'karma:unit',
             'plato:analysis'
         ]);
