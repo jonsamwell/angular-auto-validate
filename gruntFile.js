@@ -147,13 +147,13 @@
             concat: {
                 dist: {
                     src: ['src/jcs-auto-validate.js',
-                        'src/config/ngModelDecorator.js',
                         'src/providers/validator.js',
                         'src/services/bootstrap3ElementModifier.js',
                         'src/services/debounce.js',
                         'src/services/defaultErrorMessageResolver.js',
                         'src/services/foundation5ElementModifier.js',
-                        'src/services/validationMananger.js',
+                        'src/services/validationManager.js',
+                        'src/config/ngModelDecorator.js',
                         'src/jcs-auto-validate-run.js'],
                     dest: 'dist/jcs-auto-validate.js'
                 }

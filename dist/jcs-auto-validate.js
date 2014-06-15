@@ -7,59 +7,6 @@
 (function (angular) {
     'use strict';
 
-    angular.module('jcs-autoValidate').config(['$provide',
-        function ($provide) {
-            $provide.decorator('ngModelDirective', [
-                '$delegate',
-                'validationManager',
-                'debounce',
-                function ($delegate, validationManager, debounce) {
-                    var directive = $delegate[0],
-                        link = directive.link;
-
-                    directive.compile = function () {
-                        return function (scope, element, attrs, ctrls) {
-                            var ngModelCtrl = ctrls[0],
-                                supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
-                                ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
-                                setValidity = ngModelCtrl.$setValidity,
-                                setValidationState = debounce.debounce(function () {
-                                    validationManager.validateElement(ngModelCtrl, element);
-                                }, 100);
-
-                            if (attrs.formnovalidate === undefined) {
-                                if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
-                                    ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
-                                        setValidity.call(ngModelCtrl, validationErrorKey, isValid);
-                                        setValidationState();
-                                    };
-                                } else {
-                                    element.on(ngModelOptions.updateOn, function () {
-                                        setValidationState();
-                                    });
-
-                                    scope.$on('$destroy', function () {
-                                        element.off(ngModelOptions.updateOn);
-                                    });
-                                }
-
-                                ngModelCtrl.autoValidated = true;
-                            }
-
-                            link.apply(this, arguments);
-                        };
-                    };
-
-                    return $delegate;
-                }
-            ]);
-        }
-    ]);
-}(angular));
-
-(function (angular) {
-    'use strict';
-
     angular.module('jcs-autoValidate')
         .provider('validator', [
 
@@ -454,6 +401,114 @@
                 };
             }
         ]);
+}(angular));
+
+(function (angular) {
+    'use strict';
+
+    angular.module('jcs-autoValidate')
+        .factory('validationManager', [
+            'validator',
+            function (validator) {
+                var
+                /**
+                 * @ngdoc validateElement
+                 * @name validation#validateElement
+                 * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
+                 * @description
+                 * Validate the form element and make invalid/valid element model status.
+                 */
+                    validateElement = function (modelCtrl, el) {
+                    var isValid,
+                        errorType,
+                        needsValidation = (modelCtrl.$parsers.length > 0 || modelCtrl.$formatters.length > 0) && modelCtrl.$pristine === false,
+                        findErrorType = function ($errors) {
+                            var keepGoing = true,
+                                errorTypeToReturn;
+                            angular.forEach($errors, function (status, errortype) {
+                                if (keepGoing && status) {
+                                    keepGoing = false;
+                                    errorTypeToReturn = errortype;
+                                }
+                            });
+
+                            return errorTypeToReturn;
+                        };
+
+                    if (modelCtrl && needsValidation) {
+                        isValid = !modelCtrl.$invalid;
+                        if (isValid) {
+                            validator.makeValid(el);
+                        } else {
+                            errorType = findErrorType(modelCtrl.$error);
+
+                            validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                                validator.makeInvalid(el, errorMsg);
+                            });
+                        }
+
+                        return isValid;
+                    }
+                };
+
+                return {
+                    validateElement: validateElement
+                };
+            }
+        ]);
+}(angular));
+
+(function (angular) {
+    'use strict';
+
+    angular.module('jcs-autoValidate').config(['$provide',
+        function ($provide) {
+            $provide.decorator('ngModelDirective', [
+                '$delegate',
+                'validationManager',
+                'debounce',
+                function ($delegate, validationManager, debounce) {
+                    var directive = $delegate[0],
+                        link = directive.link;
+
+                    directive.compile = function () {
+                        return function (scope, element, attrs, ctrls) {
+                            var ngModelCtrl = ctrls[0],
+                                supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
+                                ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
+                                setValidity = ngModelCtrl.$setValidity,
+                                setValidationState = debounce.debounce(function () {
+                                    validationManager.validateElement(ngModelCtrl, element);
+                                }, 100);
+
+                            if (attrs.formnovalidate === undefined) {
+                                if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
+                                    ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
+                                        setValidity.call(ngModelCtrl, validationErrorKey, isValid);
+                                        setValidationState();
+                                    };
+                                } else {
+                                    element.on(ngModelOptions.updateOn, function () {
+                                        setValidationState();
+                                    });
+
+                                    scope.$on('$destroy', function () {
+                                        element.off(ngModelOptions.updateOn);
+                                    });
+                                }
+
+                                ngModelCtrl.autoValidated = true;
+                            }
+
+                            link.apply(this, arguments);
+                        };
+                    };
+
+                    return $delegate;
+                }
+            ]);
+        }
+    ]);
 }(angular));
 
 (function (angular) {
