@@ -6,12 +6,9 @@
 
             function () {
                 var reset = function (el) {
-                        el.find('.help-text').remove();
+                        el.find('.error-msg').remove();
+                        el.find('.form-control-feedback').remove();
                         el.removeClass('has-success has-error has-feedback');
-
-                        if (addValidationStateIcons) {
-                            el.find('.form-control-feedback').remove();
-                        }
                     },
                     findFormGroupElement = function (el) {
                         return el.closest('.form-group');
@@ -75,7 +72,7 @@
                      */
                     makeInvalid = function (el, errorMsg) {
                         var frmGroupEl = findFormGroupElement(el),
-                            helpTextEl = angular.element('<span class="help-text has-error">' + errorMsg + '</span>');
+                            helpTextEl = angular.element('<span class="help-text has-error error-msg">' + errorMsg + '</span>');
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-error has-feedback');
                         frmGroupEl.append(helpTextEl);

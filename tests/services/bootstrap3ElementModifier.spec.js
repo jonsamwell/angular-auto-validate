@@ -41,8 +41,8 @@
                     expect(element.find('.glyphicon.glyphicon-ok.form-control-feedback').length).to.equal(1);
                 });
 
-                it('should remove the .help-text element', function () {
-                    var element = angular.element('<div class="form-group has-error"><input type="text"/><span class="help-text">help text</span></div>');
+                it('should remove the .error-msg element', function () {
+                    var element = angular.element('<div class="form-group has-error"><input type="text"/><span class="help-text error-msg">help text</span></div>');
                     bootstrap3ElementModifier.enableValidationStateIcons(true);
 
                     bootstrap3ElementModifier.makeValid(element);
