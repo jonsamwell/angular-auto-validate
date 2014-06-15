@@ -160,6 +160,9 @@ header a.button {
   right: 0;
   top: 0;
   background: transparent url(../images/github-button.png) 0 0 no-repeat;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
 }
 aside a.button {
   width: 138px;
@@ -168,6 +171,9 @@ aside a.button {
   background: transparent url(../images/download-button.png) 0 0 no-repeat;
   margin-bottom: 20px;
   font-size: 21px;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
 
 
@@ -206,7 +212,14 @@ td {
 form {
   background: #f2f2f2;
   padding: 20px;
-  
+}
+
+input {
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 
