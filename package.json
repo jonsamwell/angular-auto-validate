@@ -1,6 +1,6 @@
 {
   "name": "angular-auto-validate",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "An automatic validation module for AngularJS which gets rid of excess html in favour of dynamic element modification to notify the user of validation errors",
   "main": "angular-auto-validate.min.js",
   "directories": {
@@ -51,5 +51,12 @@
     "karma-sinon": "^1.0.3",
     "mocha": "^1.20.1",
     "sinon": "^1.10.2"
-  }
+  },
+  "ignore": [
+      "**/.*",
+      "node_modules",
+      "bower_components",
+      "tests",
+      "reports"
+  ]
 }
