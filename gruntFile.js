@@ -136,6 +136,26 @@
                         },
                         dead_code: true
                     }
+                },
+                dist: {
+                    files: {
+                        'dist/jcs-auto-validate.min.js': ['dist/jcs-auto-validate.js']
+                    }
+                }
+            },
+
+            concat: {
+                dist: {
+                    src: ['src/jcs-auto-validate.js',
+                        'src/config/ngModelDecorator.js',
+                        'src/providers/validator.js',
+                        'src/services/bootstrap3ElementModifier.js',
+                        'src/services/debounce.js',
+                        'src/services/defaultErrorMessageResolver.js',
+                        'src/services/foundation5ElementModifier.js',
+                        'src/services/validationMananger.js',
+                        'src/jcs-auto-validate-run.js'],
+                    dest: 'dist/jcs-auto-validate.js'
                 }
             },
 
@@ -170,7 +190,10 @@
             'jshint',
             'less:demo',
             'karma:unit',
-            'plato:analysis'
+            'plato:analysis',
+
+            'concat:dist',
+            'uglify:dist'
         ]);
     };
 }(module));
