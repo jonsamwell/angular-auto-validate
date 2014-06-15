@@ -47,9 +47,9 @@
                 indicated via icons, otherwise auto-valiadte is setup!
             <pre><code class="language-javascript">angular.module('my-app')
         .run([
-        'bootStrap3ElementModifier',
-        function (bootStrap3ElementModifier) {
-            bootStrap3ElementModifier.useValidationIcons(true);
+        'bootstrap3ElementModifier',
+        function (bootstrap3ElementModifier) {
+              bootstrap3ElementModifier.enableValidationStateIcons(true);
        }]);</code></pre>
 
             <p>if you are using Foundation 5 you will need to set the Foundation 5 element modifier as the default one</p>
@@ -219,7 +219,7 @@ angular.module('my-app')
         }
     ]);
 
-// now register the custom element modifer with the auto-validate module and set it as the deault one for all elements
+// now register the custom element modifier with the auto-validate module and set it as the default one for all elements
 angular.module('my-app')
     .run([
     'validator',

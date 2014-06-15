@@ -31,21 +31,45 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3 id="getting_started">Getting Started.</h3>
+          <h3 id="getting_started">Demo.</h3>
             <div class="callout">
                 <p>For the best overview of the module and module architecture see my <a href="http://www.jonsamwell.com/angular-auto-validate">original blog post here</a>.</p>
             </div>
 
             <div ng-controller="demoCtrl">
+                <p>
+                    <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
+                </p>
                 <form role="form">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" ng-model="user.email" placeholder="Enter email">
+                        <label>Name</label>
+                        <input type="email"
+                               class="form-control"
+                               placeholder="Enter Name"
+                               ng-model="user.name"
+                               required="required" />
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" ng-model="user.password"  placeholder="Password" ng-minlength="6">
+                        <label>Email address</label>
+                        <input type="email"
+                               class="form-control"
+                               placeholder="Enter email"
+                               ng-model="user.email"
+                               required="required"
+                               element-modifier="myCustomModifierKey">
+                        <span class="help-text">Element with a custom element modifier (see source code)</span>
                     </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control"
+                               ng-model="user.password"
+                               placeholder="Password"
+                               required="required"
+                               ng-minlength="6"
+                               ng-model-options="{updateOn: 'blur'}">
+                        <span class="help-text">Element with validation happening on blur rather than change</span>
+                    </div>
+
                     <button type="submit" class="btn btn-default">Submit</button>
                 </form>
             </div>
@@ -74,8 +98,9 @@
       </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
     <script type="text/javascript">
     (function (angular) {
         'use strict';
@@ -291,7 +316,7 @@
                                     reset(frmGroupEl);
                                     frmGroupEl.addClass('has-success has-feedback');
                                     if (addValidationStateIcons) {
-                                        el.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
+                                        frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
                                     }
                                 },
 
@@ -485,6 +510,61 @@
     (function (angular) {
         'use strict';
 
+        angular.module('jcs-autoValidate')
+                .factory('validationManager', [
+                    'validator',
+                    function (validator) {
+                        var
+                                /**
+                                 * @ngdoc validateElement
+                                 * @name validation#validateElement
+                                 * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
+                                 * @description
+                                 * Validate the form element and make invalid/valid element model status.
+                                 */
+                                validateElement = function (modelCtrl, el) {
+                                    var isValid,
+                                            errorType,
+                                            needsValidation = (modelCtrl.$parsers.length > 0 || modelCtrl.$formatters.length > 0) && modelCtrl.$pristine === false,
+                                            findErrorType = function ($errors) {
+                                                var keepGoing = true,
+                                                        errorTypeToReturn;
+                                                angular.forEach($errors, function (status, errortype) {
+                                                    if (keepGoing && status) {
+                                                        keepGoing = false;
+                                                        errorTypeToReturn = errortype;
+                                                    }
+                                                });
+
+                                                return errorTypeToReturn;
+                                            };
+
+                                    if (modelCtrl && needsValidation) {
+                                        isValid = !modelCtrl.$invalid;
+                                        if (isValid) {
+                                            validator.makeValid(el);
+                                        } else {
+                                            errorType = findErrorType(modelCtrl.$error);
+
+                                            validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                                                validator.makeInvalid(el, errorMsg);
+                                            });
+                                        }
+
+                                        return isValid;
+                                    }
+                                };
+
+                        return {
+                            validateElement: validateElement
+                        };
+                    }
+                ]);
+    }(angular));
+
+    (function (angular) {
+        'use strict';
+
         angular.module('jcs-autoValidate').config(['$provide',
             function ($provide) {
                 $provide.decorator('ngModelDirective', [
@@ -552,15 +632,73 @@
                     }
                 ]);
     }(angular));
+
     </script>
   <script type="text/javascript">
       (function (angular) {
             var app = angular.module('jcs-demo', ['jcs-autoValidate']);
 
           app.controller('demoCtrl', [
-            '$scope',
-              function ($scope) {
+              '$scope',
+              'bootstrap3ElementModifier',
+              function ($scope, bootstrap3ElementModifier) {
                 $scope.user = {};
+                $scope.bs3Icons = false;
+
+                $scope.toggleBS3Icons = function () {
+                    $scope.bs3Icons = !$scope.bs3Icons;
+                    bootstrap3ElementModifier.enableValidationStateIcons($scope.bs3Icons);
+                }
+              }
+          ]);
+
+          app.factory('myCustomElementModifier', [
+                  function () {
+                      var /**
+                           * @ngdoc function
+                           * @name myCustomElementModifier#makeValid
+                           * @methodOf myCustomElementModifier
+                           *
+                           * @description
+                           * Makes an element appear valid by apply custom styles and child elements.
+                           *
+                           * @param {Element} el - The input control element that is the target of the validation.
+                           */
+                          makeValid = function (el) {
+                              el.removeClass('bg-red');
+                              el.addClass('bg-green');
+                          },
+
+                          /**
+                           * @ngdoc function
+                           * @name myCustomElementModifier#makeInvalid
+                           * @methodOf myCustomElementModifier
+                           *
+                           * @description
+                           * Makes an element appear invalid by apply custom styles and child elements.
+                           *
+                           * @param {Element} el - The input control element that is the target of the validation.
+                           * @param {String} errorMsg - The validation error message to display to the user.
+                           */
+                          makeInvalid = function (el, errorMsg) {
+                              el.removeClass('bg-green');
+                              el.addClass('bg-red');
+                          };
+
+                      return {
+                          makeValid: makeValid,
+                          makeInvalid: makeInvalid,
+                          key: 'myCustomModifierKey'
+                      };
+                  }
+              ]);
+
+          // now register the custom element modifier with the auto-validate module and set it as the default one for all elements
+          app.run([
+              'validator',
+              'myCustomElementModifier',
+              function (validator, myCustomElementModifier) {
+                  validator.registerDomModifier(myCustomElementModifier.key, myCustomElementModifier);
               }
           ]);
       }(angular));

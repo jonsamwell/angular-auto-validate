@@ -459,3 +459,12 @@ footer a:hover {
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {}
+
+.bg-green {
+    background-color: green !important;
+    color: white !important;
+}
+.bg-red {
+    background-color: red !important;
+    color: white !important;
+}
