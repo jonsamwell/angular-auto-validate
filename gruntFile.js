@@ -153,6 +153,7 @@
                         'src/services/defaultErrorMessageResolver.js',
                         'src/services/foundation5ElementModifier.js',
                         'src/services/validationManager.js',
+                        'src/config/ngSubmitDecorator.js',
                         'src/config/ngModelDecorator.js',
                         'src/jcs-auto-validate-run.js'],
                     dest: 'dist/jcs-auto-validate.js'

@@ -44,10 +44,15 @@
 
                         return isValid;
                     }
-                };
+                },
+
+                    validateForm = function (frmEl, modelCtrl) {
+
+                    };
 
                 return {
-                    validateElement: validateElement
+                    validateElement: validateElement,
+                    validateForm: validateForm
                 };
             }
         ]);
