@@ -70,6 +70,7 @@ shared.files = [
     'bower_components/jQuery/dist/jquery.js',
     'bower_components/angular/angular.js',
     'bower_components/lodash/dist/lodash.js',
+    'tests/browserTrigger.js',
 
     // app libraries
     'src/jcs-auto-validate.js',
@@ -80,6 +81,7 @@ shared.files = [
     'src/services/validationManager.js',
     'src/providers/validator.js',
     'src/config/ngModelDecorator.js',
+    'src/config/ngSubmitDecorator.js',
 
     'src/jcs-auto-validate-run.js'
 ];
