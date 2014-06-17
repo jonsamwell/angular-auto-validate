@@ -29,6 +29,14 @@
                 <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.iq" mustcontainword="angular">
             </div>
 
+            <ng-form name="childForm">
+
+                <div class="form-group">
+                    <label class="control-label">Nickname</label>
+                    <input type="text" class="form-control" name="Nickname" placeholder="Enter Nickname" ng-model="user.Nickname" required="required">
+                </div>
+            </ng-form>
+
             <button type="submit" class="btn btn-default">Submit</button>
         </form>
     </div>

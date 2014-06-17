@@ -30,7 +30,6 @@
 
                                 return errorTypeToReturn;
                             };
-
                         if (modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
                             if (isValid) {
@@ -59,7 +58,7 @@
                             controller = ctrlElement.controller('ngModel');
 
                             if (controller !== undefined) {
-                                if (ctrlElement.nodeName === 'FORM') {
+                                if (ctrlElement[0].nodeName === 'FORM') {
                                     // we probably have a sub form
                                     validateForm(ctrlElement);
                                 } else {

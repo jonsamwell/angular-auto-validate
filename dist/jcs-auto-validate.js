@@ -432,7 +432,6 @@
 
                                 return errorTypeToReturn;
                             };
-
                         if (modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
                             if (isValid) {
@@ -461,7 +460,7 @@
                             controller = ctrlElement.controller('ngModel');
 
                             if (controller !== undefined) {
-                                if (ctrlElement.nodeName === 'FORM') {
+                                if (ctrlElement[0].nodeName === 'FORM') {
                                     // we probably have a sub form
                                     validateForm(ctrlElement);
                                 } else {
@@ -493,12 +492,12 @@
                 'validationManager',
                 function ($delegate, $parse, validationManager) {
                     $delegate[0].compile = function ($element, attr) {
-                        console.log(attr);
-                        var fn = $parse(attr.ngSubmit);
+                        var fn = $parse(attr.ngSubmit),
+                            force = attr.ngSubmitForce === 'true';
                         return function (scope, element) {
                             element.on('submit', function (event) {
                                 scope.$apply(function () {
-                                    if (validationManager.validateForm(element)) {
+                                    if (force === true || validationManager.validateForm(element)) {
                                         fn(scope, {
                                             $event: event
                                         });

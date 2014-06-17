@@ -21,7 +21,6 @@
                 validationManager = $injector.get('validationManager');
 
                 $rootScope.submitFn = function () {
-                    console.log('sdsadadsdsdasdsadasdsadasdsda');
                     submitFnCalled = true;
                 };
             }));
@@ -49,6 +48,17 @@
             it('should call the submit function on ngSubmit when the form is submitted and is valid', function () {
                 sandbox.stub(validationManager, 'validateForm').returns(true);
                 compileElement('<form name="frmOne2" ng-submit="submitFn()"><input type="text" ng-model="name"/></form>');
+                expect(element).to.exist;
+
+                window.browserTrigger(element, 'submit');
+                $rootScope.$apply();
+
+                expect(submitFnCalled).to.equal(true);
+            });
+
+            it('should call the submit function on ngSubmit when the form is submitted, is invalid but the ngSubmitForce attribute is true', function () {
+                sandbox.stub(validationManager, 'validateForm').returns(false);
+                compileElement('<form name="frmOne2" ng-submit="submitFn()" ng-submit-force="true"><input type="text" ng-model="name"/></form>');
                 expect(element).to.exist;
 
                 window.browserTrigger(element, 'submit');
