@@ -8,6 +8,8 @@
 
         // config
         grunt.initConfig({
+            pkg: grunt.file.readJSON('bower.json'),
+
             // Configuration Paths
             rootfolder: './',
             distfolder: '<%= rootfolder %>/dist/',
@@ -120,7 +122,11 @@
                             "DEBUG": false
                         },
                         dead_code: true
-                    }
+                    },
+                    banner: '/*\n * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
+                        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+                        ' * <%= pkg.homepage %>\n' +
+                        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;*/\n'
                 },
                 dist: {
                     files: {
@@ -130,6 +136,12 @@
             },
 
             concat: {
+                options: {
+                    banner: '/*\n * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
+                        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+                        ' * <%= pkg.homepage %>\n' +
+                        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;*/\n'
+                },
                 dist: {
                     src: ['src/jcs-auto-validate.js',
                         'src/providers/validator.js',
