@@ -161,12 +161,26 @@
 
             function () {
                 var reset = function (el) {
-                        el.find('.error-msg').remove();
-                        el.find('.form-control-feedback').remove();
+                        angular.forEach(el.find('span'), function (spanEl) {
+                            spanEl = angular.element(spanEl);
+                            if (spanEl.hasClass('error-msg') || spanEl.hasClass('form-control-feedback')) {
+                                spanEl.remove();
+                            }
+                        });
+
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findFormGroupElement = function (el) {
-                        return el.closest('.form-group');
+                        var parent = el;
+                        for (var i = 0; i <= 3; i += 1) {
+                            if (parent !== undefined && parent.hasClass('form-group')) {
+                                break;
+                            } else if (parent !== undefined) {
+                                parent = parent.parent();
+                            }
+                        }
+
+                        return parent;
                     },
 
                     /**
@@ -209,6 +223,7 @@
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-success has-feedback');
                         if (addValidationStateIcons) {
+                            console.log(frmGroupEl);
                             frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
                         }
                     },
@@ -249,11 +264,34 @@
 (function (angular) {
     'use strict';
 
+    /*
+     * Taken from https://github.com/angular/angular.js/issues/2690#issue-14462164 (with added tests of course!)
+     */
     angular.module('jcs-autoValidate').factory('debounce', [
+        '$timeout',
+        function ($timeout) {
+            var debounce = function (fn, timeout, apply) {
+                timeout = angular.isUndefined(timeout) ? 0 : timeout;
+                apply = angular.isUndefined(apply) ? true : apply; // !!default is true! most suitable to my experience
+                var nthCall = 0;
+                return function () { // intercepting fn
+                    var that = this;
+                    var argz = arguments;
+                    nthCall += 1;
+                    var later = (function (version) {
+                        return function () {
+                            if (version === nthCall) {
+                                return fn.apply(that, argz);
+                            }
+                        };
+                    })(nthCall);
 
-        function () {
+                    return $timeout(later, timeout, apply);
+                };
+            };
+
             return {
-                debounce: _.debounce
+                debounce: debounce
             };
         }
     ]);
@@ -346,11 +384,25 @@
 
             function () {
                 var reset = function (el) {
-                        el.find('small.error').remove();
+                        angular.forEach(el.find('small'), function (smallEl) {
+                            if (angular.element(smallEl).hasClass('error')) {
+                                angular.element(smallEl).remove();
+                            }
+                        });
+
                         el.removeClass('error');
                     },
                     findParentColumn = function (el) {
-                        return el.closest('.columns');
+                        var parent = el;
+                        for (var i = 0; i <= 3; i += 1) {
+                            if (parent !== undefined && parent.hasClass('columns')) {
+                                break;
+                            } else if (parent !== undefined) {
+                                parent = parent.parent();
+                            }
+                        }
+
+                        return parent;
                     },
 
                     /**

@@ -6,11 +6,25 @@
 
             function () {
                 var reset = function (el) {
-                        el.find('small.error').remove();
+                        angular.forEach(el.find('small'), function (smallEl) {
+                            if (angular.element(smallEl).hasClass('error')) {
+                                angular.element(smallEl).remove();
+                            }
+                        });
+
                         el.removeClass('error');
                     },
                     findParentColumn = function (el) {
-                        return el.closest('.columns');
+                        var parent = el;
+                        for (var i = 0; i <= 3; i += 1) {
+                            if (parent !== undefined && parent.hasClass('columns')) {
+                                break;
+                            } else if (parent !== undefined) {
+                                parent = parent.parent();
+                            }
+                        }
+
+                        return parent;
                     },
 
                     /**

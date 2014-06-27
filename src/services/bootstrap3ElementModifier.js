@@ -6,12 +6,26 @@
 
             function () {
                 var reset = function (el) {
-                        el.find('.error-msg').remove();
-                        el.find('.form-control-feedback').remove();
+                        angular.forEach(el.find('span'), function (spanEl) {
+                            spanEl = angular.element(spanEl);
+                            if (spanEl.hasClass('error-msg') || spanEl.hasClass('form-control-feedback')) {
+                                spanEl.remove();
+                            }
+                        });
+
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findFormGroupElement = function (el) {
-                        return el.closest('.form-group');
+                        var parent = el;
+                        for (var i = 0; i <= 3; i += 1) {
+                            if (parent !== undefined && parent.hasClass('form-group')) {
+                                break;
+                            } else if (parent !== undefined) {
+                                parent = parent.parent();
+                            }
+                        }
+
+                        return parent;
                     },
 
                     /**
@@ -54,6 +68,7 @@
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-success has-feedback');
                         if (addValidationStateIcons) {
+                            console.log(frmGroupEl);
                             frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
                         }
                     },

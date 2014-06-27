@@ -1,11 +1,8 @@
 {
   "name": "angular-auto-validate",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An automatic validation module for AngularJS which gets rid of excess html in favour of dynamic element modification to notify the user of validation errors",
   "main": "angular-auto-validate.min.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "test": "default"
   },
@@ -36,7 +33,6 @@
     "grunt-contrib-connect": "^0.7.1",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-less": "^0.11.1",
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-jsbeautifier": "^0.2.7",
     "grunt-karma": "^0.8.3",
