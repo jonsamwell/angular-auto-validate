@@ -144,7 +144,7 @@
             in auto-validate.  When the user clicks on the submit button the form is validated and the child UI elements have their
             validation states applied so the user can see what is valid/invalid.  Only if the whole form is valid will the ngSubmit method
             be called.  Of course, it you would prefer it is called even if the form is invalid you can use the ngSubmitForce attribute shown below.</p>
-<pre><code class="language-markup">&lt;form name=&quot;signupFrm&quot; novalidate=&quot;novalidate&quot;&gt; ng-submit=&quot;submit();&quot;&gt; ng-submit-force=&quot;true&quot;&gt;
+<pre><code class="language-markup">&lt;form name=&quot;signupFrm&quot; novalidate=&quot;novalidate&quot; ng-submit=&quot;submit();&quot; ng-submit-force=&quot;true&quot;&gt;
     &lt;div classs=&quot;form-row&quot;&gt;
     &lt;label&gt;Username:&lt;/label&gt;
     &lt;input name=&quot;username&quot;
