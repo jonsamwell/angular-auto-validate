@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.2 - 2014-06-27
+ * angular-auto-validate - v1.0.2 - 2014-07-15
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -473,7 +473,7 @@
                  * Validate the form element and make invalid/valid element model status.
                  */
                     validateElement = function (modelCtrl, el, forceValidation) {
-                        var isValid,
+                        var isValid = true,
                             errorType,
                             needsValidation = (modelCtrl.$parsers.length > 0 || modelCtrl.$formatters.length > 0) && (modelCtrl.$pristine === false || forceValidation),
                             findErrorType = function ($errors) {
