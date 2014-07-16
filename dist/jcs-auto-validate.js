@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.2 - 2014-06-27
+ * angular-auto-validate - v1.0.4 - 2014-07-16
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -227,7 +227,6 @@
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-success has-feedback');
                         if (addValidationStateIcons) {
-                            console.log(frmGroupEl);
                             frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
                         }
                     },
@@ -473,9 +472,9 @@
                  * Validate the form element and make invalid/valid element model status.
                  */
                     validateElement = function (modelCtrl, el, forceValidation) {
-                        var isValid,
+                        var isValid = true,
+                            needsValidation = modelCtrl.$pristine === false || forceValidation,
                             errorType,
-                            needsValidation = (modelCtrl.$parsers.length > 0 || modelCtrl.$formatters.length > 0) && (modelCtrl.$pristine === false || forceValidation),
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
                                     errorTypeToReturn;
@@ -593,6 +592,12 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
+
+                            if (link.pre) {
+                                link.pre.apply(this, arguments);
+                                ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
+                            }
+
                             if (attrs.formnovalidate === undefined) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
@@ -612,7 +617,11 @@
                                 ngModelCtrl.autoValidated = true;
                             }
 
-                            link.apply(this, arguments);
+                            if (link.post) {
+                                link.post.apply(this, arguments);
+                            } else {
+                                link.apply(this, arguments);
+                            }
                         };
                     };
 

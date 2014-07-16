@@ -21,6 +21,12 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
+
+                            if (link.pre) {
+                                link.pre.apply(this, arguments);
+                                ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
+                            }
+
                             if (attrs.formnovalidate === undefined) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
@@ -40,7 +46,11 @@
                                 ngModelCtrl.autoValidated = true;
                             }
 
-                            link.apply(this, arguments);
+                            if (link.post) {
+                                link.post.apply(this, arguments);
+                            } else {
+                                link.apply(this, arguments);
+                            }
                         };
                     };
 

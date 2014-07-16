@@ -68,7 +68,6 @@
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-success has-feedback');
                         if (addValidationStateIcons) {
-                            console.log(frmGroupEl);
                             frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
                         }
                     },

@@ -46,22 +46,27 @@
             });
 
             describe('validateElement', function () {
-                it('should return if no $parsers or $formatters on the controller', function () {
-                    validationManager.validateElement(modelCtrl);
+                it('should return true if the control is pristine and not make the element valid', function () {
+                    var result = false;
+                    modelCtrl.$pristine = true;
+                    result = validationManager.validateElement(modelCtrl);
+                    expect(result).to.equal(true);
                     expect(validator.makeValid.called).to.equal(false);
                     expect(validator.makeInvalid.called).to.equal(false);
                 });
 
-                it('should return if form is pristine', function () {
-                    modelCtrl.$pristine = true;
-                    validationManager.validateElement(modelCtrl);
-
-                    expect(validator.makeValid.called).to.equal(false);
+                it('should make the element valid and return true if the control is not pristine and has no validation requirements', function () {
+                    var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
+                        result = false;
+                    modelCtrl.$pristine = false;
+                    result = validationManager.validateElement(modelCtrl, el);
+                    expect(result).to.equal(true);
+                    expect(validator.makeValid.called).to.equal(true);
                     expect(validator.makeInvalid.called).to.equal(false);
                 });
 
                 it('should call validator to make element valid when there are $formatters and the form is valid', function () {
-                    var el = angular.element('<input type="test" />');
+                    var el = angular.element('<input type="text" ng-model="propOne"/>');
                     modelCtrl.$formatters.push(angular.noop);
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = false;
@@ -72,7 +77,7 @@
                 });
 
                 it('should call validator to make element invalid when there are $formatters and the form is invalid', function () {
-                    var el = angular.element('<input type="test" />'),
+                    var el = angular.element('<input type="text" ng-model="propOne" />'),
                         errorMsg = 'msg';
                     modelCtrl.$formatters.push(angular.noop);
                     modelCtrl.$pristine = false;
@@ -91,7 +96,7 @@
                 });
 
                 it('should call validator to make element invalid when there are $parsers and the form is invalid', function () {
-                    var el = angular.element('<input type="test" />'),
+                    var el = angular.element('<input type="text" ng-model="propOne"/>'),
                         errorMsg = 'msg';
                     modelCtrl.$parsers.push(angular.noop);
                     modelCtrl.$pristine = false;
@@ -107,6 +112,15 @@
 
                     expect(validator.makeInvalid.calledOnce).to.equal(true);
                     expect(validator.makeInvalid.calledWith(el, errorMsg)).to.equal(true);
+                });
+
+                it('should return true if the input has no validation specified', function () {
+                    var el = angular.element('<input type="text" ng-model="propertyOne" />'),
+                        result;
+
+                    result = validationManager.validateElement(modelCtrl, el);
+
+                    expect(result).to.equal(true);
                 });
             });
 

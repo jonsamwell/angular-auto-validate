@@ -1,6 +1,6 @@
 {
   "name": "angular-auto-validate",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "An automatic validation module for AngularJS which gets rid of excess html in favour of dynamic element modification to notify the user of validation errors",
   "main": "angular-auto-validate.min.js",
   "keywords": [
@@ -36,9 +36,10 @@
   "devDependencies": {
     "lesshat": ">= 3.0.1",
     "bootstrap": ">= 3.1.1",
-    "jQuery": ">= 1.11.1"
+    "jQuery": ">= 1.11.1",
+    "angular-mocks": ">=1.2.20"
   },
   "dependencies": {
-    "angular": ">= 1.2.12"
+    "angular": ">=1.2.12"
   }
 }

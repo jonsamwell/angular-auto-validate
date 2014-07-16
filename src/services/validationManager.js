@@ -15,9 +15,9 @@
                  * Validate the form element and make invalid/valid element model status.
                  */
                     validateElement = function (modelCtrl, el, forceValidation) {
-                        var isValid,
+                        var isValid = true,
+                            needsValidation = modelCtrl.$pristine === false || forceValidation,
                             errorType,
-                            needsValidation = (modelCtrl.$parsers.length > 0 || modelCtrl.$formatters.length > 0) && (modelCtrl.$pristine === false || forceValidation),
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
                                     errorTypeToReturn;

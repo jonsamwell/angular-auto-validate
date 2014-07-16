@@ -11,29 +11,36 @@
         <p>
             <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
         </p>
-        <form role="form" novalidate="novalidate" ng-submit="submit()">
+        <form role="form" novalidate="novalidate" ng-submit="submit();">
             <div class="form-group">
                 <label class="control-label">Name</label>
-                <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required">
+                <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required"/>
             </div>
             <div class="form-group">
                 <label class="control-label">Email address - <small>Element with a custom element modifier (see source code)</small></label>
-                <input type="email" class="form-control" placeholder="Enter email" ng-model="user.email" required="required" element-modifier="myCustomModifierKey">
+                <input type="email" class="form-control" placeholder="Enter email" ng-model="user.email" required="required" element-modifier="myCustomModifierKey"/>
             </div>
             <div class="form-group">
                 <label class="control-label">Password - <small>Element with validation happening on blur rather than change</small></label>
-                <input type="password" class="form-control" ng-model="user.password" placeholder="Password" required="required" ng-minlength="6" ng-model-options="{updateOn: 'blur'}">
+                <input type="password" class="form-control" ng-model="user.password" placeholder="Password" required="required" ng-minlength="6" ng-model-options="{updateOn: 'blur'}"/>
             </div>
             <div class="form-group">
                 <label class="control-label">Robot Test: Please spell Angular. - <small>Custom validation</small></label>
-                <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.iq" mustcontainword="angular">
+                <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.iq" mustcontainword="angular"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Is User Active?
+                <input type="checkbox" class="form-control"  ng-model="user.isActive" /></label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Input with no validation</label>
+                <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.noValidation" />
             </div>
 
             <ng-form name="childForm">
-
                 <div class="form-group">
                     <label class="control-label">Nickname</label>
-                    <input type="text" class="form-control" name="Nickname" placeholder="Enter Nickname" ng-model="user.Nickname" required="required">
+                    <input type="text" class="form-control" name="Nickname" placeholder="Enter Nickname" ng-model="user.Nickname" required="required" ng-minlength="4">
                 </div>
             </ng-form>
 
@@ -42,7 +49,19 @@
     </div>
 
     <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
-    <script type="text/javascript" src="../dist/jcs-auto-validate.js"></script>
+
+    <script type="text/javascript" src="../dist/jcs-auto-validate.min.js"></script>
+
+    <!--<script type="text/javascript" src="../src/jcs-auto-validate.js"></script>-->
+    <!--<script type="text/javascript" src="../src/providers/validator.js"></script>-->
+    <!--<script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>-->
+    <!--<script type="text/javascript" src="../src/services/debounce.js"></script>-->
+    <!--<script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>-->
+    <!--<script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>-->
+    <!--<script type="text/javascript" src="../src/services/validationManager.js"></script>-->
+    <!--<script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>-->
+    <!--<script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>-->
+    <!--<script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>-->
 
     <script type="text/javascript">
     (function (angular) {
@@ -58,7 +77,11 @@
                 $scope.toggleBS3Icons = function () {
                     $scope.bs3Icons = !$scope.bs3Icons;
                     bootstrap3ElementModifier.enableValidationStateIcons($scope.bs3Icons);
-                }
+                };
+
+                $scope.submit = function () {
+                    alert('form submitted');
+                };
 
                 $scope.toggleBS3Icons();
             }
