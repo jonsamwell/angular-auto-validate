@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.4 - 2014-07-16
+ * angular-auto-validate - v1.0.5 - 2014-07-17
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -245,7 +245,7 @@
                      */
                     makeInvalid = function (el, errorMsg) {
                         var frmGroupEl = findFormGroupElement(el),
-                            helpTextEl = angular.element('<span class="help-text has-error error-msg">' + errorMsg + '</span>');
+                            helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>');
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-error has-feedback');
                         frmGroupEl.append(helpTextEl);
@@ -315,23 +315,108 @@
         };
     }
 
+    angular.autoValidate = angular.autoValidate || {
+        errorMessages: {}
+    };
+
+    angular.autoValidate.errorMessages['en-us'] = angular.autoValidate.errorMessages['en-gb'] = {
+        defaultMsg: 'Please add error message for {0}',
+        email: 'Please enter a valid email address',
+        minlength: 'Please enter at least {0} characters',
+        maxlength: 'You have entered more than the maximum {0} characters',
+        min: 'Please enter the minimum number of {0}',
+        max: 'Please enter the maximum number of {0}',
+        required: 'This field is required',
+        date: 'Please enter a valid date',
+        pattern: 'Please ensure the entered information adheres to this pattern {0}',
+        number: 'Please enter a valid number',
+        url: 'Please enter a valid URL in the format of http(s)://wwww.google.com'
+    };
+
     angular.module('jcs-autoValidate')
         .factory('defaultErrorMessageResolver', [
             '$q',
-            function ($q) {
-                var errorMessages = {
-                        defaultMsg: 'Please add error message for {0}',
-                        email: 'Please enter a valid email address',
-                        minlength: 'Please enter at least {0} characters',
-                        maxlength: 'You have entered more than the maximum {0} characters',
-                        min: 'Please enter the minimum number of {0}',
-                        max: 'Please enter the maximum number of {0}',
-                        required: 'This field is required',
-                        date: 'Please enter a valid date',
-                        pattern: 'Please ensure the entered information adheres to this pattern {0}',
-                        number: 'Please enter a valid number',
-                        url: 'Please enter a valid URL in the format of http(s)://wwww.google.com'
+            '$http',
+            function ($q, $http) {
+                var currentCulture = 'en-gb',
+
+                    i18nFileRootPath = 'js/angular-auto-validate/lang',
+
+                    cultureRetrievalPromise,
+
+                    loadRemoteCulture = function (culture) {
+                        cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture));
+                        return cultureRetrievalPromise;
                     },
+
+                    /**
+                     * @ngdoc function
+                     * @name defaultErrorMessageResolver#setI18nFileRootPath
+                     * @methodOf defaultErrorMessageResolver
+                     *
+                     * @description
+                     * Set the root path to the il8n files on the server
+                     *
+                     * @param {String} rootPath - The root path on the server to the il8n file - this defaults
+                     * to 'js/angular-auto-validate/lang/'
+                     */
+                    setI18nFileRootPath = function (rootPath) {
+                        i18nFileRootPath = rootPath;
+                    },
+
+                    /**
+                     * @ngdoc function
+                     * @name defaultErrorMessageResolver#setCulture
+                     * @methodOf defaultErrorMessageResolver
+                     *
+                     * @description
+                     * Set the culture for the error messages by loading an the correct culture resource file.
+                     *
+                     * @param {String} culture - The new culture in the format of 'en-gb' etc.
+                     * @param {Function} cultureLoadingFn - A optional function to load the culture resolve which should
+                     * return a promise which is resolved with the culture errorMessage object.  If a function is not specified
+                     * the culture file is loaded from the **i18nFileRootPath**.
+                     * @returns {Promise} - A promise which is resolved with the loaded culture error messages object.
+                     */
+                    setCulture = function (culture, cultureLoadingFn) {
+                        var defer = $q.defer();
+                        cultureLoadingFn = cultureLoadingFn || loadRemoteCulture;
+                        currentCulture = culture.toLowerCase();
+                        if (angular.autoValidate.errorMessages[currentCulture] === undefined) {
+                            cultureRetrievalPromise = cultureLoadingFn(culture);
+                            cultureRetrievalPromise.then(function (response) {
+                                cultureRetrievalPromise = undefined;
+                                angular.autoValidate.errorMessages[currentCulture] = response.data;
+                                defer.resolve(angular.autoValidate.errorMessages[currentCulture]);
+                            }, function (err) {
+                                angular.autoValidate.errorMessages[currentCulture] = {
+                                    defaultMsg: 'Loading culture failed!'
+                                };
+                                cultureRetrievalPromise = null;
+                                defer.reject(err);
+                            });
+                        } else {
+                            defer.resolve(angular.autoValidate.errorMessages[currentCulture]);
+                        }
+
+                        return defer.promise;
+                    },
+
+                    getErrorMessages = function (culture) {
+                        var defer = $q.defer();
+                        culture = culture === undefined ? currentCulture : culture.toLowerCase();
+                        if (cultureRetrievalPromise !== undefined) {
+                            cultureRetrievalPromise.then(function () {
+                                defer.resolve(angular.autoValidate.errorMessages[culture]);
+                            }, function (err) {
+                                defer.reject(err);
+                            });
+                        } else {
+                            defer.resolve(angular.autoValidate.errorMessages[culture]);
+                        }
+                        return defer.promise;
+                    },
+
                     /**
                      * @ngdoc function
                      * @name defaultErrorMessageResolver#resolve
@@ -346,33 +431,45 @@
                      */
                     resolve = function (errorType, el) {
                         var defer = $q.defer(),
-                            errMsg = errorMessages[errorType],
+                            errMsg,
                             parameters = [],
                             parameter;
 
-                        if (errMsg === undefined) {
-                            errMsg = errorMessages.defaultMsg.format(errorType);
+                        if (cultureRetrievalPromise !== undefined) {
+                            cultureRetrievalPromise.then(function () {
+                                resolve(errorType, el).then(function (msg) {
+                                    defer.resolve(msg);
+                                });
+                            });
+                        } else {
+                            errMsg = angular.autoValidate.errorMessages[currentCulture][errorType];
+                            if (errMsg === undefined) {
+                                errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
+                            }
+
+                            if (el && el.attr) {
+                                try {
+                                    parameter = el.attr(errorType);
+                                    if (parameter === undefined) {
+                                        parameter = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                                    }
+
+                                    parameters.push(parameter || '');
+
+                                    errMsg = errMsg.format(parameters);
+                                } catch (e) {}
+                            }
+
+                            defer.resolve(errMsg);
                         }
 
-                        if (el && el.attr) {
-                            try {
-                                parameter = el.attr(errorType);
-                                if (parameter === undefined) {
-                                    parameter = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
-                                }
-
-                                parameters.push(parameter || '');
-
-                                errMsg = errMsg.format(parameters);
-                            } catch (e) {}
-                        }
-
-                        defer.resolve(errMsg);
                         return defer.promise;
                     };
 
                 return {
-                    errorMessages: errorMessages,
+                    setI18nFileRootPath: setI18nFileRootPath,
+                    setCulture: setCulture,
+                    getErrorMessages: getErrorMessages,
                     resolve: resolve
                 };
             }

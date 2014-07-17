@@ -2,7 +2,7 @@
     'use strict';
 
     describe('jcs-autoValidate defaultErrorMessageResolver', function () {
-        var sandbox, $rootScope, defaultErrorMessageResolver;
+        var sandbox, $rootScope, $q, $httpBackend, defaultErrorMessageResolver;
 
         beforeEach(module('jcs-autoValidate'));
 
@@ -10,6 +10,8 @@
             beforeEach(inject(function ($injector) {
                 sandbox = sinon.sandbox.create();
                 $rootScope = $injector.get('$rootScope');
+                $httpBackend = $injector.get('$httpBackend');
+                $q = $injector.get('$q');
                 defaultErrorMessageResolver = $injector.get('defaultErrorMessageResolver');
             }));
 
@@ -21,77 +23,186 @@
                 expect(defaultErrorMessageResolver).to.exist;
             });
 
-            describe('errorMessages', function () {
-                it('should be an object', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+            describe('getErrorMessages', function () {
+                it('should be an object', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key defaultMsg', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key defaultMsg', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.defaultMsg).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.defaultMsg).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key email', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key email', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.email).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.email).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key minlength', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key minlength', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.minlength).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.minlength).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key maxlength', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key maxlength', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.maxlength).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.maxlength).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key min', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key min', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.min).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.min).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key max', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key max', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.max).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.max).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key required', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key required', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.required).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.required).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key date', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key date', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.date).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.date).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key pattern', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key pattern', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.pattern).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.pattern).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key number', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key number', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.number).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.number).to.not.equal(undefined);
+                    $rootScope.$apply();
                 });
 
-                it('should have the key url', function () {
-                    var errorMessages = defaultErrorMessageResolver.errorMessages;
+                it('should have the key url', function (done) {
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        expect(errorMessages.url).to.not.equal(undefined);
+                        done();
+                    });
 
-                    expect(errorMessages.url).to.not.equal(undefined);
+                    $rootScope.$apply();
+                });
+            });
+
+            describe('setI18nFileRootPath', function () {
+                it('should be defined', function () {
+                    expect(defaultErrorMessageResolver.setI18nFileRootPath).to.not.equal(undefined);
+                });
+            });
+
+            describe('setCulture', function () {
+                afterEach(function () {
+                    $httpBackend.verifyNoOutstandingExpectation();
+                    $httpBackend.verifyNoOutstandingRequest();
+                });
+
+                it('should return with calling the loadingFn if the culture is already loaded', function (done) {
+                    var loadingFnCalled = false,
+                        loadingFn = function () {
+                            loadingFnCalled = true;
+                        };
+
+                    defaultErrorMessageResolver.setCulture('en-gb', loadingFn).then(function () {
+                        expect(loadingFnCalled).to.equal(false);
+                        done();
+                    });
+
+                    $rootScope.$apply();
+                });
+
+                it('should call the loading function if it is specified', function (done) {
+                    var loadingFnCalled = false,
+                        loadingFn = function () {
+                            var defer = $q.defer();
+                            loadingFnCalled = true;
+                            defer.resolve({});
+                            return defer.promise;
+                        };
+
+                    defaultErrorMessageResolver.setCulture('fr-fr', loadingFn).then(function () {
+                        expect(loadingFnCalled).to.equal(true);
+                        done();
+                    });
+
+                    $rootScope.$apply();
+                });
+
+                it('should call $http to load the culture file with the correct url', function (done) {
+                    $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_fr-fr.json').respond(200, {});
+
+                    defaultErrorMessageResolver.setCulture('fr-fr').then(function () {
+                        done();
+                    });
+
+                    $httpBackend.flush();
+
+                    $rootScope.$apply();
+                });
+
+                it('should resolve the current waiting error message once the culture has been loaded.', function (done) {
+                    var requiredStr = 'required';
+                    $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_en-fr.json').respond(200, {
+                        required: requiredStr
+                    });
+
+                    defaultErrorMessageResolver.setCulture('en-fr');
+                    defaultErrorMessageResolver.resolve('required').then(function (msg) {
+                        expect(msg).to.equal(requiredStr);
+                        done();
+                    });
+
+                    $httpBackend.flush();
+
+                    $rootScope.$apply();
                 });
             });
 

@@ -50,18 +50,18 @@
 
     <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
 
-    <script type="text/javascript" src="../dist/jcs-auto-validate.min.js"></script>
+    <!--<script type="text/javascript" src="../dist/jcs-auto-validate.min.js"></script>-->
 
-    <!--<script type="text/javascript" src="../src/jcs-auto-validate.js"></script>-->
-    <!--<script type="text/javascript" src="../src/providers/validator.js"></script>-->
-    <!--<script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>-->
-    <!--<script type="text/javascript" src="../src/services/debounce.js"></script>-->
-    <!--<script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>-->
-    <!--<script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>-->
-    <!--<script type="text/javascript" src="../src/services/validationManager.js"></script>-->
-    <!--<script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>-->
-    <!--<script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>-->
-    <!--<script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>-->
+    <script type="text/javascript" src="../src/jcs-auto-validate.js"></script>
+    <script type="text/javascript" src="../src/providers/validator.js"></script>
+    <script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/debounce.js"></script>
+    <script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>
+    <script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/validationManager.js"></script>
+    <script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
+    <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
+    <script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
 
     <script type="text/javascript">
     (function (angular) {
@@ -157,7 +157,11 @@
             'defaultErrorMessageResolver',
             function (validator, myCustomElementModifier, defaultErrorMessageResolver) {
                 validator.registerDomModifier(myCustomElementModifier.key, myCustomElementModifier);
-                defaultErrorMessageResolver.errorMessages['mustcontainword'] = 'Please enter the word "{0}"';
+                defaultErrorMessageResolver.setI18nFileRootPath('../src/lang/');
+                defaultErrorMessageResolver.setCulture('fr-FR');
+                defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                    errorMessages['mustcontainword'] = 'Please enter the word "{0}"';
+                });
             }
         ]);
     }(angular));
