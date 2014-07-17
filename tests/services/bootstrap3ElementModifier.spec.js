@@ -71,13 +71,13 @@
                     expect(element.find('.glyphicon.glyphicon-remove.form-control-feedback').length).to.equal(1);
                 });
 
-                it('should add the .help-text element', function () {
+                it('should add the .help-block element', function () {
                     var element = angular.element('<div class="form-group"><input type="text"/></div>');
                     bootstrap3ElementModifier.enableValidationStateIcons(true);
 
                     bootstrap3ElementModifier.makeInvalid(element);
 
-                    expect(element.find('.help-text').length).to.equal(1);
+                    expect(element.find('.help-block').length).to.equal(1);
                 });
             });
         });

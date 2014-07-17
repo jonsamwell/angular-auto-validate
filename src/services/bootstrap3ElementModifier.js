@@ -86,7 +86,7 @@
                      */
                     makeInvalid = function (el, errorMsg) {
                         var frmGroupEl = findFormGroupElement(el),
-                            helpTextEl = angular.element('<span class="help-text has-error error-msg">' + errorMsg + '</span>');
+                            helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>');
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-error has-feedback');
                         frmGroupEl.append(helpTextEl);
