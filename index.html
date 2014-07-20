@@ -116,7 +116,7 @@
             or using any angular expressions to show or hide them depending on the validation state.  So now your form markup remains
             clean and maintainable</p>
 <pre><code class="language-markup">&lt;form name=&quot;signupFrm&quot; novalidate=&quot;novalidate&quot;&gt;
-    &lt;div classs=&quot;form-row&quot;&gt;
+    &lt;div class=&quot;form-row&quot;&gt;
         &lt;label&gt;Username:&lt;/label&gt;
         &lt;input name=&quot;username&quot;
             ng-model=&quot;model.username&quot;
@@ -124,7 +124,7 @@
             ng-maxlength=&quot;10&quot;
             required/&gt;
     &lt;/div&gt;
-    &lt;div classs=&quot;form-row&quot;&gt;
+    &lt;div class=&quot;form-row&quot;&gt;
         &lt;label&gt;Password:&lt;/label&gt;
         &lt;input name=&quot;password&quot;
             type=&quot;password&quot;
@@ -164,7 +164,7 @@
             validation states applied so the user can see what is valid/invalid.  Only if the whole form is valid will the ngSubmit method
             be called.  Of course, it you would prefer it is called even if the form is invalid you can use the ngSubmitForce attribute shown below.</p>
 <pre><code class="language-markup">&lt;form name=&quot;signupFrm&quot; novalidate=&quot;novalidate&quot; ng-submit=&quot;submit();&quot; ng-submit-force=&quot;true&quot;&gt;
-    &lt;div classs=&quot;form-row&quot;&gt;
+    &lt;div class=&quot;form-row&quot;&gt;
     &lt;label&gt;Username:&lt;/label&gt;
     &lt;input name=&quot;username&quot;
         ng-model=&quot;model.username&quot;
