@@ -38,7 +38,7 @@
             function ($q, $http) {
                 var currentCulture = 'en-gb',
 
-                    i18nFileRootPath = 'js/angular-auto-validate/lang',
+                    i18nFileRootPath = 'js/angular-auto-validate/dist/lang',
 
                     cultureRetrievalPromise,
 

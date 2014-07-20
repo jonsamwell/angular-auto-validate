@@ -1,3 +1,6 @@
+v1.0.7 - 20/07/2014
+Update i18n resource retrieval path to match the bower installed path.
+
 v1.0.6 - 20/07/2014
 Added i18n to defaultMessageResolver and updated the docs.
 Added fr-FR.json language file - it you can translate PR the repo with a new language file (or email me) thanks!

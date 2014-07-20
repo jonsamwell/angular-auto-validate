@@ -177,7 +177,7 @@
                 });
 
                 it('should call $http to load the culture file with the correct url', function (done) {
-                    $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_fr-fr.json').respond(200, {});
+                    $httpBackend.expectGET('js/angular-auto-validate/dist/lang/jcs-auto-validate_fr-fr.json').respond(200, {});
 
                     defaultErrorMessageResolver.setCulture('fr-fr').then(function () {
                         done();
@@ -189,7 +189,7 @@
                 });
 
                 it('should return the error in the promise when the load of a remote culture file fails', function (done) {
-                    $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_en-it.json').respond(404, {
+                    $httpBackend.expectGET('js/angular-auto-validate/dist/lang/jcs-auto-validate_en-it.json').respond(404, {
                         data: 'some error'
                     });
 
@@ -219,7 +219,7 @@
 
                 it('should resolve the current waiting error message once the culture has been loaded.', function (done) {
                     var requiredStr = 'required';
-                    $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_en-fr.json').respond(200, {
+                    $httpBackend.expectGET('js/angular-auto-validate/dist/lang/jcs-auto-validate_en-fr.json').respond(200, {
                         required: requiredStr
                     });
 

@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.5 - 2014-07-20
+ * angular-auto-validate - v1.0.7 - 2014-07-20
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -344,7 +344,7 @@
             function ($q, $http) {
                 var currentCulture = 'en-gb',
 
-                    i18nFileRootPath = 'js/angular-auto-validate/lang',
+                    i18nFileRootPath = 'js/angular-auto-validate/dist/lang',
 
                     cultureRetrievalPromise,
 
