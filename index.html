@@ -92,7 +92,7 @@
             <pre><code class="language-javascript">angular.module('my-app', ['jcs-autoValidate']);</code></pre>
 
             <p>If you are using bootstrap 3 that's it, unless you wish the valid and invalid states of your controls to be
-                indicated via icons, otherwise auto-valiadte is setup!
+                indicated via icons, otherwise auto-validate is setup!
             <pre><code class="language-javascript">angular.module('my-app')
         .run([
         'bootstrap3ElementModifier',
@@ -128,7 +128,7 @@
         &lt;label&gt;Password:&lt;/label&gt;
         &lt;input name=&quot;password&quot;
             type=&quot;password&quot;
-            ng-model=&quot;model.username&quot;
+            ng-model=&quot;model.password&quot;
             ng-minlength=&quot;3&quot;
             ng-maxlength=&quot;10&quot;
             required/&gt;
@@ -136,6 +136,25 @@
 &lt;/form&gt;
 </code></pre>
 
+            <h3 id="ngmodeloptions">NgModelOptions Support</h3>
+            <p>
+                By default AngularJS triggers validation on change, while this is great for illustrating the power of Angular
+                it can be somewhat annoying to the user if they are typing their name in and after the first letter it tells
+                them their name must be more than 3 characters. Now Angular 1.3+ has the support for ngModelOptions which
+                lets us specify when Angular should update the bound model and fire the validation process. We can
+                now easily specify it should be on blur rather than on change. However, those of us who need to support
+                older browsers (IE8) cannot use this newer version as it does not officially support them. So, I have
+                added very rudimentary support for the updateOn option of ngModelOptions even for Angular 1.2 and below!
+                Simply add the ngModelOption directive as usual and you can easily change the trigger event of the element.
+            </p>
+
+            <pre><code class="language-markup">
+&lt;input type="text"
+       ng-model="model.name"
+       ng-model-options="{updateOn: 'blur'}"
+       required
+       ng-minlength="5" /&gt;
+            </code></pre>
 
             <h3 id="ngsubmit">ngSubmit</h3>
             <p>The typical way to test if a form is valid before submitting is to pass the form into the ngSubmit method
@@ -382,6 +401,7 @@ angular.module('my-app')
                 <li><a href="#getting_started">Getting Started</a></li>
                 <li><a href="#demo">Demo</a></li>
                 <li><a href="#your_form">Your Form</a></li>
+                <li><a href="#ngmodeloptions">NgModelOptions Support</a></li>
                 <li><a href="#ngsubmit">ngSubmit</a></li>
                 <li><a href="#error_message_resolver">Error Message Resolver</a></li>
                 <li><a href="#i18n">i18n</a></li>
