@@ -188,6 +188,35 @@
                     $rootScope.$apply();
                 });
 
+                it('should return the error in the promise when the load of a remote culture file fails', function (done) {
+                    $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_en-it.json').respond(404, {
+                        data: 'some error'
+                    });
+
+                    defaultErrorMessageResolver.setCulture('en-it').then(function () {}, function (err) {
+                        done();
+                        expect(err.data).to.equal('some error');
+                    });
+
+                    $httpBackend.flush();
+
+                    $rootScope.$apply();
+                });
+
+                it('should call $http with the correct url path when the root has been set', function (done) {
+                    $httpBackend.expectGET('some/made/up/path/jcs-auto-validate_zh-cn.json').respond(200, {});
+
+                    defaultErrorMessageResolver.setI18nFileRootPath('some/made/up/path');
+
+                    defaultErrorMessageResolver.setCulture('zh-cn').then(function () {
+                        done();
+                    });
+
+                    $httpBackend.flush();
+
+                    $rootScope.$apply();
+                });
+
                 it('should resolve the current waiting error message once the culture has been loaded.', function (done) {
                     var requiredStr = 'required';
                     $httpBackend.expectGET('js/angular-auto-validate/lang/jcs-auto-validate_en-fr.json').respond(200, {

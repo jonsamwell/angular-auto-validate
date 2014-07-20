@@ -28,6 +28,10 @@
                         return parent;
                     },
 
+                    insertAfter = function (referenceNode, newNode) {
+                        referenceNode[0].parentNode.insertBefore(newNode[0], referenceNode[0].nextSibling);
+                    },
+
                     /**
                      * @ngdoc property
                      * @name bootstrap3ElementModifier#addValidationStateIcons
@@ -68,7 +72,7 @@
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-success has-feedback');
                         if (addValidationStateIcons) {
-                            frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
+                            insertAfter(el, angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
                         }
                     },
 
@@ -89,9 +93,9 @@
                             helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>');
                         reset(frmGroupEl);
                         frmGroupEl.addClass('has-error has-feedback');
-                        frmGroupEl.append(helpTextEl);
+                        insertAfter(el, helpTextEl);
                         if (addValidationStateIcons) {
-                            frmGroupEl.append(angular.element('<span class="glyphicon glyphicon-remove form-control-feedback"></span>'));
+                            insertAfter(el, angular.element('<span class="glyphicon glyphicon-remove form-control-feedback"></span>'));
                         }
                     };
 

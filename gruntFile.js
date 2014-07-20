@@ -109,6 +109,12 @@
             },
 
             copy: {
+                i18n: {
+                    files: [
+                        // includes files within path
+                        {expand: true, cwd: 'src/lang/', src: ['*.json'], dest: 'dist/lang', filter: 'isFile'}
+                    ]
+                }
             },
 
             uglify: {
@@ -189,7 +195,8 @@
             'plato:analysis',
 
             'concat:dist',
-            'uglify:dist'
+            'uglify:dist',
+            'copy:i18n'
         ]);
     };
 }(module));

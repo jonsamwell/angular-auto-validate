@@ -7,45 +7,89 @@
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 </head>
 <body>
-    <div ng-controller="demoCtrl">
-        <p>
-            <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
-        </p>
-        <form role="form" novalidate="novalidate" ng-submit="submit();">
-            <div class="form-group">
-                <label class="control-label">Name</label>
-                <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required"/>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Email address - <small>Element with a custom element modifier (see source code)</small></label>
-                <input type="email" class="form-control" placeholder="Enter email" ng-model="user.email" required="required" element-modifier="myCustomModifierKey"/>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Password - <small>Element with validation happening on blur rather than change</small></label>
-                <input type="password" class="form-control" ng-model="user.password" placeholder="Password" required="required" ng-minlength="6" ng-model-options="{updateOn: 'blur'}"/>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Robot Test: Please spell Angular. - <small>Custom validation</small></label>
-                <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.iq" mustcontainword="angular"/>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Is User Active?
-                <input type="checkbox" class="form-control"  ng-model="user.isActive" /></label>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Input with no validation</label>
-                <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.noValidation" />
-            </div>
-
-            <ng-form name="childForm">
+    <div class="row" ng-controller="demoCtrl">
+        <div class="col-sm-12">
+            <p>
+                <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
+            </p>
+            <form role="form" novalidate="novalidate" ng-submit="submit();">
                 <div class="form-group">
-                    <label class="control-label">Nickname</label>
-                    <input type="text" class="form-control" name="Nickname" placeholder="Enter Nickname" ng-model="user.Nickname" required="required" ng-minlength="4">
+                    <label class="control-label">Name</label>
+                    <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required"/>
                 </div>
-            </ng-form>
+                <div class="form-group">
+                    <label class="control-label">Email address - <small>Element with a custom element modifier (see source code)</small></label>
+                    <input type="email" class="form-control" placeholder="Enter email" ng-model="user.email" required="required" element-modifier="myCustomModifierKey"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Password - <small>Element with validation happening on blur rather than change</small></label>
+                    <input type="password" class="form-control" ng-model="user.password" placeholder="Password" required="required" ng-minlength="6" ng-model-options="{updateOn: 'blur'}"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Robot Test: Please spell Angular. - <small>Custom validation</small></label>
+                    <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.iq" mustcontainword="angular"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Is User Active?
+                        <input type="checkbox" class="form-control"  ng-model="user.isActive" /></label>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Input with no validation</label>
+                    <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.noValidation" />
+                </div>
 
-            <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+                <ng-form name="childForm">
+                    <div class="form-group">
+                        <label class="control-label">Nickname</label>
+                        <input type="text" class="form-control" name="Nickname" placeholder="Enter Nickname" ng-model="user.Nickname" required="required" ng-minlength="4">
+                    </div>
+                </ng-form>
+
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="form-group">
+        <label class="col-sm-1 control-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" required="required" ng-model="model.email">
+        </div>
+    </div>
+
+    <div class="row" ng-controller="demoCtrl">
+        <div class="col-sm-12">
+            <form class="form-horizontal" role="form" novalidate="novalidate" ng-submit="submit();">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-1 control-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="inputEmail3" placeholder="Email" required="required" ng-model="model.email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="inputPassword3" placeholder="Password" required="required" ng-minlength="6" ng-model="model.password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> Remember me
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-10">
+                        <button type="submit" class="btn btn-default">Sign in</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
