@@ -198,12 +198,67 @@
             <pre><code class="language-javascript">angular.module('jcs-autoValidate')
     .run([
     'defaultErrorMessageResolver',
-    function (validator, defaultErrorMessageResolver) {
-        defaultErrorMessageResolver.errorMessages['myCustomError'] = 'My custom error message';
-        defaultErrorMessageResolver.errorMessages['anotherErrorMessage'] = 'An error message with the attribute value in {0}';
+    function (defaultErrorMessageResolver) {
+        // passing a culture into getErrorMessages('fr-fr') will get the culture specific messages
+        // otherwise the current default culture is returned.
+        defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+          errorMessages['myCustomError'] = 'My custom error message';
+          errorMessages['anotherErrorMessage'] = 'An error message with the attribute value {0}';
+        });
     }
 ]);
             </code></pre>
+
+            <h3 id="i18n">i18n</h3>
+            The default error message resolver that is enabled out of the box now has i18n support!  While this is fairly basic support
+            it gives enough to not have to implement a custom error message resolver to do complex translations.  The default culture is
+            'en-GB' which is basically 'en-US'.
+
+            <h5>Setting a Culture</h5>
+            The default culture for error messages is 'en-GB' this can be changed by simply setting the correct culture on the defaultErrorMessageResolver.
+            This will automatically go off and fetch the correct culture resource file from the server.  By default the library will request the file from
+            '{js/angular-auto-validate/lang}/jcs-auto-validate_##-##.json'.  However, if the culture files are in a different location you can set the
+            root path for the culture files (the part of the above url in brackets {js/angular-auto-validate/lang}) by calling <code>setI18nFileRootPath('some/path)</code>
+
+
+            <pre><code class="language-javascript">angular.module('jcs-autoValidate')
+.run([
+    'defaultErrorMessageResolver',
+    function (defaultErrorMessageResolver) {
+        // To change the root resource file path
+        //defaultErrorMessageResolver.setI18nFileRootPath('some/path);
+        defaultErrorMessageResolver.setCulture('fr-FR');
+    }
+]);
+            </code></pre>
+
+            Alternatively, you can provide your own loading function to the setCulture method that should return a promise and resolve that promise with the object
+            structure expected in a resource file.
+
+            <pre><code class="language-javascript">angular.module('jcs-autoValidate')
+.run([
+    '$q',
+    'defaultErrorMessageResolver',
+    function ($q, defaultErrorMessageResolver) {
+
+        defaultErrorMessageResolver.setCulture('fr-FR', function () {
+            var defer = $q.defer();
+
+            // you can get the error messages however you want and resolve the promise when they are loaded
+            // defer.resolve(errorMessagesRetreivedBySomeMethod);
+            return defer.promise;
+        });
+    }
+]);
+            </code></pre>
+
+
+            <h5>Small Caveat</h5>
+            <p>While I might know lots of programming languages I do not know many (well only one) actual language.  So at the moment we only have English
+                and French translations. If you can translate the default 'angular-auto-validate_en-GB.json' into any other language that would be great!  PR the repo
+                or email me it as that would be awesome!</p>
+
+            <br/>
 
             <h4 id="custom_error_resolver">Custom Error Message Resolver</h4>
             <p>If you need more fined grained control over how a validation error type is converted into an error message you may wish to create a
@@ -313,6 +368,7 @@ angular.module('my-app')
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
 <p>Originally authored by <a href="http://www.jonsamwell.com" target="_blank">Jon Samwell</a>.</p>
+<p>Contributions from <a href="https://github.com/DanielBodnar" target="_blank">@DanielBodnar</a> & <a href="https://github.com/jgoux" target="_blank">@jgoux</a></p>
 
 <h3 id="issues">
 <a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
@@ -328,6 +384,7 @@ angular.module('my-app')
                 <li><a href="#your_form">Your Form</a></li>
                 <li><a href="#ngsubmit">ngSubmit</a></li>
                 <li><a href="#error_message_resolver">Error Message Resolver</a></li>
+                <li><a href="#i18n">i18n</a></li>
                 <li><a href="#custom_dom_modifiers">Custom Dom Modifiers</a></li>
                 <li><a href="#author">Author and Contributors</a></li>
                 <li><a href="#issues">Issues and Feature Requests</a></li>
@@ -447,7 +504,9 @@ angular.module('my-app')
                  'defaultErrorMessageResolver',
                 function (validator, myCustomElementModifier, defaultErrorMessageResolver) {
                     validator.registerDomModifier(myCustomElementModifier.key, myCustomElementModifier);
-                    defaultErrorMessageResolver.errorMessages['mustcontainword'] = 'Please enter the word "{0}"';
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        errorMessages['mustcontainword'] = 'Please enter the word "{0}"';
+                    });
                 }
             ]);
         }(angular));

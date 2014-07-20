@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">74.36</p>
+      <p class="stat">72.45</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">92</p>
+      <p class="stat">110</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">13.17</p>
+      <p class="stat">23.93</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.30</p>
+      <p class="stat">0.47</p>
     </div>
   </div>
 </div>
@@ -98,12 +98,30 @@
 
             function () {
                 var reset = function (el) {
-                        el.find(&#039;.error-msg&#039;).remove();
-                        el.find(&#039;.form-control-feedback&#039;).remove();
+                        angular.forEach(el.find(&#039;span&#039;), function (spanEl) {
+                            spanEl = angular.element(spanEl);
+                            if (spanEl.hasClass(&#039;error-msg&#039;) || spanEl.hasClass(&#039;form-control-feedback&#039;)) {
+                                spanEl.remove();
+                            }
+                        });
+
                         el.removeClass(&#039;has-success has-error has-feedback&#039;);
                     },
                     findFormGroupElement = function (el) {
-                        return el.closest(&#039;.form-group&#039;);
+                        var parent = el;
+                        for (var i = 0; i &lt;= 3; i += 1) {
+                            if (parent !== undefined &amp;&amp; parent.hasClass(&#039;form-group&#039;)) {
+                                break;
+                            } else if (parent !== undefined) {
+                                parent = parent.parent();
+                            }
+                        }
+
+                        return parent;
+                    },
+
+                    insertAfter = function (referenceNode, newNode) {
+                        referenceNode[0].parentNode.insertBefore(newNode[0], referenceNode[0].nextSibling);
                     },
 
                     /**
@@ -146,7 +164,7 @@
                         reset(frmGroupEl);
                         frmGroupEl.addClass(&#039;has-success has-feedback&#039;);
                         if (addValidationStateIcons) {
-                            el.append(angular.element(&#039;&lt;span class=&quot;glyphicon glyphicon-ok form-control-feedback&quot;&gt;&lt;/span&gt;&#039;));
+                            insertAfter(el, angular.element(&#039;&lt;span class=&quot;glyphicon glyphicon-ok form-control-feedback&quot;&gt;&lt;/span&gt;&#039;));
                         }
                     },
 
@@ -164,12 +182,12 @@
                      */
                     makeInvalid = function (el, errorMsg) {
                         var frmGroupEl = findFormGroupElement(el),
-                            helpTextEl = angular.element(&#039;&lt;span class=&quot;help-text has-error error-msg&quot;&gt;&#039; + errorMsg + &#039;&lt;/span&gt;&#039;);
+                            helpTextEl = angular.element(&#039;&lt;span class=&quot;help-block has-error error-msg&quot;&gt;&#039; + errorMsg + &#039;&lt;/span&gt;&#039;);
                         reset(frmGroupEl);
                         frmGroupEl.addClass(&#039;has-error has-feedback&#039;);
-                        frmGroupEl.append(helpTextEl);
+                        insertAfter(el, helpTextEl);
                         if (addValidationStateIcons) {
-                            frmGroupEl.append(angular.element(&#039;&lt;span class=&quot;glyphicon glyphicon-remove form-control-feedback&quot;&gt;&lt;/span&gt;&#039;));
+                            insertAfter(el, angular.element(&#039;&lt;span class=&quot;glyphicon glyphicon-remove form-control-feedback&quot;&gt;&lt;/span&gt;&#039;));
                         }
                     };
 
