@@ -26,7 +26,7 @@
                  * Foundation allows the .error class to be on either the element or the parent .column element.
                  */
 
-                it('should remove the error class', function () {
+                it('should remove the error class from the input', function () {
                     var element = angular.element('<input type="text" class="error"/>');
                     foundation5ElementModifier.makeValid(element);
 

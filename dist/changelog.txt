@@ -1,3 +1,9 @@
+v1.0.9 - 21/07/2014
+Fixed error with the foundation5ElementModifier not removing the '.error' class from a nested input element.
+
+v1.0.8 - 20/07/2014
+Fixed typo errors in docs and removed un-needed bower components
+
 v1.0.7 - 20/07/2014
 Update i18n resource retrieval path to match the bower installed path.
 

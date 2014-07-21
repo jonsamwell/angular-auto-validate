@@ -5,14 +5,14 @@
         .factory('foundation5ElementModifier', [
 
             function () {
-                var reset = function (el) {
+                var reset = function (el, inputEl) {
                         angular.forEach(el.find('small'), function (smallEl) {
                             if (angular.element(smallEl).hasClass('error')) {
                                 angular.element(smallEl).remove();
                             }
                         });
 
-                        el.removeClass('error');
+                        inputEl.removeClass('error');
                     },
                     findParentColumn = function (el) {
                         var parent = el;
@@ -40,7 +40,7 @@
                      */
                     makeValid = function (el) {
                         var parentColumn = findParentColumn(el);
-                        reset(parentColumn && parentColumn.length > 0 ? parentColumn : el);
+                        reset(parentColumn && parentColumn.length > 0 ? parentColumn : el, el);
                     },
 
                     /**
@@ -57,7 +57,7 @@
                     makeInvalid = function (el, errorMsg) {
                         var parentColumn = findParentColumn(el),
                             helpTextEl;
-                        reset(parentColumn || el);
+                        reset(parentColumn || el, el);
                         el.addClass('error');
                         if (parentColumn) {
                             helpTextEl = angular.element('<small class="error">' + errorMsg + '</small>');
