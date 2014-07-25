@@ -1,3 +1,6 @@
+v1.0.10 - 25/07/2014
+Ensured culture files are loaded with lowercase culture codes.
+
 v1.0.9 - 21/07/2014
 Fixed error with the foundation5ElementModifier not removing the '.error' class from a nested input element.
 

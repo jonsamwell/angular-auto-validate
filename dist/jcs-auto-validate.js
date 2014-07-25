@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.8 - 2014-07-21
+ * angular-auto-validate - v1.0.10 - 2014-07-25
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -349,7 +349,7 @@
                     cultureRetrievalPromise,
 
                     loadRemoteCulture = function (culture) {
-                        cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture));
+                        cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture.toLowerCase()));
                         return cultureRetrievalPromise;
                     },
 

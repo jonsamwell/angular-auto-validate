@@ -43,7 +43,7 @@
                     cultureRetrievalPromise,
 
                     loadRemoteCulture = function (culture) {
-                        cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture));
+                        cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture.toLowerCase()));
                         return cultureRetrievalPromise;
                     },
 

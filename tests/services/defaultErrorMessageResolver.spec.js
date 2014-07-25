@@ -188,6 +188,18 @@
                     $rootScope.$apply();
                 });
 
+                it('should call $http to load the culture file with the correct url by lower casing the culture code', function (done) {
+                    $httpBackend.expectGET('js/angular-auto-validate/dist/lang/jcs-auto-validate_en-es.json').respond(200, {});
+
+                    defaultErrorMessageResolver.setCulture('en-ES').then(function () {
+                        done();
+                    });
+
+                    $httpBackend.flush();
+
+                    $rootScope.$apply();
+                });
+
                 it('should return the error in the promise when the load of a remote culture file fails', function (done) {
                     $httpBackend.expectGET('js/angular-auto-validate/dist/lang/jcs-auto-validate_en-it.json').respond(404, {
                         data: 'some error'
