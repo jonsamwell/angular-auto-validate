@@ -46,6 +46,24 @@
                         return isValid;
                     },
 
+                    resetForm = function (frmElement) {
+                        angular.forEach(frmElement[0], function (ctrlElement) {
+                            var controller;
+                            ctrlElement = angular.element(ctrlElement);
+                            controller = ctrlElement.controller('ngModel');
+
+                            if (controller !== undefined) {
+                                if (ctrlElement[0].nodeName === 'FORM') {
+                                    // we probably have a sub form
+                                    resetForm(ctrlElement);
+                                } else {
+                                    //controller.$rollbackViewValue();
+                                    validator.makeDefault(ctrlElement);
+                                }
+                            }
+                        });
+                    },
+
                     validateForm = function (frmElement) {
                         var frmValid = true;
                         if (frmElement === undefined) {
@@ -73,7 +91,8 @@
 
                 return {
                     validateElement: validateElement,
-                    validateForm: validateForm
+                    validateForm: validateForm,
+                    resetForm: resetForm
                 };
             }
         ]);

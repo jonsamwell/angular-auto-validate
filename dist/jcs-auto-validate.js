@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.10 - 2014-07-25
+ * angular-auto-validate - v1.0.10 - 2014-07-27
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -147,6 +147,13 @@
                     this.getDomModifier(el).makeInvalid(el, errorMsg);
                 };
 
+                this.makeDefault = function (el) {
+                    var dm = this.getDomModifier(el);
+                    if (dm.makeDefault) {
+                        dm.makeDefault(el);
+                    }
+                };
+
                 this.$get = [
 
                     function () {
@@ -256,11 +263,27 @@
                         if (addValidationStateIcons) {
                             insertAfter(el, angular.element('<span class="glyphicon glyphicon-remove form-control-feedback"></span>'));
                         }
+                    },
+
+                    /**
+                     * @ngdoc function
+                     * @name bootstrap3ElementModifier#makeDefault
+                     * @methodOf bootstrap3ElementModifier
+                     *
+                     * @description
+                     * Makes an element appear in its default visual state by apply bootstrap 3 specific styles and child elements.
+                     *
+                     * @param {Element} el - The input control element that is the target of the validation.
+                     */
+                    makeDefault = function (el) {
+                        var frmGroupEl = findFormGroupElement(el);
+                        reset(frmGroupEl);
                     };
 
                 return {
                     makeValid: makeValid,
                     makeInvalid: makeInvalid,
+                    makeDefault: makeDefault,
                     enableValidationStateIcons: enableValidationStateIcons,
                     key: 'bs3'
                 };
@@ -545,11 +568,26 @@
                             helpTextEl = angular.element('<small class="error">' + errorMsg + '</small>');
                             parentColumn.append(helpTextEl);
                         }
+                    },
+
+                    /**
+                     * @ngdoc function
+                     * @name foundation5ElementModifier#makeDefault
+                     * @methodOf foundation5ElementModifier
+                     *
+                     * @description
+                     * Makes an element appear in its default visual state by apply foundation 5 specific styles and child elements.
+                     *
+                     * @param {Element} el - The input control element that is the target of the validation.
+                     */
+                    makeDefault = function (el) {
+                        makeValid(el);
                     };
 
                 return {
                     makeValid: makeValid,
                     makeInvalid: makeInvalid,
+                    makeDefault: makeDefault,
                     key: 'foundation5'
                 };
             }
@@ -604,6 +642,24 @@
                         return isValid;
                     },
 
+                    resetForm = function (frmElement) {
+                        angular.forEach(frmElement[0], function (ctrlElement) {
+                            var controller;
+                            ctrlElement = angular.element(ctrlElement);
+                            controller = ctrlElement.controller('ngModel');
+
+                            if (controller !== undefined) {
+                                if (ctrlElement[0].nodeName === 'FORM') {
+                                    // we probably have a sub form
+                                    resetForm(ctrlElement);
+                                } else {
+                                    //controller.$rollbackViewValue();
+                                    validator.makeDefault(ctrlElement);
+                                }
+                            }
+                        });
+                    },
+
                     validateForm = function (frmElement) {
                         var frmValid = true;
                         if (frmElement === undefined) {
@@ -631,7 +687,8 @@
 
                 return {
                     validateElement: validateElement,
-                    validateForm: validateForm
+                    validateForm: validateForm,
+                    resetForm: resetForm
                 };
             }
         ]);

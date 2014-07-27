@@ -137,6 +137,13 @@
                     this.getDomModifier(el).makeInvalid(el, errorMsg);
                 };
 
+                this.makeDefault = function (el) {
+                    var dm = this.getDomModifier(el);
+                    if (dm.makeDefault) {
+                        dm.makeDefault(el);
+                    }
+                };
+
                 this.$get = [
 
                     function () {

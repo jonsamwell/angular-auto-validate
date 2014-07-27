@@ -97,11 +97,27 @@
                         if (addValidationStateIcons) {
                             insertAfter(el, angular.element('<span class="glyphicon glyphicon-remove form-control-feedback"></span>'));
                         }
+                    },
+
+                    /**
+                     * @ngdoc function
+                     * @name bootstrap3ElementModifier#makeDefault
+                     * @methodOf bootstrap3ElementModifier
+                     *
+                     * @description
+                     * Makes an element appear in its default visual state by apply bootstrap 3 specific styles and child elements.
+                     *
+                     * @param {Element} el - The input control element that is the target of the validation.
+                     */
+                    makeDefault = function (el) {
+                        var frmGroupEl = findFormGroupElement(el);
+                        reset(frmGroupEl);
                     };
 
                 return {
                     makeValid: makeValid,
                     makeInvalid: makeInvalid,
+                    makeDefault: makeDefault,
                     enableValidationStateIcons: enableValidationStateIcons,
                     key: 'bs3'
                 };

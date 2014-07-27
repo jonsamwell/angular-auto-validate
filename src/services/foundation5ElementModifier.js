@@ -63,11 +63,26 @@
                             helpTextEl = angular.element('<small class="error">' + errorMsg + '</small>');
                             parentColumn.append(helpTextEl);
                         }
+                    },
+
+                    /**
+                     * @ngdoc function
+                     * @name foundation5ElementModifier#makeDefault
+                     * @methodOf foundation5ElementModifier
+                     *
+                     * @description
+                     * Makes an element appear in its default visual state by apply foundation 5 specific styles and child elements.
+                     *
+                     * @param {Element} el - The input control element that is the target of the validation.
+                     */
+                    makeDefault = function (el) {
+                        makeValid(el);
                     };
 
                 return {
                     makeValid: makeValid,
                     makeInvalid: makeInvalid,
+                    makeDefault: makeDefault,
                     key: 'foundation5'
                 };
             }
