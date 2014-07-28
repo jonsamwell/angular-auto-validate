@@ -7,11 +7,13 @@
             return {
                 restrict: 'E',
                 link: function (scope, el) {
-                    var unbind = el.on('reset', function () {
+                    el.on('reset', function () {
                         validationManager.resetForm(el);
                     });
 
-                    scope.$on('$destroy', unbind);
+                    scope.$on('$destroy', function () {
+                        el.off('reset');
+                    });
                 }
             };
         }

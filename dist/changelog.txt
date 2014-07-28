@@ -1,3 +1,6 @@
+v1.0.12 - 28/07/2014
+Fixed bug with unbind reset listen on the formReset directive.
+
 v1.0.11 - 28/07/2014
 Added functionality to reset a form and remove all validation styling.
 

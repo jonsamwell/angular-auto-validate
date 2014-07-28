@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.11 - 2014-07-28
+ * angular-auto-validate - v1.0.12 - 2014-07-28
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -703,11 +703,13 @@
             return {
                 restrict: 'E',
                 link: function (scope, el) {
-                    var unbind = el.on('reset', function () {
+                    el.on('reset', function () {
                         validationManager.resetForm(el);
                     });
 
-                    scope.$on('$destroy', unbind);
+                    scope.$on('$destroy', function () {
+                        el.off('reset');
+                    });
                 }
             };
         }
