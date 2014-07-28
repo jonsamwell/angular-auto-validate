@@ -1,3 +1,11 @@
+v1.0.13 - 28/07/2014
+When the form is reset the $setPristine is called on the controls associated ngModel controller to ensure validation isn't fired
+again and makes performs validation again.
+Added the ability to globally enable/disable valid and invalid element styling.
+
+v1.0.12 - 28/07/2014
+Fixed bug with unbind reset listen on the formReset directive.
+
 v1.0.11 - 28/07/2014
 Added functionality to reset a form and remove all validation styling.
 

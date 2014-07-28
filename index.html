@@ -143,6 +143,21 @@
 
             <pre><code class="language-markup">&lt;button type=&quot;reset&quot;&gt;Reset&lt;/button&gt;</code></pre>
 
+            <br/>
+
+            <h4>Enable / Disable Visual Styling</h4>
+            <p>If you want to globally disable visual styling of elements you can call the below methods on the validator provider.  You might for instance
+            not want valid elements styled.  By default elements will be styled in all validation states.</p>
+
+            <pre><code class="language-javascript">angular.module('my-app')
+            .run([
+                'validator',
+                function (validator) {
+                    validator.setValidElementStyling(false);
+                    validator.setInvalidElementStyling(false);
+            }]);</code></pre>
+
+
             <h3 id="ngmodeloptions">NgModelOptions Support</h3>
             <p>
                 By default AngularJS triggers validation on change, while this is great for illustrating the power of Angular
@@ -367,11 +382,27 @@ angular.module('my-app')
             */
             makeInvalid = function (el, errorMsg) {
             // do some code here...
+            },
+
+
+            /**
+            * @ngdoc function
+            * @name myCustomElementModifier#makeDefault
+            * @methodOf myCustomElementModifier
+            *
+            * @description
+            * Makes an element appear in its default visual state.
+            *
+            * @param {Element} el - The input control element that is the target of the validation.
+            */
+            makeDefault = function (el) {
+                // return the element to a default visual state i.e. before any form of validation was applied
             };
 
             return {
                 makeValid: makeValid,
                 makeInvalid: makeInvalid,
+                makeDefault: makeDefault,
                 key: 'myCustomModifierKey'
             };
         }

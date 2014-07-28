@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.11 - 2014-07-28
+ * angular-auto-validate - v1.0.13 - 2014-07-28
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -15,7 +15,9 @@
         .provider('validator', [
 
             function () {
-                var elementStateModifiers = {};
+                var elementStateModifiers = {},
+                    enableValidElementStyling = true,
+                    enableInvalidElementStyling = true;
 
                 /**
                  * @ngdoc function
@@ -127,6 +129,35 @@
                     return this.errorMessageResolver(errorKey, el);
                 };
 
+                /**
+                 * @ngdoc function
+                 * @name validator#setValidElementStyling
+                 * @methodOf validator
+                 *
+                 * @description
+                 * Globally enables valid element visual styling.  This is enabled by default.
+                 *
+                 * @param {Boolean} enabled True to enable style otherwise false.
+                 */
+                this.setValidElementStyling = function (enabled) {
+                    enableValidElementStyling = enabled;
+                };
+
+
+                /**
+                 * @ngdoc function
+                 * @name validator#setInvalidElementStyling
+                 * @methodOf validator
+                 *
+                 * @description
+                 * Globally enables invalid element visual styling.  This is enabled by default.
+                 *
+                 * @param {Boolean} enabled True to enable style otherwise false.
+                 */
+                this.setInvalidElementStyling = function (enabled) {
+                    enableInvalidElementStyling = enabled;
+                };
+
                 this.getDomModifier = function (el) {
                     var modifierKey = (el !== undefined ? el.attr('element-modifier') : this.defaultElementModifier) ||
                         (el !== undefined ? el.attr('data-element-modifier') : this.defaultElementModifier) ||
@@ -140,11 +171,15 @@
                 };
 
                 this.makeValid = function (el) {
-                    this.getDomModifier(el).makeValid(el);
+                    if (enableValidElementStyling === true) {
+                        this.getDomModifier(el).makeValid(el);
+                    }
                 };
 
                 this.makeInvalid = function (el, errorMsg) {
-                    this.getDomModifier(el).makeInvalid(el, errorMsg);
+                    if (enableInvalidElementStyling === true) {
+                        this.getDomModifier(el).makeInvalid(el, errorMsg);
+                    }
                 };
 
                 this.makeDefault = function (el) {
@@ -653,7 +688,7 @@
                                     // we probably have a sub form
                                     resetForm(ctrlElement);
                                 } else {
-                                    //controller.$rollbackViewValue();
+                                    controller.$setPristine();
                                     validator.makeDefault(ctrlElement);
                                 }
                             }
@@ -703,11 +738,13 @@
             return {
                 restrict: 'E',
                 link: function (scope, el) {
-                    var unbind = el.on('reset', function () {
+                    el.on('reset', function () {
                         validationManager.resetForm(el);
                     });
 
-                    scope.$on('$destroy', unbind);
+                    scope.$on('$destroy', function () {
+                        el.off('reset');
+                    });
                 }
             };
         }
