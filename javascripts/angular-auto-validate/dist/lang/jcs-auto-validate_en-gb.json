@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Please add error message for {0}",
+    "email": "Please enter a valid email address",
+    "minlength": "Please enter at least {0} characters",
+    "maxlength": "You have entered more than the maximum {0} characters",
+    "min": "Please enter the minimum number of {0}",
+    "max": "Please enter the maximum number of {0}",
+    "required": "This field is required",
+    "date": "Please enter a valid date",
+    "pattern": "Please ensure the entered information adheres to this pattern {0}",
+    "number": "Please enter a valid number",
+    "url": "Please enter a valid URL in the format of http(s)://wwww.google.com"
+}

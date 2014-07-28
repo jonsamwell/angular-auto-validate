@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Veuillez ajouter un message d'erreur pour {0}",
+    "email": "Veuillez saisir une adresse email valide",
+    "minlength": "Veuillez saisir au moins {0} caractères",
+    "maxlength": "Vous avez dépassé la limite de {0} caractères",
+    "min": "Veuillez saisir un nombre supérieur à {0}",
+    "max": "Veuillez saisir un nombre inférieur à {0}",
+    "required": "Ce champ est obligatoire",
+    "date": "Veuillez saisir une date valide",
+    "pattern": "Veuillez vous assurer que les informations saisies correspondent au format {0}",
+    "number": "Veuillez saisir un nombre valide",
+    "url": "Veuillez saisir une URL valide sous la forme http(s)://wwww.google.com"
+}

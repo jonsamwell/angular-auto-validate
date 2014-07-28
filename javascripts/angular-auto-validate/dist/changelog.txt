@@ -1,0 +1,26 @@
+v1.0.11 - 28/07/2014
+Added functionality to reset a form and remove all validation styling.
+
+v1.0.10 - 25/07/2014
+Ensured culture files are loaded with lowercase culture codes.
+
+v1.0.9 - 21/07/2014
+Fixed error with the foundation5ElementModifier not removing the '.error' class from a nested input element.
+
+v1.0.8 - 20/07/2014
+Fixed typo errors in docs and removed un-needed bower components
+
+v1.0.7 - 20/07/2014
+Update i18n resource retrieval path to match the bower installed path.
+
+v1.0.6 - 20/07/2014
+Added i18n to defaultMessageResolver and updated the docs.
+Added fr-FR.json language file - it you can translate PR the repo with a new language file (or email me) thanks!
+Fixed problem with the bootstrap3ElementModifier appending the error message and error icon in the wrong place if the form was a .form-horizontal.
+
+v1.0.5 - 16/07/2014
+Changed the bootstrap3ElementModifier to add a class of '.help-block' to the error message element instead of '.help-text'.
+
+v1.0.4 - 10/07/2014
+Fixed error with ngModelDecorator that meant it would not work in Angular1.3+.
+

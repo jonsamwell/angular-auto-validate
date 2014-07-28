@@ -141,7 +141,7 @@
             <p>Auto-Validate automatically hooks into your form reset and clears all the validation error states from the input controls.  To enable this
             simply add a button of type reset within your form element (just like you would a submit button).</p>
 
-            <pre><code class="language-markup">&lt;button type=&quot;reset&quot; &gt;Reset&lt;/button&gt;</code></pre>
+            <pre><code class="language-markup">&lt;button type=&quot;reset&quot;&gt;Reset&lt;/button&gt;</code></pre>
 
             <h3 id="ngmodeloptions">NgModelOptions Support</h3>
             <p>
@@ -514,11 +514,27 @@ angular.module('my-app')
                             makeInvalid = function (el, errorMsg) {
                                 el.removeClass('bg-green');
                                 el.addClass('bg-red');
+                            },
+
+                            /**
+                             * @ngdoc function
+                             * @name myCustomElementModifier#makeDefault
+                             * @methodOf myCustomElementModifier
+                             *
+                             * @description
+                             * Makes an element appear in it default state.
+                             *
+                             * @param {Element} el - The input control element that is the target of the validation.
+                             */
+                            makeDefault = function (el) {
+                                el.removeClass('bg-green');
+                                el.removeClass('bg-red');
                             };
 
                     return {
                         makeValid: makeValid,
                         makeInvalid: makeInvalid,
+                        makeDefault: makeDefault,
                         key: 'myCustomModifierKey'
                     };
                 }
