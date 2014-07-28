@@ -163,6 +163,12 @@
                     validator.makeValid(angular.element('<input type="text"/>'));
                     expect(makeValidInvocationCount).to.equal(1);
                 });
+
+                it('should not call makeValid on the dom modifier if enableValidElementStyling is false', function () {
+                    validator.setValidElementStyling(false);
+                    validator.makeValid(angular.element('<input type="text"/>'));
+                    expect(makeValidInvocationCount).to.equal(0);
+                });
             });
 
             describe('makeInvalid', function () {
@@ -185,9 +191,15 @@
                     makeInvalidInvocationCount = 0;
                 });
 
-                it('should call makeValid on the dom modifier once', function () {
+                it('should call makeInvalid on the dom modifier once', function () {
                     validator.makeInvalid(angular.element('<input type="text"/>'));
                     expect(makeInvalidInvocationCount).to.equal(1);
+                });
+
+                it('should not call makeInvalid on the dom modifier if enableInvalidElementStyling is false', function () {
+                    validator.setInvalidElementStyling(false);
+                    validator.makeInvalid(angular.element('<input type="text"/>'));
+                    expect(makeInvalidInvocationCount).to.equal(0);
                 });
             });
 
