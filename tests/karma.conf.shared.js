@@ -79,6 +79,7 @@ shared.files = [
     'src/services/foundation5ElementModifier.js',
     'src/services/debounce.js',
     'src/services/validationManager.js',
+    'src/directives/formReset.js',
     'src/providers/validator.js',
     'src/config/ngModelDecorator.js',
     'src/config/ngSubmitDecorator.js',

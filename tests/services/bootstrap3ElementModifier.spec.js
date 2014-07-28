@@ -21,34 +21,24 @@
                 expect(bootstrap3ElementModifier).to.not.equal(undefined);
             });
 
-            describe('makeValid', function () {
-                it('should remove the .has-error class and add the .has-success and .has-feedback classes', function () {
-                    var element = angular.element('<div class="form-group has-error"><input type="text"/></div>');
+            describe('makeDefault', function () {
+                it('should remove the .has-error class, .has-success and .has-feedback classes', function () {
+                    var element = angular.element('<div class="form-group has-error has-success has-feedback"><input type="text"/></div>');
 
-                    bootstrap3ElementModifier.makeValid(element);
+                    bootstrap3ElementModifier.makeDefault(element);
 
                     expect(element.hasClass('has-error')).to.equal(false);
-                    expect(element.hasClass('has-success')).to.equal(true);
-                    expect(element.hasClass('has-feedback')).to.equal(true);
-                });
-
-                it('should add an OK icon when property "addValidationStateIcons" is true', function () {
-                    var element = angular.element('<div class="form-group"><div class="col-sm-10">' +
-                        '<input id="el1" type="email" class="form-control" required="required" ng-model="model.email"></div></div>');
-                    bootstrap3ElementModifier.enableValidationStateIcons(true);
-
-                    bootstrap3ElementModifier.makeValid(element.find('#el1'));
-
-                    expect(element.find('.glyphicon.glyphicon-ok.form-control-feedback').length).to.equal(1);
+                    expect(element.hasClass('has-success')).to.equal(false);
+                    expect(element.hasClass('has-feedback')).to.equal(false);
                 });
 
                 it('should remove the .error-msg element', function () {
                     var element = angular.element('<div class="form-group"><div class="col-sm-10">' +
-                        '<input id="el2" type="email" class="form-control" required="required" ng-model="model.email"><span class="help-block error-msg">help text</span></div></div>');
+                        '<input id="el9" type="email" class="form-control" required="required" ng-model="model.email"><span class="help-block error-msg">help text</span></div></div>');
                     bootstrap3ElementModifier.enableValidationStateIcons(true);
 
 
-                    bootstrap3ElementModifier.makeValid(element.find('#el2'));
+                    bootstrap3ElementModifier.makeDefault(element.find('#el9'));
 
                     expect(element.find('.help-block').length).to.equal(0);
                 });
@@ -83,6 +73,39 @@
                     bootstrap3ElementModifier.makeInvalid(element.find('#el4'));
 
                     expect(element.find('.help-block').length).to.equal(1);
+                });
+            });
+
+            describe('makeValid', function () {
+                it('should remove the .has-error class and add the .has-success and .has-feedback classes', function () {
+                    var element = angular.element('<div class="form-group has-error"><input type="text"/></div>');
+
+                    bootstrap3ElementModifier.makeValid(element);
+
+                    expect(element.hasClass('has-error')).to.equal(false);
+                    expect(element.hasClass('has-success')).to.equal(true);
+                    expect(element.hasClass('has-feedback')).to.equal(true);
+                });
+
+                it('should add an OK icon when property "addValidationStateIcons" is true', function () {
+                    var element = angular.element('<div class="form-group"><div class="col-sm-10">' +
+                        '<input id="el1" type="email" class="form-control" required="required" ng-model="model.email"></div></div>');
+                    bootstrap3ElementModifier.enableValidationStateIcons(true);
+
+                    bootstrap3ElementModifier.makeValid(element.find('#el1'));
+
+                    expect(element.find('.glyphicon.glyphicon-ok.form-control-feedback').length).to.equal(1);
+                });
+
+                it('should remove the .error-msg element', function () {
+                    var element = angular.element('<div class="form-group"><div class="col-sm-10">' +
+                        '<input id="el2" type="email" class="form-control" required="required" ng-model="model.email"><span class="help-block error-msg">help text</span></div></div>');
+                    bootstrap3ElementModifier.enableValidationStateIcons(true);
+
+
+                    bootstrap3ElementModifier.makeValid(element.find('#el2'));
+
+                    expect(element.find('.help-block').length).to.equal(0);
                 });
             });
         });

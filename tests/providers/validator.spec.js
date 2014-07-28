@@ -190,6 +190,33 @@
                     expect(makeInvalidInvocationCount).to.equal(1);
                 });
             });
+
+            describe('makeDefault', function () {
+                var bs3 = 'bs3',
+                    makeDefaultInvocationCount = 0,
+                    domModifier = {
+                        makeValid: angular.noop,
+                        makeInvalid: angular.noop,
+                        makeDefault: function () {
+                            makeDefaultInvocationCount += 1;
+                        },
+                        name: bs3
+                    };
+
+                beforeEach(function () {
+                    validator.registerDomModifier(bs3, domModifier);
+                    validator.setDefaultElementModifier(bs3);
+                });
+
+                afterEach(function () {
+                    makeDefaultInvocationCount = 0;
+                });
+
+                it('should call makeDefault on the dom modifier once', function () {
+                    validator.makeDefault(angular.element('<input type="text"/>'));
+                    expect(makeDefaultInvocationCount).to.equal(1);
+                });
+            });
         });
     });
 }(angular, sinon));

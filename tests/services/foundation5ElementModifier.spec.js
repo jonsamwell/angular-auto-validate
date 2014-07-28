@@ -21,6 +21,33 @@
                 expect(foundation5ElementModifier).to.not.equal(undefined);
             });
 
+            describe('makeDefault', function () {
+                /**
+                 * Foundation allows the .error class to be on either the element or the parent .column element.
+                 */
+
+                it('should remove the error class from the input', function () {
+                    var element = angular.element('<input type="text" class="error"/>');
+                    foundation5ElementModifier.makeDefault(element);
+
+                    expect(element.hasClass('error')).to.equal(false);
+                });
+
+                it('should remove the error class from the parent element with .columns class', function () {
+                    var element = angular.element('<div class="columns error"><input type="text" /></div>');
+                    foundation5ElementModifier.makeDefault(element);
+
+                    expect(element.hasClass('error')).to.equal(false);
+                });
+
+                it('should remove the small.error element from the parent element with .columns class', function () {
+                    var element = angular.element('<div class="columns error"><input type="text" /><small class="error">error text</small></div>');
+                    foundation5ElementModifier.makeDefault(element);
+
+                    expect(element.find('small.error').length).to.equal(0);
+                });
+            });
+
             describe('makeValid', function () {
                 /**
                  * Foundation allows the .error class to be on either the element or the parent .column element.

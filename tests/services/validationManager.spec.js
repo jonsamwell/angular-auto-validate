@@ -190,6 +190,44 @@
                     expect(validator.makeInvalid.calledOnce).to.equal(true);
                 });
             });
+
+            describe('resetForm', function () {
+                it('should call validator.makeDefault for every input type element in the form', function () {
+                    var frm = compileElement('<form name="frm1"></form>'),
+                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />'),
+                        inpt2 = compileElement('<input type="text" ng-model="lastname" ng-maxlength="2" />');
+
+                    sandbox.stub(validator, 'makeDefault');
+
+                    frm.append(inpt);
+                    frm.append(inpt2);
+                    $rootScope.$apply();
+
+                    validationManager.resetForm(frm);
+
+                    $rootScope.$apply();
+
+                    expect(validator.makeDefault.calledTwice).to.equal(true);
+                });
+
+                it('should call validator makeDefault once when a single form input element is invalid in a child ng-form', function () {
+                    var frm = compileElement('<form name="frm1"></form>'),
+                        ngFrm = compileElement('<ng-form name="childFrm"></ng-form>'),
+                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />');
+
+                    sandbox.stub(validator, 'makeDefault');
+
+                    ngFrm.append(inpt);
+                    frm.append(ngFrm);
+                    $rootScope.$apply();
+
+                    validationManager.resetForm(frm);
+
+                    $rootScope.$apply();
+
+                    expect(validator.makeDefault.calledOnce).to.equal(true);
+                });
+            });
         });
     });
 }(angular, sinon));

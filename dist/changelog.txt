@@ -1,3 +1,6 @@
+v1.0.11 - 28/07/2014
+Added functionality to reset a form and remove all validation styling.
+
 v1.0.10 - 25/07/2014
 Ensured culture files are loaded with lowercase culture codes.
 
