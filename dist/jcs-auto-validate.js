@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.12 - 2014-07-28
+ * angular-auto-validate - v1.0.13 - 2014-07-28
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -653,7 +653,7 @@
                                     // we probably have a sub form
                                     resetForm(ctrlElement);
                                 } else {
-                                    //controller.$rollbackViewValue();
+                                    controller.$setPristine();
                                     validator.makeDefault(ctrlElement);
                                 }
                             }

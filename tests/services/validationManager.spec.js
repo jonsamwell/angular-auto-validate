@@ -227,6 +227,29 @@
 
                     expect(validator.makeDefault.calledOnce).to.equal(true);
                 });
+
+                it('should set the model controller of the input element to pristine', function () {
+                    var frm = compileElement('<form name="frm1"></form>'),
+                        ngFrm = compileElement('<ng-form name="childFrm"></ng-form>'),
+                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />'),
+                        inptNgModelController = inpt.controller('ngModel');
+
+                    sandbox.stub(validator, 'makeDefault');
+
+                    ngFrm.append(inpt);
+                    frm.append(ngFrm);
+                    $rootScope.$apply();
+
+                    inptNgModelController.$setViewValue('123');
+                    $rootScope.$apply();
+                    expect(inptNgModelController.$pristine).to.equal(false);
+
+                    validationManager.resetForm(frm);
+
+                    $rootScope.$apply();
+
+                    expect(inptNgModelController.$pristine).to.equal(true);
+                });
             });
         });
     });

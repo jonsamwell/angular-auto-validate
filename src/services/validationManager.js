@@ -57,7 +57,7 @@
                                     // we probably have a sub form
                                     resetForm(ctrlElement);
                                 } else {
-                                    //controller.$rollbackViewValue();
+                                    controller.$setPristine();
                                     validator.makeDefault(ctrlElement);
                                 }
                             }

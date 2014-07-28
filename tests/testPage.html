@@ -51,45 +51,20 @@
         </div>
     </div>
 
-
-
-    <div class="form-group">
-        <label class="col-sm-1 control-label">Email</label>
-        <div class="col-sm-10">
-            <input type="email" class="form-control" required="required" ng-model="model.email">
-        </div>
-    </div>
-
-    <div class="row" ng-controller="demoCtrl">
+    <div class="row">
         <div class="col-sm-12">
-            <form class="form-horizontal" role="form" novalidate="novalidate" ng-submit="submit();">
-                <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-1 control-label">Email</label>
-                    <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="Email" required="required" ng-model="model.email">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" id="inputPassword3" placeholder="Password" required="required" ng-minlength="6" ng-model="model.password">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-1 col-sm-10">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> Remember me
-                            </label>
+            <div ng-controller="demoCtrl as vm">
+                {{vm.form}}
+                <form class="form-horizontal" name="formResetTest" no-validate>
+                    <div class="form-group">
+                        <label class="control-label col-lg-2" for="foo">Foo</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" type="text" name="foo" ng-model="vm.form.foo" required>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-1 col-sm-10">
-                        <button type="submit" class="btn btn-default">Sign in</button>
-                    </div>
-                </div>
-            </form>
+                    <button type="button" reset="vm.form">Reset</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -195,6 +170,34 @@
                 };
             }
         ]);
+
+        app.directive('reset', function ($timeout, validationManager) {
+            return {
+                scope: {
+                    formData: '=reset'
+                },
+                link: function (scope, element) {
+                    var initialFormData = angular.copy(scope.formData);
+                    var formElement = element;
+                    for (var i = 0; i <= 5; i += 1) {
+                        if (formElement !== undefined && formElement[0].tagName.toLowerCase() === 'form') {
+                            break;
+                        } else if (formElement !== undefined) {
+                            formElement = formElement.parent();
+                        }
+                    }
+
+                    element.on('click', function () {
+                        scope.formData = angular.copy(initialFormData);
+                        scope.$apply();
+                        //validationManager.resetForm(formElement);
+                        $timeout(function () {
+                            validationManager.resetForm(formElement);
+                        });
+                    });
+                }
+            }
+        });
 
         // now register the custom element modifier with the auto-validate module and set it as the default one for all elements
         app.run([
