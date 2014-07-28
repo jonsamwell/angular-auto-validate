@@ -73,7 +73,8 @@
                            mustcontainword="angular"/>
                 </div>
 
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="reset" class="btn btn-default">Reset</button>
             </form>
         </div>
 
@@ -135,6 +136,12 @@
     &lt;/div&gt;
 &lt;/form&gt;
 </code></pre>
+
+            <h4>Form Resetting</h4>
+            <p>Auto-Validate automatically hooks into your form reset and clears all the validation error states from the input controls.  To enable this
+            simply add a button of type reset within your form element (just like you would a submit button).</p>
+
+            <pre><code class="language-markup">&lt;button type=&quot;reset&quot; &gt;Reset&lt;/button&gt;</code></pre>
 
             <h3 id="ngmodeloptions">NgModelOptions Support</h3>
             <p>
