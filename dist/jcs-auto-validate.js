@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.13 - 2014-07-31
+ * angular-auto-validate - v1.0.14 - 2014-07-31
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
