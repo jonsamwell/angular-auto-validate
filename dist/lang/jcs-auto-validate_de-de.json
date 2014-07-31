@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Bitte eine Fehlermeldung für {0} hinzufügen.",
+    "email": "Bitte eine gültige EMail-Adresse eingeben.",
+    "minlength": "Bitte mindestens {0} Zeichen eingeben.",
+    "maxlength": "Es wurden mehr Zeichen als zulässig eingegeben (maximal {0}).",
+    "min": "Bitte eine Zahl von mindestens {0} eingeben.",
+    "max": "Bitte eine Zahl von maximal {0} eingeben.",
+    "required": "Hier wird eine Eigabe erwartet.",
+    "date": "Bitte ein gültiges Datum eingeben.",
+    "pattern": "Die Eingabe sollte diesem Muster entsprechen: {0}",
+    "number": "Bitte eine gültige Zahl eingeben.",
+    "url": "Bitte eine gültige URL in diesem Format eingeben: http(s)://wwww.google.com"
+}

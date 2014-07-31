@@ -30,6 +30,7 @@
 
                                 return errorTypeToReturn;
                             };
+
                         if (modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
                             if (isValid) {
