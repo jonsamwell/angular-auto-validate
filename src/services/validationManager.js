@@ -47,10 +47,14 @@
                         return isValid;
                     },
 
+                    resetElement = function (element) {
+                        validator.makeDefault(element);
+                    },
+
                     resetForm = function (frmElement) {
-                        angular.forEach(frmElement[0], function (ctrlElement) {
-                            var controller;
-                            ctrlElement = angular.element(ctrlElement);
+                        angular.forEach(frmElement[0], function (element) {
+                            var controller,
+                                ctrlElement = angular.element(element);
                             controller = ctrlElement.controller('ngModel');
 
                             if (controller !== undefined) {
@@ -59,7 +63,6 @@
                                     resetForm(ctrlElement);
                                 } else {
                                     controller.$setPristine();
-                                    validator.makeDefault(ctrlElement);
                                 }
                             }
                         });
@@ -93,6 +96,7 @@
                 return {
                     validateElement: validateElement,
                     validateForm: validateForm,
+                    resetElement: resetElement,
                     resetForm: resetForm
                 };
             }

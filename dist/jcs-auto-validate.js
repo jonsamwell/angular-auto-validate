@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.14 - 2014-07-31
+ * angular-auto-validate - v1.0.15 - 2014-08-02
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -678,10 +678,14 @@
                         return isValid;
                     },
 
+                    resetElement = function (element) {
+                        validator.makeDefault(element);
+                    },
+
                     resetForm = function (frmElement) {
-                        angular.forEach(frmElement[0], function (ctrlElement) {
-                            var controller;
-                            ctrlElement = angular.element(ctrlElement);
+                        angular.forEach(frmElement[0], function (element) {
+                            var controller,
+                                ctrlElement = angular.element(element);
                             controller = ctrlElement.controller('ngModel');
 
                             if (controller !== undefined) {
@@ -690,7 +694,6 @@
                                     resetForm(ctrlElement);
                                 } else {
                                     controller.$setPristine();
-                                    validator.makeDefault(ctrlElement);
                                 }
                             }
                         });
@@ -724,6 +727,7 @@
                 return {
                     validateElement: validateElement,
                     validateForm: validateForm,
+                    resetElement: resetElement,
                     resetForm: resetForm
                 };
             }
@@ -804,6 +808,7 @@
                                 supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
+                                setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
@@ -829,6 +834,12 @@
                                         element.off(ngModelOptions.updateOn);
                                     });
                                 }
+
+                                // We override this so
+                                ngModelCtrl.$setPristine = function () {
+                                    setPristine.call(ngModelCtrl);
+                                    validationManager.resetElement(element);
+                                };
 
                                 ngModelCtrl.autoValidated = true;
                             }

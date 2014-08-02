@@ -1,3 +1,6 @@
+v1.0.15 - 02/08/2014
+When $setPristine() is called on a ngModel controller this now returns the element to its default visual state.
+
 v1.0.14 - 31/07/2014
 Added German culture file contributed by https://github.com/miseeger
 

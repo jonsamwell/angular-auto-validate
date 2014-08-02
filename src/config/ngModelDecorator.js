@@ -17,6 +17,7 @@
                                 supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
+                                setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
@@ -42,6 +43,12 @@
                                         element.off(ngModelOptions.updateOn);
                                     });
                                 }
+
+                                // We override this so
+                                ngModelCtrl.$setPristine = function () {
+                                    setPristine.call(ngModelCtrl);
+                                    validationManager.resetElement(element);
+                                };
 
                                 ngModelCtrl.autoValidated = true;
                             }

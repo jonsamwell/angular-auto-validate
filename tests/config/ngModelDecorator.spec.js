@@ -120,6 +120,20 @@
                 // How do I mock out the off method of the element?
                 //expect(element.off.calledOnce).to.equal(true);
             });
+
+            describe('$setPristine', function () {
+                it('should override the default $setPristine function and when invoked should call the default method and the validationManager resetElement method', function () {
+                    var ngModelController;
+
+                    sandbox.stub(validationManager, 'resetElement');
+                    compileElement('<input ng-model="model" data-ng-model-options="{updateOn: \'blur\'}" />');
+
+                    ngModelController = element.controller('ngModel');
+                    ngModelController.$setPristine();
+
+                    expect(validationManager.resetElement.calledOnce).to.equal(true);
+                });
+            });
         });
     });
 }(angular, sinon));

@@ -251,6 +251,22 @@
                     expect(inptNgModelController.$pristine).to.equal(true);
                 });
             });
+
+            describe('resetElement', function () {
+                it('should call validator.makeDefault with the given element', function () {
+                    var inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />');
+
+                    sandbox.stub(validator, 'makeDefault');
+
+                    $rootScope.$apply();
+
+                    validationManager.resetElement(inpt);
+
+                    $rootScope.$apply();
+
+                    expect(validator.makeDefault.calledOnce).to.equal(true);
+                });
+            });
         });
     });
 }(angular, sinon));
