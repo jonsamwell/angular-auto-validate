@@ -4,10 +4,11 @@
     angular.module('jcs-autoValidate').config(['$provide',
         function ($provide) {
             $provide.decorator('ngModelDirective', [
+                '$timeout',
                 '$delegate',
                 'validationManager',
                 'debounce',
-                function ($delegate, validationManager, debounce) {
+                function ($timeout, $delegate, validationManager, debounce) {
                     var directive = $delegate[0],
                         link = directive.link;
 

@@ -286,11 +286,33 @@
                     $rootScope.$apply();
                 });
 
-                it('should replace parameters in error message it element is passed has ng-* attribute of errorType', function (done) {
+                it('should replace parameters in error message if element is passed has ng-* attribute of errorType', function (done) {
                     var errorType = 'minlength',
                         element = angular.element('<input type="text" ng-minlength="2" />');
                     defaultErrorMessageResolver.resolve(errorType, element).then(function (msg) {
                         expect(msg).to.equal('Please enter at least 2 characters');
+                        done();
+                    });
+
+                    $rootScope.$apply();
+                });
+
+                it('should return an overridden error message type if the attribute is present on the element and contains the correct key', function (done) {
+                    var errorType = 'minlength',
+                        element = angular.element('<input type="text" data-ng-minlength="2" ng-minlength-err-type="required" />');
+                    defaultErrorMessageResolver.resolve(errorType, element).then(function (msg) {
+                        expect(msg).to.equal('This field is required');
+                        done();
+                    });
+
+                    $rootScope.$apply();
+                });
+
+                it('should replace parameters in error message if element is is overriding the error message type and using a parameter for the overridden errorType', function (done) {
+                    var errorType = 'minlength',
+                        element = angular.element('<input type="text" ng-minlength="3" ng-minlength-err-type="max"/>');
+                    defaultErrorMessageResolver.resolve(errorType, element).then(function (msg) {
+                        expect(msg).to.equal('Please enter the maximum number of 3');
                         done();
                     });
 

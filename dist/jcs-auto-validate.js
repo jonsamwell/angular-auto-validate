@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.15 - 2014-08-02
+ * angular-auto-validate - v1.0.16 - 2014-08-06
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -479,6 +479,22 @@
                         return defer.promise;
                     },
 
+                    getMessageTypeOverride = function (errorType, el) {
+                        var overrideKey;
+
+                        if (el) {
+                            // try and find an attribute which overrides the given error type in the form of errorType-err-type="someMsgKey"
+                            errorType += '-err-type';
+
+                            overrideKey = el.attr(errorType);
+                            if (overrideKey === undefined) {
+                                overrideKey = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                            }
+                        }
+
+                        return overrideKey;
+                    },
+
                     /**
                      * @ngdoc function
                      * @name defaultErrorMessageResolver#resolve
@@ -495,7 +511,8 @@
                         var defer = $q.defer(),
                             errMsg,
                             parameters = [],
-                            parameter;
+                            parameter,
+                            messageTypeOverride;
 
                         if (cultureRetrievalPromise !== undefined) {
                             cultureRetrievalPromise.then(function () {
@@ -505,6 +522,11 @@
                             });
                         } else {
                             errMsg = angular.autoValidate.errorMessages[currentCulture][errorType];
+                            messageTypeOverride = getMessageTypeOverride(errorType, el);
+                            if (messageTypeOverride) {
+                                errMsg = angular.autoValidate.errorMessages[currentCulture][messageTypeOverride];
+                            }
+
                             if (errMsg === undefined) {
                                 errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
                             }
@@ -795,10 +817,11 @@
     angular.module('jcs-autoValidate').config(['$provide',
         function ($provide) {
             $provide.decorator('ngModelDirective', [
+                '$timeout',
                 '$delegate',
                 'validationManager',
                 'debounce',
-                function ($delegate, validationManager, debounce) {
+                function ($timeout, $delegate, validationManager, debounce) {
                     var directive = $delegate[0],
                         link = directive.link;
 

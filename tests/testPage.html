@@ -15,7 +15,7 @@
             <form role="form" novalidate="novalidate" ng-submit="submit();">
                 <div class="form-group">
                     <label class="control-label">Name</label>
-                    <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required"/>
+                    <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required" ng-required-err-type="nameRequired"/>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Email address - <small>Element with a custom element modifier (see source code)</small></label>
@@ -28,6 +28,10 @@
                 <div class="form-group">
                     <label class="control-label">Robot Test: Please spell Angular. - <small>Custom validation</small></label>
                     <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.iq" mustcontainword="angular"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Regex Pattern Only Letters</label>
+                    <input type="text" class="form-control" placeholder="Enter Only Letters..." ng-model="user.letters" ng-pattern="/[a-zA-Z]/"/>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Is User Active?
@@ -53,18 +57,40 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <div ng-controller="demoCtrl as vm">
-                {{vm.form}}
-                <form class="form-horizontal" name="formResetTest" no-validate>
+            <h1>Not Required</h1>
+                <form name="signupFrm" novalidate="novalidate" class="form-horizontal" ng-submit="signin()">
                     <div class="form-group">
-                        <label class="control-label col-lg-2" for="foo">Foo</label>
-                        <div class="col-lg-10">
-                            <input class="form-control" type="text" name="foo" ng-model="vm.form.foo" required>
+                        <label for="inputName" class="col-sm-2 control-label">Username:</label>
+                        <div class="col-sm-10">
+                            <input id="inputName" class="form-control" name="username"
+                                   ng-model="model.username"
+                                   ng-model-options="{updateOn: 'blur'}"
+                                   ng-minlength="3"
+                                   ng-maxlength="10"
+                                    />
                         </div>
                     </div>
-                    <button type="button" reset="vm.form">Reset</button>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Password:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="password"
+                                   type="password"
+                                   ng-model="model.password"
+                                   ng-model-options="{updateOn: 'blur'}"
+                                   ng-minlength="3"
+                                   ng-maxlength="10"
+                                   required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default">Sign in</button>
+                        </div>
+                    </div>
                 </form>
-            </div>
+
+                <span>Result :</span>{{result}}
+
         </div>
     </div>
 
@@ -171,34 +197,6 @@
             }
         ]);
 
-        app.directive('reset', function ($timeout, validationManager) {
-            return {
-                scope: {
-                    formData: '=reset'
-                },
-                link: function (scope, element) {
-                    var initialFormData = angular.copy(scope.formData);
-                    var formElement = element;
-                    for (var i = 0; i <= 5; i += 1) {
-                        if (formElement !== undefined && formElement[0].tagName.toLowerCase() === 'form') {
-                            break;
-                        } else if (formElement !== undefined) {
-                            formElement = formElement.parent();
-                        }
-                    }
-
-                    element.on('click', function () {
-                        scope.formData = angular.copy(initialFormData);
-                        scope.$apply();
-                        //validationManager.resetForm(formElement);
-                        $timeout(function () {
-                            validationManager.resetForm(formElement);
-                        });
-                    });
-                }
-            }
-        });
-
         // now register the custom element modifier with the auto-validate module and set it as the default one for all elements
         app.run([
             'validator',
@@ -207,9 +205,12 @@
             function (validator, myCustomElementModifier, defaultErrorMessageResolver) {
                 validator.registerDomModifier(myCustomElementModifier.key, myCustomElementModifier);
                 defaultErrorMessageResolver.setI18nFileRootPath('../src/lang/');
-                defaultErrorMessageResolver.setCulture('fr-FR');
+                defaultErrorMessageResolver.setCulture('en-gb');
+
                 defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                    errorMessages['pattern'] = 'Custom Error Message {0}';
                     errorMessages['mustcontainword'] = 'Please enter the word "{0}"';
+                    errorMessages['nameRequired'] = 'Please enter your name';
                 });
             }
         ]);
