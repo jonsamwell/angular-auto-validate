@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.13 - 2014-07-28
+ * angular-auto-validate - v1.0.16 - 2014-08-06
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell;*/
 (function (angular) {
@@ -479,6 +479,22 @@
                         return defer.promise;
                     },
 
+                    getMessageTypeOverride = function (errorType, el) {
+                        var overrideKey;
+
+                        if (el) {
+                            // try and find an attribute which overrides the given error type in the form of errorType-err-type="someMsgKey"
+                            errorType += '-err-type';
+
+                            overrideKey = el.attr(errorType);
+                            if (overrideKey === undefined) {
+                                overrideKey = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                            }
+                        }
+
+                        return overrideKey;
+                    },
+
                     /**
                      * @ngdoc function
                      * @name defaultErrorMessageResolver#resolve
@@ -495,7 +511,8 @@
                         var defer = $q.defer(),
                             errMsg,
                             parameters = [],
-                            parameter;
+                            parameter,
+                            messageTypeOverride;
 
                         if (cultureRetrievalPromise !== undefined) {
                             cultureRetrievalPromise.then(function () {
@@ -505,6 +522,11 @@
                             });
                         } else {
                             errMsg = angular.autoValidate.errorMessages[currentCulture][errorType];
+                            messageTypeOverride = getMessageTypeOverride(errorType, el);
+                            if (messageTypeOverride) {
+                                errMsg = angular.autoValidate.errorMessages[currentCulture][messageTypeOverride];
+                            }
+
                             if (errMsg === undefined) {
                                 errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
                             }
@@ -661,6 +683,7 @@
 
                                 return errorTypeToReturn;
                             };
+
                         if (modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
                             if (isValid) {
@@ -677,10 +700,14 @@
                         return isValid;
                     },
 
+                    resetElement = function (element) {
+                        validator.makeDefault(element);
+                    },
+
                     resetForm = function (frmElement) {
-                        angular.forEach(frmElement[0], function (ctrlElement) {
-                            var controller;
-                            ctrlElement = angular.element(ctrlElement);
+                        angular.forEach(frmElement[0], function (element) {
+                            var controller,
+                                ctrlElement = angular.element(element);
                             controller = ctrlElement.controller('ngModel');
 
                             if (controller !== undefined) {
@@ -689,7 +716,6 @@
                                     resetForm(ctrlElement);
                                 } else {
                                     controller.$setPristine();
-                                    validator.makeDefault(ctrlElement);
                                 }
                             }
                         });
@@ -723,6 +749,7 @@
                 return {
                     validateElement: validateElement,
                     validateForm: validateForm,
+                    resetElement: resetElement,
                     resetForm: resetForm
                 };
             }
@@ -790,10 +817,11 @@
     angular.module('jcs-autoValidate').config(['$provide',
         function ($provide) {
             $provide.decorator('ngModelDirective', [
+                '$timeout',
                 '$delegate',
                 'validationManager',
                 'debounce',
-                function ($delegate, validationManager, debounce) {
+                function ($timeout, $delegate, validationManager, debounce) {
                     var directive = $delegate[0],
                         link = directive.link;
 
@@ -803,6 +831,7 @@
                                 supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
+                                setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
@@ -828,6 +857,12 @@
                                         element.off(ngModelOptions.updateOn);
                                     });
                                 }
+
+                                // We override this so
+                                ngModelCtrl.$setPristine = function () {
+                                    setPristine.call(ngModelCtrl);
+                                    validationManager.resetElement(element);
+                                };
 
                                 ngModelCtrl.autoValidated = true;
                             }
