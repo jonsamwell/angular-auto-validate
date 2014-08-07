@@ -63,7 +63,7 @@
                            placeholder="Password"
                            required="required"
                            ng-minlength="6"
-                           ng-model-options="{updateOn: 'blur'}">
+                           ng-model-options="{updateOn: 'blur'}"/>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Robot Test: Please spell Angular. - <small>Custom validation</small></label>
@@ -147,7 +147,7 @@
 
             <br/>
 
-            <h4>Enable / Disable Visual Styling</h4>
+            <h4 id="enabl-disable-styling">Enable / Disable Visual Styling</h4>
             <p>If you want to globally disable visual styling of elements you can call the below methods on the validator provider.  You might for instance
             not want valid elements styled.  By default elements will be styled in all validation states.</p>
 
@@ -159,18 +159,38 @@
                     validator.setInvalidElementStyling(false);
             }]);</code></pre>
 
+            <br>
+
+            <p>You can disable visual validation states at an element level as well by adding the attributes <code>disable-valid-styling="true"</code>
+            to disable the valid state element styling and <code>disable-invalid-styling="true"</code> to disable the invalid state visual styling.</p>
+
+            <pre><code class="language-markup">&lt;!-- auto-validate will not style the element when it is in a valid state --&gt;
+            &lt;input type=&quot;text&quot;
+                ng-model=&quot;model.firstname&quot;
+                required
+                disbale-valid-styling="true"/&gt;
+
+            &lt;!-- auto-validate will not style the element when it is in an invalid state --&gt;
+            &lt;input type=&quot;text&quot;
+                ng-model=&quot;model.surname&quot;
+                ng-minlength="2"
+                disable-invalid-styling="true"/&gt;
+            </code></pre>
+
+            <br>
+
             <h4 id="overriding_error_message">Overriding Error Messages</h4>
             <p>By default this module ships with error messages for all the supported validation types in angular.  However, if any default error message is
                 not quite what you want for a particular element you can override the errorType that is used for a particular validation type by
                 adding the attribute <code>*-err-type="errorTypeKey"</code> where '*' is the validation type you want to override to the specific element you want changed.</p>
 <pre><code class="language-markup">&lt;!-- auto-validate will try and find a error message with a key of 'firstNameRequired' --&gt;
-    &lt;input type=&quot;text&quot;
+&lt;input type=&quot;text&quot;
     ng-model=&quot;model.firstname&quot;
     required
     required-err-type="firstNameRequired"/&gt;
 
-    &lt;!-- auto-validate will try and find a error message with a key of 'surnameMinLength' --&gt;
-    &lt;input type=&quot;text&quot;
+&lt;!-- auto-validate will try and find a error message with a key of 'surnameMinLength' --&gt;
+&lt;input type=&quot;text&quot;
     ng-model=&quot;model.surname&quot;
     ng-minlength="2"
     ng-minlength-err-type="surnameMinLength"/&gt;
