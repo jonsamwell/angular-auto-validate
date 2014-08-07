@@ -208,12 +208,16 @@
                 this.makeValid = function (el) {
                     if (validElementStylingEnabled(el)) {
                         this.getDomModifier(el).makeValid(el);
+                    } else {
+                        this.makeDefault(el);
                     }
                 };
 
                 this.makeInvalid = function (el, errorMsg) {
                     if (invalidElementStylingEnabled(el)) {
                         this.getDomModifier(el).makeInvalid(el, errorMsg);
+                    } else {
+                        this.makeDefault(el);
                     }
                 };
 
