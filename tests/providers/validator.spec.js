@@ -175,6 +175,13 @@
                     expect(makeValidInvocationCount).to.equal(0);
                 });
 
+                it('should call makeDefault on the dom modifier if the element has disabled valid element styling', function () {
+                    sandbox.stub(validator, 'makeDefault');
+                    validator.makeValid(angular.element('<input type="text" disable-valid-styling="true"/>'));
+
+                    expect(validator.makeDefault.calledOnce).to.equal(true);
+                });
+
                 it('should call makeValid on the dom modifier if the element has not disabled valid element styling', function () {
                     validator.makeValid(angular.element('<input type="text" disable-valid-styling="false"/>'));
                     expect(makeValidInvocationCount).to.equal(1);
@@ -215,6 +222,13 @@
                 it('should not call makeInvalid on the dom modifier if the element has disabled invalid element styling', function () {
                     validator.makeInvalid(angular.element('<input type="text" disable-invalid-styling="true"/>'));
                     expect(makeInvalidInvocationCount).to.equal(0);
+                });
+
+                it('should call makeDefault on the dom modifier if the element has disabled invalid element styling', function () {
+                    sandbox.stub(validator, 'makeDefault');
+                    validator.makeInvalid(angular.element('<input type="text" disable-invalid-styling="true"/>'));
+
+                    expect(validator.makeDefault.calledOnce).to.equal(true);
                 });
 
                 it('should call makeInvalid on the dom modifier if the element has not disabled invalid element styling', function () {

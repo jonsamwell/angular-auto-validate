@@ -42,6 +42,11 @@
                     <input type="text" class="form-control" placeholder="Enter The Word Angular" ng-model="user.noValidation" />
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label">Valid Styling disabled</label>
+                    <input type="text" class="form-control" required ng-model="user.someProperty" disable-invalid-styling="true" />
+                </div>
+
                 <ng-form name="childForm">
                     <div class="form-group">
                         <label class="control-label">Nickname</label>
