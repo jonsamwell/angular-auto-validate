@@ -1,3 +1,6 @@
+v1.0.17 - 07/08/2014
+Added the ability to disable visual styling of an element in valid and invalid states at an element level.
+
 v1.0.16 - 06/08/2014
 Added the ability to override the error message type for an error message type to allow for custom error messages.
 

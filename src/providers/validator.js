@@ -7,7 +7,41 @@
             function () {
                 var elementStateModifiers = {},
                     enableValidElementStyling = true,
-                    enableInvalidElementStyling = true;
+                    enableInvalidElementStyling = true,
+
+                    toBoolean = function (value) {
+                        var v;
+                        if (value && value.length !== 0) {
+                            v = value.toLowerCase();
+                            value = !(v === 'f' || v === '0' || v === 'false');
+                        } else {
+                            value = false;
+                        }
+
+                        return value;
+                    },
+
+                    getAttributeValue = function (el, attrName) {
+                        var val;
+
+                        if (el !== undefined) {
+                            val = el.attr(attrName) || el.attr('data-' + attrName);
+                        }
+
+                        return val;
+                    },
+
+                    getBooleanAttributeValue = function (el, attrName) {
+                        return toBoolean(getAttributeValue(el, attrName));
+                    },
+
+                    validElementStylingEnabled = function (el) {
+                        return enableValidElementStyling && !getBooleanAttributeValue(el, 'disable-valid-styling');
+                    },
+
+                    invalidElementStylingEnabled = function (el) {
+                        return enableInvalidElementStyling && !getBooleanAttributeValue(el, 'disable-invalid-styling');
+                    };
 
                 /**
                  * @ngdoc function
@@ -161,13 +195,13 @@
                 };
 
                 this.makeValid = function (el) {
-                    if (enableValidElementStyling === true) {
+                    if (validElementStylingEnabled(el)) {
                         this.getDomModifier(el).makeValid(el);
                     }
                 };
 
                 this.makeInvalid = function (el, errorMsg) {
-                    if (enableInvalidElementStyling === true) {
+                    if (invalidElementStylingEnabled(el)) {
                         this.getDomModifier(el).makeInvalid(el, errorMsg);
                     }
                 };

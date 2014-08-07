@@ -132,7 +132,8 @@
                     banner: '/*\n * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
                         '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
                         ' * <%= pkg.homepage %>\n' +
-                        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;*/\n'
+                        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (http://www.jonsamwell.com)\n' +
+                        ' */\n'
                 },
                 dist: {
                     files: {
@@ -146,7 +147,8 @@
                     banner: '/*\n * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
                         '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
                         ' * <%= pkg.homepage %>\n' +
-                        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;*/\n'
+                        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (http://www.jonsamwell.com)\n' +
+                        ' */\n'
                 },
                 dist: {
                     src: ['src/jcs-auto-validate.js',
