@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html ng-app="plunker">
+
+<head>
+    <meta charset="utf-8" />
+    <title>AngularJS Plunker</title>
+    <script>document.write('<base href="' + document.location + '" />');</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.css" />
+</head>
+
+<body ng-controller="MainCtrl">
+<br>
+<br>
+<br>
+<br>
+<form ng-submit="submit()" novalidate="novalidate" name="abc">
+
+    <div class="row">
+        <div class="col-md-9">
+            <p class="input-group">
+                <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="selectedDate" is-open="startTimeOpened" close-text="Close" bs-datepicker disadble-valid-styling="true" required />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="$event.preventDefault(); $event.stopPropagation(); startTimeOpened=true;">
+                        <i class="fa fa-calendar"></i>
+                    </button>
+                </span>
+            </p>
+        </div>
+    </div>
+</form>
+
+
+
+<script src="https://code.angularjs.org/1.2.9/angular.js"></script>
+<script src="https://code.angularjs.org/1.2.9/angular-animate.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-strap/2.0.0/angular-strap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-strap/2.0.0/angular-strap.tpl.min.js"></script>
+
+
+<script type="text/javascript" src="../src/jcs-auto-validate.js"></script>
+<script type="text/javascript" src="../src/providers/validator.js"></script>
+<script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>
+<script type="text/javascript" src="../src/services/debounce.js"></script>
+<script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>
+<script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>
+<script type="text/javascript" src="../src/services/validationManager.js"></script>
+<script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
+<script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
+<script type="text/javascript" src="../src/directives/formReset.js"></script>
+<script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
+
+<script type="text/javascript">
+    (function (angular) {
+        var app = angular.module('plunker', ['ngAnimate', 'mgcrea.ngStrap', 'jcs-autoValidate']);
+
+        app.controller('MainCtrl', function($scope) {
+
+            $scope.tooltip = {
+                "title": "Hello Tooltip<br />This is a multiline message!",
+                "checked": false
+            };
+
+            $scope.startTimeOpened = true;
+            $scope.startTime = new Date();
+
+            $scope.selectedDate = "2014-08-07T19:22:13.872Z"; // <- [object Date]
+            $scope.selectedDateAsNumber = 509414400000; // <- [object Number]
+            $scope.fromDate; // <- [object Undefined]
+            $scope.untilDate; // <- [object Undefined]
+        });
+
+
+        // now register the custom element modifier with the auto-validate module and set it as the default one for all elements
+        app.run([
+            'defaultErrorMessageResolver',
+                'bootstrap3ElementModifier',
+            function (defaultErrorMessageResolver, bootstrap3ElementModifier) {
+                bootstrap3ElementModifier.enableValidationStateIcons(true);
+                defaultErrorMessageResolver.setI18nFileRootPath('../src/lang/');
+                defaultErrorMessageResolver.setCulture('en-gb');
+            }
+        ]);
+    }(angular));
+</script>
+
+</body>
+
+</html>

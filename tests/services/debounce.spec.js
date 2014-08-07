@@ -11,7 +11,7 @@
                 sandbox = sinon.sandbox.create();
                 $rootScope = $injector.get('$rootScope');
                 $timeout = $injector.get('$timeout');
-                debounce = $injector.get('debounce');
+                debounce = $injector.get('jcs-debounce');
             }));
 
             afterEach(function () {

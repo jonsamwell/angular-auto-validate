@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.17 - 2014-08-07
+ * angular-auto-validate - v1.0.18 - 2014-08-07
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -371,7 +371,7 @@
     /*
      * Taken from https://github.com/angular/angular.js/issues/2690#issue-14462164 (with added tests of course!)
      */
-    angular.module('jcs-autoValidate').factory('debounce', [
+    angular.module('jcs-autoValidate').factory('jcs-debounce', [
         '$timeout',
         function ($timeout) {
             var debounce = function (fn, timeout, apply) {
@@ -859,7 +859,7 @@
                 '$timeout',
                 '$delegate',
                 'validationManager',
-                'debounce',
+                'jcs-debounce',
                 function ($timeout, $delegate, validationManager, debounce) {
                     var directive = $delegate[0],
                         link = directive.link;

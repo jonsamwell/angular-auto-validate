@@ -7,7 +7,7 @@
                 '$timeout',
                 '$delegate',
                 'validationManager',
-                'debounce',
+                'jcs-debounce',
                 function ($timeout, $delegate, validationManager, debounce) {
                     var directive = $delegate[0],
                         link = directive.link;

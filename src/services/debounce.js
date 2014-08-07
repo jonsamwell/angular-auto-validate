@@ -4,7 +4,7 @@
     /*
      * Taken from https://github.com/angular/angular.js/issues/2690#issue-14462164 (with added tests of course!)
      */
-    angular.module('jcs-autoValidate').factory('debounce', [
+    angular.module('jcs-autoValidate').factory('jcs-debounce', [
         '$timeout',
         function ($timeout) {
             var debounce = function (fn, timeout, apply) {

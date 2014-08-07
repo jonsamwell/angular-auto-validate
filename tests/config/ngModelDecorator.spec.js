@@ -30,7 +30,7 @@
                 $rootScope = $injector.get('$rootScope');
                 $compile = $injector.get('$compile');
                 $q = $injector.get('$q');
-                debounce = $injector.get('debounce');
+                debounce = $injector.get('jcs-debounce');
                 validationManager = $injector.get('validationManager');
 
                 debounceStub = sandbox.stub();
