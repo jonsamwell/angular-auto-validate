@@ -178,6 +178,38 @@
                 }
             }]);
 
+        app.directive('uniqueIdChecker', [
+            '$http',
+            function($http) {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function(scope, elm, attrs, ctrl) {
+                        var validateFn = function (viewValue) {
+                            $http.get('https://myapp.com/validator-checks/unique-id/' + viewValue).then(function () {
+                                ctrl.$setValidity('nonUniqueId', true);
+                            }, function () {
+                                ctrl.$setValidity('nonUniqueId', false);
+                            });
+
+                            return viewValue;
+                        };
+
+                        ctrl.$parsers.push(validateFn);
+                        ctrl.$formatters.push(validateFn);
+                    }
+                }
+            }]);
+
+        app.run([
+            'defaultErrorMessageResolver',
+            function (defaultErrorMessageResolver) {
+                defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                    errorMessages['nonUniqueId'] = 'This id is already taken plus choose another';
+                });
+            }
+        ]);
+
         app.factory('myCustomElementModifier', [
             function () {
                 var /**

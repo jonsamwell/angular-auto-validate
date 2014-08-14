@@ -1,3 +1,7 @@
+v1.0.19 - 14/08/2014
+Fixed problem with a control inside a directive with a custom scope being validated in the validateForm method of the
+validation controller.  This was happening for button elements only.
+
 v1.0.18 - 07/08/2014
 Renamed the debounce service to jcs-debounce as it was conflicting a service with the same name in angular-strap v2.
 

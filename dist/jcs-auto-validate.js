@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.18 - 2014-08-07
+ * angular-auto-validate - v1.0.19 - 2014-08-14
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -771,8 +771,8 @@
                             ctrlElement = angular.element(ctrlElement);
                             controller = ctrlElement.controller('ngModel');
 
-                            if (controller !== undefined) {
-                                if (ctrlElement[0].nodeName === 'FORM') {
+                            if (controller !== undefined && ctrlElement[0].nodeName.toLowerCase() !== 'button') {
+                                if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                     // we probably have a sub form
                                     validateForm(ctrlElement);
                                 } else {

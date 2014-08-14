@@ -79,8 +79,8 @@
                             ctrlElement = angular.element(ctrlElement);
                             controller = ctrlElement.controller('ngModel');
 
-                            if (controller !== undefined) {
-                                if (ctrlElement[0].nodeName === 'FORM') {
+                            if (controller !== undefined && ctrlElement[0].nodeName.toLowerCase() !== 'button') {
+                                if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                     // we probably have a sub form
                                     validateForm(ctrlElement);
                                 } else {
