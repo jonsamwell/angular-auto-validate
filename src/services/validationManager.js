@@ -5,15 +5,20 @@
         .factory('validationManager', [
             'validator',
             function (validator) {
-                var
-                /**
-                 * @ngdoc validateElement
-                 * @name validation#validateElement
-                 * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
-                 * @param {Boolean} forceValidation if set to true forces the validation even if the element is pristine
-                 * @description
-                 * Validate the form element and make invalid/valid element model status.
-                 */
+                var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
+
+                    shouldValidateElement = function (el) {
+                        return el && el.length > 0 && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
+                    },
+
+                    /**
+                     * @ngdoc validateElement
+                     * @name validation#validateElement
+                     * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
+                     * @param {Boolean} forceValidation if set to true forces the validation even if the element is pristine
+                     * @description
+                     * Validate the form element and make invalid/valid element model status.
+                     */
                     validateElement = function (modelCtrl, el, forceValidation) {
                         var isValid = true,
                             needsValidation = modelCtrl.$pristine === false || forceValidation,
@@ -31,8 +36,9 @@
                                 return errorTypeToReturn;
                             };
 
-                        if (modelCtrl && needsValidation) {
+                        if (shouldValidateElement(el) && modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
+
                             if (isValid) {
                                 validator.makeValid(el);
                             } else {
@@ -58,7 +64,7 @@
                             controller = ctrlElement.controller('ngModel');
 
                             if (controller !== undefined) {
-                                if (ctrlElement[0].nodeName === 'FORM') {
+                                if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                     // we probably have a sub form
                                     resetForm(ctrlElement);
                                 } else {
@@ -79,7 +85,7 @@
                             ctrlElement = angular.element(ctrlElement);
                             controller = ctrlElement.controller('ngModel');
 
-                            if (controller !== undefined && ctrlElement[0].nodeName.toLowerCase() !== 'button') {
+                            if (controller !== undefined && shouldValidateElement(ctrlElement)) {
                                 if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                     // we probably have a sub form
                                     validateForm(ctrlElement);
