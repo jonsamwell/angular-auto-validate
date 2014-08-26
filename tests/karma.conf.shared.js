@@ -80,6 +80,7 @@ shared.files = [
     'src/services/debounce.js',
     'src/services/validationManager.js',
     'src/directives/formReset.js',
+    'src/directives/disableDynamicValidation.js',
     'src/providers/validator.js',
     'src/config/ngModelDecorator.js',
     'src/config/ngSubmitDecorator.js',

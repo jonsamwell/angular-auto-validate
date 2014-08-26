@@ -15,6 +15,7 @@
                     directive.compile = function () {
                         return function (scope, element, attrs, ctrls) {
                             var ngModelCtrl = ctrls[0],
+                                frmCtrl = ctrls[1],
                                 supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
@@ -29,7 +30,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined) {
+                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation !== true)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);

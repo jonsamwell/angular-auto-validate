@@ -12,7 +12,7 @@
             <p>
                 <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
             </p>
-            <form role="form" novalidate="novalidate" ng-submit="submit();">
+            <form role="form" novalidate="novalidate" ng-submit="submit();" disable-dynamic-validation>
                 <div class="form-group">
                     <label class="control-label">Name</label>
                     <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required" ng-required-err-type="nameRequired"/>
@@ -130,6 +130,7 @@
     <script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
     <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
     <script type="text/javascript" src="../src/directives/formReset.js"></script>
+    <script type="text/javascript" src="../src/directives/disableDynamicValidation.js"></script>
     <script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
 
     <script type="text/javascript">

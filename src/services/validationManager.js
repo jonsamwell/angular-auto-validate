@@ -36,7 +36,7 @@
                                 return errorTypeToReturn;
                             };
 
-                        if (shouldValidateElement(el) && modelCtrl && needsValidation) {
+                        if ((forceValidation || shouldValidateElement(el)) && modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
 
                             if (isValid) {
@@ -75,26 +75,44 @@
                     },
 
                     validateForm = function (frmElement) {
-                        var frmValid = true;
+                        var frmValid = true,
+                            processElement = function (ctrlElement, force) {
+                                var controller, isValid;
+                                ctrlElement = angular.element(ctrlElement);
+                                controller = ctrlElement.controller('ngModel');
+
+                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement))) {
+                                    if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
+                                        // we probably have a sub form
+                                        validateForm(ctrlElement);
+                                    } else {
+                                        isValid = validateElement(controller, ctrlElement, true);
+                                        frmValid = frmValid && isValid;
+                                    }
+                                }
+                            };
+
                         if (frmElement === undefined) {
                             return false;
                         }
 
                         angular.forEach(frmElement[0], function (ctrlElement) {
-                            var controller, isValid;
-                            ctrlElement = angular.element(ctrlElement);
-                            controller = ctrlElement.controller('ngModel');
-
-                            if (controller !== undefined && shouldValidateElement(ctrlElement)) {
-                                if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
-                                    // we probably have a sub form
-                                    validateForm(ctrlElement);
-                                } else {
-                                    isValid = validateElement(controller, ctrlElement, true);
-                                    frmValid = frmValid && isValid;
-                                }
-                            }
+                            processElement(ctrlElement);
                         });
+
+                        // If you have a custom form control that should be validated i.e.
+                        // <my-custom-element>...</my-custom-element> it will not be part of the forms
+                        // HTMLFormControlsCollection and thus won't be included in the above element iteration although
+                        // it will be on the Angular FormController (if it has a name attribute).  So adding the directive
+                        // register-custom-form-control="" to the control root and autoValidate will include it in this
+                        // iteration.
+                        if (frmElement[0].customHTMLFormControlsCollection) {
+                            angular.forEach(frmElement[0].customHTMLFormControlsCollection, function (ctrlElement) {
+                                // need to force the validation as the element might not be a known form input type
+                                // so the normal validation process will ignore it.
+                                processElement(ctrlElement, true);
+                            });
+                        }
 
                         return frmValid;
                     };

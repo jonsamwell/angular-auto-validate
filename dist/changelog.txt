@@ -1,3 +1,11 @@
+v1.1.20 - 20/08/2014
+Now following http://semver.org versions.  Added the concept of being able to register a custom form control so that it
+is included in the form validation process.  If you have a custom form control that should be validated i.e.
+<my-custom-element>...</my-custom-element> it will not be part of the forms HTMLFormControlsCollection and thus won't be
+included in the form submission element validation iteration although it will be on the Angular FormController (if it has a name attribute).
+So adding the directive register-custom-form-control="" to the control root and autoValidate will include it in the form
+(submission) validation process.
+
 v1.0.20 - 18/08/2014
 Resolve issue with child elements of directives with an isolated scope being validated when they are not user input controls.
 

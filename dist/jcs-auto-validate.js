@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.0.20 - 2014-08-18
+ * angular-auto-validate - v1.2.20 - 2014-08-26
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -728,7 +728,7 @@
                                 return errorTypeToReturn;
                             };
 
-                        if (shouldValidateElement(el) && modelCtrl && needsValidation) {
+                        if ((forceValidation || shouldValidateElement(el)) && modelCtrl && needsValidation) {
                             isValid = !modelCtrl.$invalid;
 
                             if (isValid) {
@@ -767,26 +767,44 @@
                     },
 
                     validateForm = function (frmElement) {
-                        var frmValid = true;
+                        var frmValid = true,
+                            processElement = function (ctrlElement, force) {
+                                var controller, isValid;
+                                ctrlElement = angular.element(ctrlElement);
+                                controller = ctrlElement.controller('ngModel');
+
+                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement))) {
+                                    if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
+                                        // we probably have a sub form
+                                        validateForm(ctrlElement);
+                                    } else {
+                                        isValid = validateElement(controller, ctrlElement, true);
+                                        frmValid = frmValid && isValid;
+                                    }
+                                }
+                            };
+
                         if (frmElement === undefined) {
                             return false;
                         }
 
                         angular.forEach(frmElement[0], function (ctrlElement) {
-                            var controller, isValid;
-                            ctrlElement = angular.element(ctrlElement);
-                            controller = ctrlElement.controller('ngModel');
-
-                            if (controller !== undefined && shouldValidateElement(ctrlElement)) {
-                                if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
-                                    // we probably have a sub form
-                                    validateForm(ctrlElement);
-                                } else {
-                                    isValid = validateElement(controller, ctrlElement, true);
-                                    frmValid = frmValid && isValid;
-                                }
-                            }
+                            processElement(ctrlElement);
                         });
+
+                        // If you have a custom form control that should be validated i.e.
+                        // <my-custom-element>...</my-custom-element> it will not be part of the forms
+                        // HTMLFormControlsCollection and thus won't be included in the above element iteration although
+                        // it will be on the Angular FormController (if it has a name attribute).  So adding the directive
+                        // register-custom-form-control="" to the control root and autoValidate will include it in this
+                        // iteration.
+                        if (frmElement[0].customHTMLFormControlsCollection) {
+                            angular.forEach(frmElement[0].customHTMLFormControlsCollection, function (ctrlElement) {
+                                // need to force the validation as the element might not be a known form input type
+                                // so the normal validation process will ignore it.
+                                processElement(ctrlElement, true);
+                            });
+                        }
 
                         return frmValid;
                     };
@@ -817,6 +835,60 @@
                     scope.$on('$destroy', function () {
                         el.off('reset');
                     });
+                }
+            };
+        }
+    ]);
+}(angular));
+
+(function (angular) {
+    'use strict';
+
+    angular.module('jcs-autoValidate').directive('registerCustomFormControl', [
+
+        function () {
+            var findParentForm = function (el) {
+                var parent = el;
+                for (var i = 0; i <= 10; i += 1) {
+                    if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
+                        break;
+                    } else if (parent !== undefined) {
+                        parent = angular.element(parent).parent()[0];
+                    }
+                }
+
+                return parent;
+            };
+
+            return {
+                restrict: 'A',
+                link: function (scope, element) {
+                    var frmEl = findParentForm(element.parent()[0]);
+                    if (frmEl) {
+                        frmEl.customHTMLFormControlsCollection = frmEl.customHTMLFormControlsCollection || [];
+                        frmEl.customHTMLFormControlsCollection.push(element[0]);
+                    }
+                }
+            };
+        }
+    ]);
+}(angular));
+
+(function (angular) {
+    'use strict';
+
+    angular.module('jcs-autoValidate').directive('disableDynamicValidation', [
+
+        function () {
+            return {
+                restrict: 'A',
+                require: 'form',
+                compile: function () {
+                    return {
+                        pre: function (scope, element, attrs, ctrl) {
+                            ctrl.disableDynamicValidation = true;
+                        }
+                    };
                 }
             };
         }
@@ -873,6 +945,7 @@
                     directive.compile = function () {
                         return function (scope, element, attrs, ctrls) {
                             var ngModelCtrl = ctrls[0],
+                                frmCtrl = ctrls[1],
                                 supportsNgModelOptions = angular.version.major >= 1 && angular.version.minor >= 3,
                                 ngModelOptions = attrs.ngModelOptions === undefined ? undefined : scope.$eval(attrs.ngModelOptions),
                                 setValidity = ngModelCtrl.$setValidity,
@@ -887,7 +960,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined) {
+                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation !== true)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);
