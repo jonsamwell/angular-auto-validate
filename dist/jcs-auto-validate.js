@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.2.20 - 2014-08-26
+ * angular-auto-validate - v1.2.20 - 2014-08-27
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -768,6 +768,7 @@
 
                     validateForm = function (frmElement) {
                         var frmValid = true,
+                            frmCtrl = frmElement ? angular.element(frmElement).controller('form') : undefined,
                             processElement = function (ctrlElement, force) {
                                 var controller, isValid;
                                 ctrlElement = angular.element(ctrlElement);
@@ -784,8 +785,12 @@
                                 }
                             };
 
-                        if (frmElement === undefined) {
-                            return false;
+                        if (frmElement === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation)) {
+                            if (frmCtrl) {
+                                console.log(frmCtrl.disableDynamicValidation);
+                            }
+
+                            return frmElement !== undefined;
                         }
 
                         angular.forEach(frmElement[0], function (ctrlElement) {

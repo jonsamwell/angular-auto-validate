@@ -1,3 +1,11 @@
+v1.3.20 - 27/08/2014
+Fixed issue when submitting a form - the ngSubmit handler ignored the form validation disable attribute disable-dynamic-validation
+and validated the form.
+
+v1.2.20 - 26/08/2014
+Added the ability to disable the modules validation for a whole form by adding the attribute disable-dynamic-validation
+on the form attribute.
+
 v1.1.20 - 20/08/2014
 Now following http://semver.org versions.  Added the concept of being able to register a custom form control so that it
 is included in the form validation process.  If you have a custom form control that should be validated i.e.

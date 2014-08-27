@@ -76,6 +76,7 @@
 
                     validateForm = function (frmElement) {
                         var frmValid = true,
+                            frmCtrl = frmElement ? angular.element(frmElement).controller('form') : undefined,
                             processElement = function (ctrlElement, force) {
                                 var controller, isValid;
                                 ctrlElement = angular.element(ctrlElement);
@@ -92,8 +93,8 @@
                                 }
                             };
 
-                        if (frmElement === undefined) {
-                            return false;
+                        if (frmElement === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation)) {
+                            return frmElement !== undefined;
                         }
 
                         angular.forEach(frmElement[0], function (ctrlElement) {

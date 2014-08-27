@@ -131,6 +131,13 @@
                     expect(result).to.equal(false);
                 });
 
+                it('should return true it the form controller is set to not auto validate the form', function () {
+                    var form = compileElement('<form role="form" novalidate="novalidate" ng-submit="submit();" disable-dynamic-validation><input ng-model="name" required /></form>'),
+                        result = validationManager.validateForm(form);
+
+                    expect(result).to.equal(true);
+                });
+
                 it('should call validator makeInvalid once when a single form input element is invalid', function () {
                     var frm = compileElement('<form name="frm1"></form>'),
                         inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />'),
@@ -142,6 +149,7 @@
 
                     defer.resolve('errorMsg');
                     isValid = validationManager.validateForm(frm);
+
 
                     $rootScope.$apply();
 
