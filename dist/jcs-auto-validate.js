@@ -248,7 +248,7 @@
                 var reset = function (el) {
                         angular.forEach(el.find('span'), function (spanEl) {
                             spanEl = angular.element(spanEl);
-                            if (spanEl.hasClass('error-msg') || spanEl.hasClass('form-control-feedback')) {
+                            if (spanEl.hasClass('error-msg') || spanEl.hasClass('form-control-feedback') || spanEl.hasClass('control-feedback')) {
                                 spanEl.remove();
                             }
                         });
@@ -341,7 +341,8 @@
                         if (addValidationStateIcons) {
                             var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
                             if (inputGroupEl.length > 0) {
-                                iconElText = '<span class="input-group-addon form-control-feedback">' + iconElText + '</span';
+                                iconElText = iconElText.replace('form-', '');
+                                iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
                             }
 
                             insertAfter(el, angular.element(iconElText));
@@ -370,7 +371,8 @@
                         if (addValidationStateIcons) {
                             var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
                             if (inputGroupEl.length > 0) {
-                                iconElText = '<span class="input-group-addon form-control-feedback">' + iconElText + '</span';
+                                iconElText = iconElText.replace('form-', '');
+                                iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
                             }
 
                             insertAfter(el, angular.element(iconElText));

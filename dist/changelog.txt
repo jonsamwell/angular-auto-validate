@@ -1,3 +1,6 @@
+v1.5.20 - 30/08/2014
+Added a fix for the bootstrap 3 element modifier not handling styling elements with input-group-addon elements - tweaked css.
+
 v1.4.20 - 30/08/2014
 Added a fix for the bootstrap 3 element modifier not handling styling elements with input-group-addon elements.
 
