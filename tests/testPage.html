@@ -8,15 +8,31 @@
 </head>
 <body>
     <div class="row" ng-controller="demoCtrl">
-        <div class="col-sm-12">
+        <div class="col-sm-8 col-sm-offset-1">
             <p>
                 <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
             </p>
-            <form role="form" novalidate="novalidate" ng-submit="submit();" disable-dynamic-validation>
+            <form role="form" name="testFrm" novalidate="novalidate" ng-submit="submit();" disable-dynamic-validationn>
+                <button type="button" class="btn btn-primary" ng-click="setExternalError(testFrm);">Set External Error On Firstname</button>
                 <div class="form-group">
                     <label class="control-label">Name</label>
-                    <input type="text" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required" ng-required-err-type="nameRequired"/>
+                    <input type="text" name="firstname" class="form-control" placeholder="Enter Name" ng-model="user.name" required="required" ng-required-err-type="nameRequired"/>
                 </div>
+
+                <div class="form-group">
+                    <label class="control-label">Name</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-envelope"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control"
+                               ng-model="user.email"
+                               placeholder="Enter email address"
+                               ng-required />
+
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="control-label">Email address - <small>Element with a custom element modifier (see source code)</small></label>
                     <input type="email" class="form-control" placeholder="Enter email" ng-model="user.email" required="required" element-modifier="myCustomModifierKey"/>
@@ -151,6 +167,10 @@
 
                 $scope.submit = function () {
                     alert('form submitted');
+                };
+
+                $scope.setExternalError = function (frm) {
+                    frm.setExternalValidation('firstname', undefined, 'hello joe');
                 };
 
                 $scope.toggleBS3Icons();

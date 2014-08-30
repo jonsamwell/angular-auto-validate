@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.2.20 - 2014-08-27
+ * angular-auto-validate - v1.4.20 - 2014-08-30
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -255,10 +255,10 @@
 
                         el.removeClass('has-success has-error has-feedback');
                     },
-                    findFormGroupElement = function (el) {
+                    findWithClassElementAsc = function (el, klass) {
                         var parent = el;
                         for (var i = 0; i <= 3; i += 1) {
-                            if (parent !== undefined && parent.hasClass('form-group')) {
+                            if (parent !== undefined && parent.hasClass(klass)) {
                                 break;
                             } else if (parent !== undefined) {
                                 parent = parent.parent();
@@ -266,6 +266,31 @@
                         }
 
                         return parent;
+                    },
+
+                    findWithClassElementDesc = function (el, klass) {
+                        var child;
+                        for (var i = 0; i < el.children.length; i += 1) {
+                            child = el.children[i];
+                            if (child !== undefined && angular.element(child).hasClass(klass)) {
+                                break;
+                            } else if (child.children !== undefined) {
+                                child = findWithClassElementDesc(child, klass);
+                                if (child.length > 0) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        return angular.element(child);
+                    },
+
+                    findFormGroupElement = function (el) {
+                        return findWithClassElementAsc(el, 'form-group');
+                    },
+
+                    findInputGroupElement = function (el) {
+                        return findWithClassElementDesc(el, 'input-group');
                     },
 
                     insertAfter = function (referenceNode, newNode) {
@@ -308,11 +333,18 @@
                      * @param {Element} el - The input control element that is the target of the validation.
                      */
                     makeValid = function (el) {
-                        var frmGroupEl = findFormGroupElement(el);
+                        var frmGroupEl = findFormGroupElement(el),
+                            inputGroupEl = findInputGroupElement(frmGroupEl[0]);
+
                         reset(frmGroupEl);
-                        frmGroupEl.addClass('has-success has-feedback');
+                        frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
                         if (addValidationStateIcons) {
-                            insertAfter(el, angular.element('<span class="glyphicon glyphicon-ok form-control-feedback"></span>'));
+                            var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
+                            if (inputGroupEl.length > 0) {
+                                iconElText = '<span class="input-group-addon form-control-feedback">' + iconElText + '</span';
+                            }
+
+                            insertAfter(el, angular.element(iconElText));
                         }
                     },
 
@@ -330,12 +362,18 @@
                      */
                     makeInvalid = function (el, errorMsg) {
                         var frmGroupEl = findFormGroupElement(el),
+                            inputGroupEl = findInputGroupElement(frmGroupEl[0]),
                             helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>');
-                        reset(frmGroupEl);
-                        frmGroupEl.addClass('has-error has-feedback');
-                        insertAfter(el, helpTextEl);
+                        reset(frmGroupEl, inputGroupEl);
+                        frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
+                        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : el, helpTextEl);
                         if (addValidationStateIcons) {
-                            insertAfter(el, angular.element('<span class="glyphicon glyphicon-remove form-control-feedback"></span>'));
+                            var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
+                            if (inputGroupEl.length > 0) {
+                                iconElText = '<span class="input-group-addon form-control-feedback">' + iconElText + '</span';
+                            }
+
+                            insertAfter(el, angular.element(iconElText));
                         }
                     },
 
@@ -786,10 +824,6 @@
                             };
 
                         if (frmElement === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation)) {
-                            if (frmCtrl) {
-                                console.log(frmCtrl.disableDynamicValidation);
-                            }
-
                             return frmElement !== undefined;
                         }
 
@@ -812,9 +846,20 @@
                         }
 
                         return frmValid;
+                    },
+
+                    setElementValidationError = function (element, errorMsgKey, errorMsg) {
+                        if (errorMsgKey) {
+                            validator.getErrorMessage(errorMsgKey, element).then(function (msg) {
+                                validator.makeInvalid(element, msg);
+                            });
+                        } else {
+                            validator.makeInvalid(element, errorMsg);
+                        }
                     };
 
                 return {
+                    setElementValidationError: setElementValidationError,
                     validateElement: validateElement,
                     validateForm: validateForm,
                     resetElement: resetElement,
@@ -981,7 +1026,7 @@
                                     });
                                 }
 
-                                // We override this so
+                                // We override this so we can reset the element state when it is called.
                                 ngModelCtrl.$setPristine = function () {
                                     setPristine.call(ngModelCtrl);
                                     validationManager.resetElement(element);
@@ -994,6 +1039,26 @@
                                 link.post.apply(this, arguments);
                             } else {
                                 link.apply(this, arguments);
+                            }
+
+                            ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
+                                if (addToModelErrors) {
+                                    ngModelCtrl.$errors[errorMsgKey] = false;
+                                }
+
+                                validationManager.setElementValidationError(element, errorMsgKey, errorMessage);
+                            };
+
+                            if (frmCtrl) {
+                                frmCtrl.setExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {
+                                    var success = false;
+                                    if (frmCtrl[modelProperty]) {
+                                        frmCtrl[modelProperty].setExternalValidation(errorMsgKey, errorMessageOverride, addToModelErrors);
+                                        success = true;
+                                    }
+
+                                    return success;
+                                };
                             }
                         };
                     };

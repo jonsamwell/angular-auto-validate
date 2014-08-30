@@ -116,9 +116,20 @@
                         }
 
                         return frmValid;
+                    },
+
+                    setElementValidationError = function (element, errorMsgKey, errorMsg) {
+                        if (errorMsgKey) {
+                            validator.getErrorMessage(errorMsgKey, element).then(function (msg) {
+                                validator.makeInvalid(element, msg);
+                            });
+                        } else {
+                            validator.makeInvalid(element, errorMsg);
+                        }
                     };
 
                 return {
+                    setElementValidationError: setElementValidationError,
                     validateElement: validateElement,
                     validateForm: validateForm,
                     resetElement: resetElement,

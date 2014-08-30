@@ -1,3 +1,6 @@
+v1.4.20 - 30/08/2014
+Added a fix for the bootstrap 3 element modifier not handling styling elements with input-group-addon elements.
+
 v1.3.20 - 27/08/2014
 Fixed issue when submitting a form - the ngSubmit handler ignored the form validation disable attribute disable-dynamic-validation
 and validated the form.

@@ -46,7 +46,7 @@
                                     });
                                 }
 
-                                // We override this so
+                                // We override this so we can reset the element state when it is called.
                                 ngModelCtrl.$setPristine = function () {
                                     setPristine.call(ngModelCtrl);
                                     validationManager.resetElement(element);
@@ -59,6 +59,26 @@
                                 link.post.apply(this, arguments);
                             } else {
                                 link.apply(this, arguments);
+                            }
+
+                            ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
+                                if (addToModelErrors) {
+                                    ngModelCtrl.$errors[errorMsgKey] = false;
+                                }
+
+                                validationManager.setElementValidationError(element, errorMsgKey, errorMessage);
+                            };
+
+                            if (frmCtrl) {
+                                frmCtrl.setExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {
+                                    var success = false;
+                                    if (frmCtrl[modelProperty]) {
+                                        frmCtrl[modelProperty].setExternalValidation(errorMsgKey, errorMessageOverride, addToModelErrors);
+                                        success = true;
+                                    }
+
+                                    return success;
+                                };
                             }
                         };
                     };
