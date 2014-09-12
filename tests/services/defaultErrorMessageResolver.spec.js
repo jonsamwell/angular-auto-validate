@@ -318,6 +318,48 @@
 
                     $rootScope.$apply();
                 });
+
+                it('should return the overridden errorType for a custom validation type', function (done) {
+                    var errorType = 'validator',
+                        errorMessage = 'Please ensure the password you entered match',
+                        element = angular.element('<input type="password" ng-model="vm.confirmPassword" validator-err-type="invalidPassword_Confirmation" />');
+
+                    console.log(element);
+
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        errorMessages.invalidPassword_Confirmation = errorMessage;
+
+                        defaultErrorMessageResolver.resolve(errorType, element).then(function (msg) {
+                            expect(msg).to.equal(errorMessage);
+                            done();
+                        });
+
+                        $rootScope.$apply();
+                    });
+
+                    $rootScope.$apply();
+                });
+
+                it('should return the overridden errorType for a custom validation type which has invalid quote characters', function (done) {
+                    var errorType = 'validator',
+                        errorMessage = 'Please ensure the password you entered match',
+                        element = angular.element('<input type="password" ng-model="vm.confirmPassword" validator-err-type=“invalidPasswordConfirmation“ />');
+
+                    console.log(element);
+
+                    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                        errorMessages.invalidPasswordConfirmation = errorMessage;
+
+                        defaultErrorMessageResolver.resolve(errorType, element).then(function (msg) {
+                            expect(msg).to.equal(errorMessage);
+                            done();
+                        });
+
+                        $rootScope.$apply();
+                    });
+
+                    $rootScope.$apply();
+                });
             });
         });
     });

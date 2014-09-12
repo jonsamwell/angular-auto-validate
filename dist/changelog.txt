@@ -1,3 +1,6 @@
+v1.6.20 - 12/09/2014
+ru-ru language file contributed.  Fixed issue with msg override attribute and double quoting if invalid quote characters are used.
+
 v1.5.20 - 30/08/2014
 Added a fix for the bootstrap 3 element modifier not handling styling elements with input-group-addon elements - tweaked css.
 

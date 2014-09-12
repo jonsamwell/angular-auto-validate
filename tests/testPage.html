@@ -165,8 +165,14 @@
                     bootstrap3ElementModifier.enableValidationStateIcons($scope.bs3Icons);
                 };
 
-                $scope.submit = function () {
-                    alert('form submitted');
+                $scope.submit = function (frmCtrl) {
+                    $http.post('https://api.app.com/users', $scope.user).then(function (response) {
+                        if (response.data.validationErrors) {
+                            angular.forEach(response.data.validationErrors, function (error) {
+                                frmCtrl.setExternalValidation(error.key, error.messageKey, error.message);
+                            })
+                        }
+                    });
                 };
 
                 $scope.setExternalError = function (frm) {

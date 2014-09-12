@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.4.20 - 2014-08-30
+ * angular-auto-validate - v1.4.20 - 2014-09-11
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -565,9 +565,14 @@
                             // try and find an attribute which overrides the given error type in the form of errorType-err-type="someMsgKey"
                             errorType += '-err-type';
 
+
                             overrideKey = el.attr(errorType);
                             if (overrideKey === undefined) {
                                 overrideKey = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                            }
+
+                            if (overrideKey) {
+                                overrideKey = overrideKey.replace(/[\W]/g, '');
                             }
                         }
 
