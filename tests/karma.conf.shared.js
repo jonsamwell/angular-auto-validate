@@ -69,7 +69,6 @@ shared.files = [
     // 3rd party libraries
     'bower_components/jQuery/dist/jquery.js',
     'bower_components/angular/angular.js',
-    'bower_components/lodash/dist/lodash.js',
     'tests/browserTrigger.js',
 
     // app libraries

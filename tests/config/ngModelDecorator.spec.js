@@ -1,6 +1,12 @@
 (function (angular, sinon) {
     'use strict';
 
+    /**
+     * Since Angular 1.3 SetValidity on the ngModelController is called 2-3 times
+     * because of the inclusion of async validators hence now the tests only assert the
+     * methods were called
+     */
+
     describe('ngModelDirective decorator', function () {
         var sandbox, $rootScope, $q, validationManager,
             element, $compile, debounce, debounceStub,
@@ -68,7 +74,7 @@
                 var ctrl = element.controller('ngModel');
                 ctrl.$setValidity('error', true);
 
-                expect(debounceStub.calledOnce).to.equal(true);
+                expect(debounceStub.called).to.equal(true);
             });
 
             it('should called debounced method when $setValidity invoked if ngModelOptions is not defined', function () {
@@ -76,7 +82,7 @@
                 var ctrl = element.controller('ngModel');
                 ctrl.$setValidity('error', false);
 
-                expect(debounceStub.calledOnce).to.equal(true);
+                expect(debounceStub.called).to.equal(true);
             });
 
             it('should called debounced method when $setValidity invoked if ngModelOptions is defined but updateOn is not defined', function () {
@@ -84,7 +90,7 @@
                 var ctrl = element.controller('ngModel');
                 ctrl.$setValidity('error', false);
 
-                expect(debounceStub.calledOnce).to.equal(true);
+                expect(debounceStub.called).to.equal(true);
             });
 
             it('should called debounced method when $setValidity invoked if ngModelOptions is defined but updateOn is not empty', function () {
@@ -92,7 +98,7 @@
                 var ctrl = element.controller('ngModel');
                 ctrl.$setValidity('error', false);
 
-                expect(debounceStub.calledOnce).to.equal(true);
+                expect(debounceStub.called).to.equal(true);
             });
 
             it('invoking the debounced method should call validateElement on the validationManager', function () {
@@ -138,6 +144,17 @@
                     ngModelController.$setPristine();
 
                     expect(validationManager.resetElement.calledOnce).to.equal(true);
+                });
+            });
+
+            describe('setExternalValidation', function () {
+                it('should be defined on the ngModelCtrl', function () {
+                    var ngModelController;
+
+                    compileElement('<input ng-model="model" />');
+                    ngModelController = element.controller('ngModel');
+
+                    expect(ngModelController.setExternalValidation).to.not.equal(undefined);
                 });
             });
         });

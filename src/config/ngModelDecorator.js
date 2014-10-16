@@ -10,9 +10,9 @@
                 'jcs-debounce',
                 function ($timeout, $delegate, validationManager, debounce) {
                     var directive = $delegate[0],
-                        link = directive.link;
+                        link = directive.link || directive.compile;
 
-                    directive.compile = function () {
+                    directive.compile = function (el) {
                         return function (scope, element, attrs, ctrls) {
                             var ngModelCtrl = ctrls[0],
                                 frmCtrl = ctrls[1],
@@ -24,6 +24,11 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
+                            // in the RC of 1.3 there is no directive.link only the directive.compile which
+                            // needs to be invoked to get at the link functions.
+                            if (angular.version.full === '1.3.0' && angular.isFunction(link)) {
+                                link = link(el);
+                            }
 
                             if (link.pre) {
                                 link.pre.apply(this, arguments);
