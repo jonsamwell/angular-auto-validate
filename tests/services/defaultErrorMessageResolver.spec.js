@@ -141,7 +141,7 @@
 
             describe('setCulture', function () {
                 afterEach(function () {
-                    $httpBackend.verifyNoOutstandingExpectation();
+                    //$httpBackend.verifyNoOutstandingExpectation();
                     $httpBackend.verifyNoOutstandingRequest();
                 });
 
@@ -324,8 +324,6 @@
                         errorMessage = 'Please ensure the password you entered match',
                         element = angular.element('<input type="password" ng-model="vm.confirmPassword" validator-err-type="invalidPassword_Confirmation" />');
 
-                    console.log(element);
-
                     defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
                         errorMessages.invalidPassword_Confirmation = errorMessage;
 
@@ -344,8 +342,6 @@
                     var errorType = 'validator',
                         errorMessage = 'Please ensure the password you entered match',
                         element = angular.element('<input type="password" ng-model="vm.confirmPassword" validator-err-type=“invalidPasswordConfirmation“ />');
-
-                    console.log(element);
 
                     defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
                         errorMessages.invalidPasswordConfirmation = errorMessage;
