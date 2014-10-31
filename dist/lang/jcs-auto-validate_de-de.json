@@ -5,7 +5,7 @@
     "maxlength": "Es wurden mehr Zeichen als zulässig eingegeben (maximal {0}).",
     "min": "Bitte eine Zahl von mindestens {0} eingeben.",
     "max": "Bitte eine Zahl von maximal {0} eingeben.",
-    "required": "Hier wird eine Eigabe erwartet.",
+    "required": "Hier wird eine Eingabe erwartet.",
     "date": "Bitte ein gültiges Datum eingeben.",
     "pattern": "Die Eingabe sollte diesem Muster entsprechen: {0}",
     "number": "Bitte eine gültige Zahl eingeben.",
