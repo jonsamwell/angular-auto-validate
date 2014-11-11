@@ -63,7 +63,7 @@
             });
 
             it('should not be autoValidated it the disable-dynamic-validation attribute is on the parent form', function () {
-                compileElement('<form disable-dynamic-validation><input ng-model="model" formnovalidate /></form>');
+                compileElement('<form disable-dynamic-validation="true"><input ng-model="model" formnovalidate /></form>');
                 var ctrl = angular.element(element.children()[0]).controller('ngModel');
                 expect(ctrl.autoValidated).to.equal(undefined);
             });

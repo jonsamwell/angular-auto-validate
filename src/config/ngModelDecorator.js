@@ -35,7 +35,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation !== true)) {
+                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);
@@ -68,10 +68,26 @@
 
                             ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
                                 if (addToModelErrors) {
-                                    ngModelCtrl.$errors[errorMsgKey] = false;
+                                    if (ngModelCtrl.$error) {
+                                        ngModelCtrl.$error[errorMsgKey] = false;
+                                    } else {
+                                        ngModelCtrl.$errors[errorMsgKey] = false;
+                                    }
                                 }
 
                                 validationManager.setElementValidationError(element, errorMsgKey, errorMessage);
+                            };
+
+                            ngModelCtrl.removeExternalValidation = function (errorMsgKey, addToModelErrors) {
+                                if (addToModelErrors) {
+                                    if (ngModelCtrl.$error) {
+                                        ngModelCtrl.$error[errorMsgKey] = true;
+                                    } else {
+                                        ngModelCtrl.$errors[errorMsgKey] = true;
+                                    }
+                                }
+
+                                validationManager.resetElement(element);
                             };
 
                             if (frmCtrl) {
@@ -79,6 +95,16 @@
                                     var success = false;
                                     if (frmCtrl[modelProperty]) {
                                         frmCtrl[modelProperty].setExternalValidation(errorMsgKey, errorMessageOverride, addToModelErrors);
+                                        success = true;
+                                    }
+
+                                    return success;
+                                };
+
+                                frmCtrl.removeExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {
+                                    var success = false;
+                                    if (frmCtrl[modelProperty]) {
+                                        frmCtrl[modelProperty].removeExternalValidation(errorMsgKey, addToModelErrors);
                                         success = true;
                                     }
 

@@ -22,15 +22,39 @@
         });
 
         it('should be defined', function () {
-            compileElement('<form mame="test" disable-dynamic-validation></form>');
+            compileElement('<form name="test" disable-dynamic-validation="true"></form>');
 
             expect(element).to.exist;
         });
 
         it('should set the property "disableDynamicValidation" on the form controller to false', function () {
-            compileElement('<form mame="test" disable-dynamic-validation></form>');
+            compileElement('<form name="test" disable-dynamic-validation="true"></form>');
 
             expect(element.controller('form').disableDynamicValidation).to.equal(true);
+        });
+
+        it('should set the property "disableDynamicValidation" on the form controller to false', function () {
+            compileElement('<form name="test" data-disable-dynamic-validation="true"></form>');
+
+            expect(element.controller('form').disableDynamicValidation).to.equal(true);
+        });
+
+        it('should set the property "disableDynamicValidation" on the form controller to true if it is used as a boolean attribute', function () {
+            compileElement('<form name="test" disable-dynamic-validation></form>');
+
+            expect(element.controller('form').disableDynamicValidation).to.equal(true);
+        });
+
+        it('should set the property "disableDynamicValidation" on the form controller to false', function () {
+            compileElement('<form name="test" disable-dynamic-validation="false"></form>');
+
+            expect(element.controller('form').disableDynamicValidation).to.equal(false);
+        });
+
+        it('should set the property "disableDynamicValidation" on the form controller to false if the attribute is not there', function () {
+            compileElement('<form name="test"></form>');
+
+            expect(element.controller('form').disableDynamicValidation).to.equal(false);
         });
     });
 }(document, angular, sinon));

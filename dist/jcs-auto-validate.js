@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.4.20 - 2014-10-16
+ * angular-auto-validate - v1.4.20 - 2014-11-11
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -19,6 +19,7 @@
                 var elementStateModifiers = {},
                     enableValidElementStyling = true,
                     enableInvalidElementStyling = true,
+                    validationEnabled = true,
 
                     toBoolean = function (value) {
                         var v;
@@ -53,6 +54,45 @@
                     invalidElementStylingEnabled = function (el) {
                         return enableInvalidElementStyling && !getBooleanAttributeValue(el, 'disable-invalid-styling');
                     };
+
+                /**
+                 * @ngdoc function
+                 * @name validator#enable
+                 * @methodOf validator
+                 *
+                 * @description
+                 * By default auto validate will validate all forms and elements with an ngModel directive on.  By
+                 * setting enabled to false you will explicitly have to opt in to enable validation on forms and child
+                 * elements.
+                 *
+                 * Note: this can be overridden by add the 'auto-validate-enabled="true/false' attribute to a form.
+                 *
+                 * Example:
+                 * <pre>
+                 *  app.config(function (validator) {
+                 *    validator.enable(false);
+                 *  });
+                 * </pre>
+                 *
+                 * @param {Boolean} isEnabled true to enable, false to disable.
+                 */
+                this.enable = function (isEnabled) {
+                    validationEnabled = isEnabled;
+                };
+
+                /**
+                 * @ngdoc function
+                 * @name validator#isEnabled
+                 * @methodOf validator
+                 *
+                 * @description
+                 * Returns true if the library is enabeld.
+                 *
+                 * @return {Boolean} true if enabled, otherwise false.
+                 */
+                this.isEnabled = function () {
+                    return validationEnabled;
+                };
 
                 /**
                  * @ngdoc function
@@ -229,7 +269,6 @@
                 };
 
                 this.$get = [
-
                     function () {
                         return this;
                     }
@@ -738,14 +777,33 @@
 (function (angular) {
     'use strict';
 
+
+    angular.module('jcs-autoValidate')
+        .factory('jcs-elementUtils', [
+            function () {
+                var isElementVisible = function (el) {
+                    return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
+                };
+
+                return {
+                    isElementVisible: isElementVisible
+                };
+            }
+        ]);
+
     angular.module('jcs-autoValidate')
         .factory('validationManager', [
             'validator',
-            function (validator) {
+            'jcs-elementUtils',
+            function (validator, elementUtils) {
                 var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
 
+                    elementIsVisible = function (el) {
+                        return elementUtils.isElementVisible(el);
+                    },
+
                     shouldValidateElement = function (el) {
-                        return el && el.length > 0 && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
+                        return el && el.length > 0 && elementIsVisible(el) && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
                     },
 
                     /**
@@ -773,7 +831,7 @@
                                 return errorTypeToReturn;
                             };
 
-                        if ((forceValidation || shouldValidateElement(el)) && modelCtrl && needsValidation) {
+                        if ((forceValidation || (shouldValidateElement(el) && modelCtrl && needsValidation))) {
                             isValid = !modelCtrl.$invalid;
 
                             if (isValid) {
@@ -934,16 +992,19 @@
 (function (angular) {
     'use strict';
 
-    angular.module('jcs-autoValidate').directive('disableDynamicValidation', [
-
-        function () {
+    angular.module('jcs-autoValidate').directive('form', [
+        'validator',
+        function (validator) {
             return {
-                restrict: 'A',
+                restrict: 'E',
                 require: 'form',
                 compile: function () {
                     return {
                         pre: function (scope, element, attrs, ctrl) {
-                            ctrl.disableDynamicValidation = true;
+                            ctrl.disableDynamicValidation = !validator.isEnabled();
+                            if (attrs.disableDynamicValidation !== undefined) {
+                                ctrl.disableDynamicValidation = attrs.disableDynamicValidation === undefined || attrs.disableDynamicValidation === '' || attrs.disableDynamicValidation === 'true';
+                            }
                         }
                     };
                 }
@@ -1022,7 +1083,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation !== true)) {
+                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);
@@ -1055,10 +1116,26 @@
 
                             ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
                                 if (addToModelErrors) {
-                                    ngModelCtrl.$errors[errorMsgKey] = false;
+                                    if (ngModelCtrl.$error) {
+                                        ngModelCtrl.$error[errorMsgKey] = false;
+                                    } else {
+                                        ngModelCtrl.$errors[errorMsgKey] = false;
+                                    }
                                 }
 
                                 validationManager.setElementValidationError(element, errorMsgKey, errorMessage);
+                            };
+
+                            ngModelCtrl.removeExternalValidation = function (errorMsgKey, addToModelErrors) {
+                                if (addToModelErrors) {
+                                    if (ngModelCtrl.$error) {
+                                        ngModelCtrl.$error[errorMsgKey] = true;
+                                    } else {
+                                        ngModelCtrl.$errors[errorMsgKey] = true;
+                                    }
+                                }
+
+                                validationManager.resetElement(element);
                             };
 
                             if (frmCtrl) {
@@ -1066,6 +1143,16 @@
                                     var success = false;
                                     if (frmCtrl[modelProperty]) {
                                         frmCtrl[modelProperty].setExternalValidation(errorMsgKey, errorMessageOverride, addToModelErrors);
+                                        success = true;
+                                    }
+
+                                    return success;
+                                };
+
+                                frmCtrl.removeExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {
+                                    var success = false;
+                                    if (frmCtrl[modelProperty]) {
+                                        frmCtrl[modelProperty].removeExternalValidation(errorMsgKey, addToModelErrors);
                                         success = true;
                                     }
 

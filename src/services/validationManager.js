@@ -1,14 +1,33 @@
 (function (angular) {
     'use strict';
 
+
+    angular.module('jcs-autoValidate')
+        .factory('jcs-elementUtils', [
+            function () {
+                var isElementVisible = function (el) {
+                    return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
+                };
+
+                return {
+                    isElementVisible: isElementVisible
+                };
+            }
+        ]);
+
     angular.module('jcs-autoValidate')
         .factory('validationManager', [
             'validator',
-            function (validator) {
+            'jcs-elementUtils',
+            function (validator, elementUtils) {
                 var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
 
+                    elementIsVisible = function (el) {
+                        return elementUtils.isElementVisible(el);
+                    },
+
                     shouldValidateElement = function (el) {
-                        return el && el.length > 0 && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
+                        return el && el.length > 0 && elementIsVisible(el) && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
                     },
 
                     /**
@@ -36,7 +55,7 @@
                                 return errorTypeToReturn;
                             };
 
-                        if ((forceValidation || shouldValidateElement(el)) && modelCtrl && needsValidation) {
+                        if ((forceValidation || (shouldValidateElement(el) && modelCtrl && needsValidation))) {
                             isValid = !modelCtrl.$invalid;
 
                             if (isValid) {

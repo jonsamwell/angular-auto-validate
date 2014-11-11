@@ -8,6 +8,7 @@
                 var elementStateModifiers = {},
                     enableValidElementStyling = true,
                     enableInvalidElementStyling = true,
+                    validationEnabled = true,
 
                     toBoolean = function (value) {
                         var v;
@@ -42,6 +43,45 @@
                     invalidElementStylingEnabled = function (el) {
                         return enableInvalidElementStyling && !getBooleanAttributeValue(el, 'disable-invalid-styling');
                     };
+
+                /**
+                 * @ngdoc function
+                 * @name validator#enable
+                 * @methodOf validator
+                 *
+                 * @description
+                 * By default auto validate will validate all forms and elements with an ngModel directive on.  By
+                 * setting enabled to false you will explicitly have to opt in to enable validation on forms and child
+                 * elements.
+                 *
+                 * Note: this can be overridden by add the 'auto-validate-enabled="true/false' attribute to a form.
+                 *
+                 * Example:
+                 * <pre>
+                 *  app.config(function (validator) {
+                 *    validator.enable(false);
+                 *  });
+                 * </pre>
+                 *
+                 * @param {Boolean} isEnabled true to enable, false to disable.
+                 */
+                this.enable = function (isEnabled) {
+                    validationEnabled = isEnabled;
+                };
+
+                /**
+                 * @ngdoc function
+                 * @name validator#isEnabled
+                 * @methodOf validator
+                 *
+                 * @description
+                 * Returns true if the library is enabeld.
+                 *
+                 * @return {Boolean} true if enabled, otherwise false.
+                 */
+                this.isEnabled = function () {
+                    return validationEnabled;
+                };
 
                 /**
                  * @ngdoc function
@@ -218,7 +258,6 @@
                 };
 
                 this.$get = [
-
                     function () {
                         return this;
                     }
