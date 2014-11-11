@@ -1,3 +1,6 @@
+v1.10.21 - 11/11/2014
+Fixed version not being replace in the dist files.
+
 v1.9.21 - 11/11/2014
 Added ability to remove external validation (i.e. validation from the server applied via the ngModel or form controller).
 Update to spelling mistake in the german i18n file.
