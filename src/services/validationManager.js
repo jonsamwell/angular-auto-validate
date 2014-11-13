@@ -63,9 +63,15 @@
                             } else {
                                 errorType = findErrorType(modelCtrl.$error);
 
-                                validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                                    validator.makeInvalid(el, errorMsg);
-                                });
+                                if (errorType === undefined) {
+                                    // we have a weird situation some users are encountering where a custom control
+                                    // is valid but the ngModel is report it isn't and thus no valid error type can be found
+                                    isValid = true;
+                                } else {
+                                    validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                                        validator.makeInvalid(el, errorMsg);
+                                    });
+                                }
                             }
                         }
 

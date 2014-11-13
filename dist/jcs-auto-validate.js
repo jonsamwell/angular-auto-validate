@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.10.21 - 2014-11-11
+ * angular-auto-validate - v1.10.21 - 2014-11-13
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -839,9 +839,15 @@
                             } else {
                                 errorType = findErrorType(modelCtrl.$error);
 
-                                validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                                    validator.makeInvalid(el, errorMsg);
-                                });
+                                if (errorType === undefined) {
+                                    // we have a weird situation some users are encountering where a custom control
+                                    // is valid but the ngModel is report it isn't and thus no valid error type can be found
+                                    isValid = true;
+                                } else {
+                                    validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                                        validator.makeInvalid(el, errorMsg);
+                                    });
+                                }
                             }
                         }
 
