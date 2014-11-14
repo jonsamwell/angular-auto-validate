@@ -1,3 +1,6 @@
+v1.11.21 - 14/11/2014
+We have a weird situation some users are encountering where a custom control is valid but the ngModel is report it isn't and thus no valid error type can be found
+
 v1.10.21 - 11/11/2014
 Fixed version not being replace in the dist files.
 
