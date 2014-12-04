@@ -14,7 +14,7 @@
                         return function (scope, element) {
                             element.on('submit', function (event) {
                                 scope.$apply(function () {
-                                    if (force === true || validationManager.validateForm(element)) {
+                                    if (validationManager.validateForm(element) || force === true) {
                                         fn(scope, {
                                             $event: event
                                         });

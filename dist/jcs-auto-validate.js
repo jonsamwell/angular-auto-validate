@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.10.21 - 2014-11-13
+ * angular-auto-validate - v1.13.22 - 2014-12-04
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -1035,7 +1035,7 @@
                         return function (scope, element) {
                             element.on('submit', function (event) {
                                 scope.$apply(function () {
-                                    if (force === true || validationManager.validateForm(element)) {
+                                    if (validationManager.validateForm(element) || force === true) {
                                         fn(scope, {
                                             $event: event
                                         });

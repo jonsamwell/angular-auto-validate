@@ -1,3 +1,8 @@
+V1.13.22 - 04/12/2014
+ng-submit-force now validates the form before calling the ngSumbit function if it is true.
+Fixed a problem with the bootstrap 3 element modifier that set the has-error class on the parent form if it couldn't find
+a control-group css class on a parent.  It now handles .input-group as well.
+
 V1.12.21 - 01/12/2014
 Added Italian i18n translation from @flaviodelbianco
 
