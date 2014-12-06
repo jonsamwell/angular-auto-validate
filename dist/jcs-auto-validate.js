@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.13.22 - 2014-12-04
+ * angular-auto-validate - v1.13.22 - 2014-12-06
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -282,8 +282,8 @@
 
     angular.module('jcs-autoValidate')
         .factory('bootstrap3ElementModifier', [
-
-            function () {
+            '$log',
+            function ($log) {
                 var reset = function (el) {
                         angular.forEach(el.find('span'), function (spanEl) {
                             spanEl = angular.element(spanEl);
@@ -295,16 +295,18 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var parent = el;
+                        var retuenEl,
+                            parent = el;
                         for (var i = 0; i <= 3; i += 1) {
                             if (parent !== undefined && parent.hasClass(klass)) {
+                                retuenEl = parent;
                                 break;
                             } else if (parent !== undefined) {
                                 parent = parent.parent();
                             }
                         }
 
-                        return parent;
+                        return retuenEl;
                     },
 
                     findWithClassElementDesc = function (el, klass) {
@@ -373,18 +375,23 @@
                      */
                     makeValid = function (el) {
                         var frmGroupEl = findFormGroupElement(el),
+                            inputGroupEl;
+
+                        if (frmGroupEl) {
+                            reset(frmGroupEl);
                             inputGroupEl = findInputGroupElement(frmGroupEl[0]);
+                            frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
+                            if (addValidationStateIcons) {
+                                var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
+                                if (inputGroupEl.length > 0) {
+                                    iconElText = iconElText.replace('form-', '');
+                                    iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+                                }
 
-                        reset(frmGroupEl);
-                        frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
-                        if (addValidationStateIcons) {
-                            var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
-                            if (inputGroupEl.length > 0) {
-                                iconElText = iconElText.replace('form-', '');
-                                iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+                                insertAfter(el, angular.element(iconElText));
                             }
-
-                            insertAfter(el, angular.element(iconElText));
+                        } else {
+                            $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
                         }
                     },
 
@@ -402,19 +409,25 @@
                      */
                     makeInvalid = function (el, errorMsg) {
                         var frmGroupEl = findFormGroupElement(el),
-                            inputGroupEl = findInputGroupElement(frmGroupEl[0]),
-                            helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>');
-                        reset(frmGroupEl, inputGroupEl);
-                        frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
-                        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : el, helpTextEl);
-                        if (addValidationStateIcons) {
-                            var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
-                            if (inputGroupEl.length > 0) {
-                                iconElText = iconElText.replace('form-', '');
-                                iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
-                            }
+                            helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>'),
+                            inputGroupEl;
 
-                            insertAfter(el, angular.element(iconElText));
+                        if (frmGroupEl) {
+                            reset(frmGroupEl);
+                            inputGroupEl = findInputGroupElement(frmGroupEl[0]);
+                            frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
+                            insertAfter(inputGroupEl.length > 0 ? inputGroupEl : el, helpTextEl);
+                            if (addValidationStateIcons) {
+                                var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
+                                if (inputGroupEl.length > 0) {
+                                    iconElText = iconElText.replace('form-', '');
+                                    iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+                                }
+
+                                insertAfter(el, angular.element(iconElText));
+                            }
+                        } else {
+                            $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
                         }
                     },
 
