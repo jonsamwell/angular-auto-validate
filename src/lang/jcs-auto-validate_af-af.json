@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Voeg asseblief fout boodskap by vir {0}",
+    "email": "Voorsien asseblief 'n geldige e-pos adres",
+    "minlength": "Voorsien asseblief ten minste {0} karakters",
+    "maxlength": "Daar is meer as die maksimum van {0} karakters voorsien",
+    "min": "Voorsien asseblief meer as die minimum waarde van {0}",
+    "max": "Voorsien asseblief minder as die maksimum waarde van {0}",
+    "required": "Hierdie veld is 'n vereiste",
+    "date": "Voorsien asseblief 'n geldige datum",
+    "pattern": "Verseker asseblief dat die voorsiende inligting aan hierdie patroon volhou {0}",
+    "number": "Voorsien asseblief 'n geldige nommer",
+    "url": "Voorsien asseblief 'n geldige web-adres (URL) in die formaat van http(s)://wwww.google.com"
+}
