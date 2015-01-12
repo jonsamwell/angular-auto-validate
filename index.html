@@ -393,7 +393,7 @@ angular.module('my-app')
     'validator',
     'myCustomErrorMessageResolver',
     function (validator, myCustomErrorMessageResolver) {
-        validator.setDefaultErrorMessageResolver(myCustomErrorMessageResolver);
+        validator.setErrorMessageResolver(myCustomErrorMessageResolver.resolve);
     }
 ]);
 </code></pre>
