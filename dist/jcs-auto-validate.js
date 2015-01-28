@@ -1,7 +1,7 @@
 /*
- * angular-auto-validate - v1.13.22 - 2014-12-06
+ * angular-auto-validate - v1.13.22 - 2015-01-28
  * https://github.com/jonsamwell/angular-auto-validate
- * Copyright (c) 2014 Jon Samwell (http://www.jonsamwell.com)
+ * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
 (function (angular) {
     'use strict';
@@ -443,7 +443,11 @@
                      */
                     makeDefault = function (el) {
                         var frmGroupEl = findFormGroupElement(el);
-                        reset(frmGroupEl);
+                        if (frmGroupEl) {
+                            reset(frmGroupEl);
+                        } else {
+                            $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
+                        }
                     };
 
                 return {

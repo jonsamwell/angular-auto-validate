@@ -164,7 +164,11 @@
                      */
                     makeDefault = function (el) {
                         var frmGroupEl = findFormGroupElement(el);
-                        reset(frmGroupEl);
+                        if (frmGroupEl) {
+                            reset(frmGroupEl);
+                        } else {
+                            $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
+                        }
                     };
 
                 return {

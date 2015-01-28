@@ -1,3 +1,7 @@
+V1.14.22 28/01/2015
+Added check to makeDefault method on the BS3 element modifier to check the element is wrapped in a proper
+bs3 form structure.
+
 V1.13.22 - 06/12/2014
 ng-submit-force now validates the form before calling the ngSumbit function if it is true.
 Fixed a problem with the bootstrap 3 element modifier that set the has-error class on the parent form if it couldn't find
