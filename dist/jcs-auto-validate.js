@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.14.22 - 2015-01-28
+ * angular-auto-validate - v1.15.22 - 2015-02-13
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -622,9 +622,9 @@
                             errorType += '-err-type';
 
 
-                            overrideKey = el.attr(errorType);
+                            overrideKey = el.attr('ng-' + errorType);
                             if (overrideKey === undefined) {
-                                overrideKey = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                                overrideKey = el.attr('data-ng-' + errorType) || el.attr(errorType);
                             }
 
                             if (overrideKey) {
@@ -673,9 +673,9 @@
 
                             if (el && el.attr) {
                                 try {
-                                    parameter = el.attr(errorType);
+                                    parameter = el.attr('ng-' + errorType);
                                     if (parameter === undefined) {
-                                        parameter = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                                        parameter = el.attr('data-ng-' + errorType) || el.attr(errorType);
                                     }
 
                                     parameters.push(parameter || '');
@@ -819,8 +819,19 @@
                         return elementUtils.isElementVisible(el);
                     },
 
+                    /**
+                     * Only validate if the element is present, it is visible
+                     * it is either a valid user input control (input, select, textare, form) or
+                     * it is a custom control register by the developer.
+                     * @param el
+                     * @returns {boolean} true to indicate it should be validated
+                     */
                     shouldValidateElement = function (el) {
-                        return el && el.length > 0 && elementIsVisible(el) && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
+                        return el &&
+                            el.length > 0 &&
+                            elementIsVisible(el) &&
+                            (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
+                                el[0].hasAttribute('register-custom-form-control'));
                     },
 
                     /**

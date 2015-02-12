@@ -297,6 +297,17 @@
                     $rootScope.$apply();
                 });
 
+                it('should default to the ng-* version of the attribute when replacing parameters in the meesage', function (done) {
+                    var errorType = 'max',
+                        element = angular.element('<input type="number" ng-max="2" max="2147483647" />');
+                    defaultErrorMessageResolver.resolve(errorType, element).then(function (msg) {
+                        expect(msg).to.equal('Please enter the maximum number of 2');
+                        done();
+                    });
+
+                    $rootScope.$apply();
+                });
+
                 it('should return an overridden error message type if the attribute is present on the element and contains the correct key', function (done) {
                     var errorType = 'minlength',
                         element = angular.element('<input type="text" data-ng-minlength="2" ng-minlength-err-type="required" />');

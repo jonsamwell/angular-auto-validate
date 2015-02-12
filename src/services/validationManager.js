@@ -26,8 +26,19 @@
                         return elementUtils.isElementVisible(el);
                     },
 
+                    /**
+                     * Only validate if the element is present, it is visible
+                     * it is either a valid user input control (input, select, textare, form) or
+                     * it is a custom control register by the developer.
+                     * @param el
+                     * @returns {boolean} true to indicate it should be validated
+                     */
                     shouldValidateElement = function (el) {
-                        return el && el.length > 0 && elementIsVisible(el) && elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1;
+                        return el &&
+                            el.length > 0 &&
+                            elementIsVisible(el) &&
+                            (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
+                                el[0].hasAttribute('register-custom-form-control'));
                     },
 
                     /**

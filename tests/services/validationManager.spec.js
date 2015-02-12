@@ -148,6 +148,40 @@
 
                     expect(result).to.equal(true);
                 });
+
+                it('should call validator to make element valid it the control is marked as a custom form control', function () {
+                    var el = angular.element('<div type="text" ng-model="propOne" register-custom-form-control=""></div>');
+
+                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
+                    modelCtrl.$formatters.push(angular.noop);
+                    modelCtrl.$pristine = false;
+                    modelCtrl.$invalid = false;
+
+                    validationManager.validateElement(modelCtrl, el);
+                    expect(validator.makeValid.calledOnce).to.equal(true);
+                    expect(validator.makeValid.calledWith(el)).to.equal(true);
+                });
+
+                it('should call validator to make element invalid it the control is marked as a custom form control', function () {
+                    var el = angular.element('<div type="text" ng-model="propOne" register-custom-form-control=""></div>'),
+                        errorMsg = 'msg';
+
+                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
+                    modelCtrl.$formatters.push(angular.noop);
+                    modelCtrl.$pristine = false;
+                    modelCtrl.$invalid = true;
+                    modelCtrl.$error = {
+                        required: true
+                    };
+
+                    defer.resolve(errorMsg);
+                    validationManager.validateElement(modelCtrl, el);
+
+                    $rootScope.$apply();
+
+                    expect(validator.makeInvalid.calledOnce).to.equal(true);
+                    expect(validator.makeInvalid.calledWith(el, errorMsg)).to.equal(true);
+                });
             });
 
             describe('validateForm', function () {

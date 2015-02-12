@@ -1,3 +1,12 @@
+V1.15.22 13/02/2015
+Fixed issue #32: register-custom-form-control not validating via debounce due to missing force flag.
+Thanks to help from @abobwhite @slupekdev @pjwalmsley. Added a check in the validationManager
+to validate elements that have the register-custom-form-control directive on them.
+
+Fixed issue #33: ErrorMessageResolver uses non "ng-" prefixed attribute as default and can cause conflict with browser defaults (IE9).
+The default error message resolve now checks for the ng- attribute first rather than the
+non ng- attribute to fixed an issue with IE9.
+
 V1.14.22 28/01/2015
 Added check to makeDefault method on the BS3 element modifier to check the element is wrapped in a proper
 bs3 form structure.

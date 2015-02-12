@@ -123,9 +123,9 @@
                             errorType += '-err-type';
 
 
-                            overrideKey = el.attr(errorType);
+                            overrideKey = el.attr('ng-' + errorType);
                             if (overrideKey === undefined) {
-                                overrideKey = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                                overrideKey = el.attr('data-ng-' + errorType) || el.attr(errorType);
                             }
 
                             if (overrideKey) {
@@ -174,9 +174,9 @@
 
                             if (el && el.attr) {
                                 try {
-                                    parameter = el.attr(errorType);
+                                    parameter = el.attr('ng-' + errorType);
                                     if (parameter === undefined) {
-                                        parameter = el.attr('data-ng-' + errorType) || el.attr('ng-' + errorType);
+                                        parameter = el.attr('data-ng-' + errorType) || el.attr(errorType);
                                     }
 
                                     parameters.push(parameter || '');
