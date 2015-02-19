@@ -188,6 +188,20 @@
 
             <br>
 
+            <br/>
+
+            <h4 id="disable-error-message">Disable Validation Messages</h4>
+            <p>You can disable the validation message appearing for a particular element by adding the attribute
+                <code>disable-validation-message=""</code> to the element.</p>
+
+            <pre><code class="language-javascript">&lt;!-- auto-validate will not add the error message to the element when it is in an invalid state --&gt;
+                &lt;input type=&quot;text&quot;
+                ng-model=&quot;model.surname&quot;
+                ng-minlength="2"
+                disable-validation-message=""/&gt;</code></pre>
+
+            <br>
+
             <h4 id="overriding_error_message">Overriding Error Messages</h4>
             <p>By default this module ships with error messages for all the supported validation types in angular.  However, if any default error message is
                 not quite what you want for a particular element you can override the errorType that is used for a particular validation type by
@@ -209,7 +223,7 @@
 
             <h4>Changing Element States</h4>
             <p>If you want a certain element to appear differently to other elemenets when it is valid/invalid you can still do that by just specifying which element modifier
-                should be used to modifier the elements visual state. This can be achieve by using the attribute <code>element-modifier="elementModifierKey"</code>.</p>
+                should be used to modify the elements visual state. This can be achieve by using the attribute <code>element-modifier="elementModifierKey"</code>.</p>
 <pre><code class="language-markup">&lt;!-- auto-validate will use the default element modifier --&gt;
     &lt;input type=&quot;text&quot;
     ng-model=&quot;model.firstname&quot;
@@ -497,6 +511,9 @@ angular.module('my-app')
                 <li><a href="#getting_started">Getting Started</a></li>
                 <li><a href="#demo">Demo</a></li>
                 <li><a href="#your_form">Your Form</a></li>
+                <li><a href="#enabl-disable-styling">Enable / Disable Visual Styling</a></li>
+                <li><a href="#disable-error-message">Disable Error Messages</a></li>
+                <li><a href="#overriding_error_message">Overriding Error Messages</a></li>
                 <li><a href="#ngmodeloptions">NgModelOptions Support</a></li>
                 <li><a href="#ngsubmit">ngSubmit</a></li>
                 <li><a href="#error_message_resolver">Error Message Resolver</a></li>
