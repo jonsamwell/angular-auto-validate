@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.15.22 - 2015-02-13
+ * angular-auto-validate - v1.16.22 - 2015-02-19
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -14,7 +14,6 @@
 
     angular.module('jcs-autoValidate')
         .provider('validator', [
-
             function () {
                 var elementStateModifiers = {},
                     enableValidElementStyling = true,
@@ -41,6 +40,16 @@
                         }
 
                         return val;
+                    },
+
+                    attributeExists = function (el, attrName) {
+                        var exists;
+
+                        if (el !== undefined) {
+                            exists = el.attr(attrName) !== undefined || el.attr('data-' + attrName) !== undefined;
+                        }
+
+                        return exists;
                     },
 
                     getBooleanAttributeValue = function (el, attrName) {
@@ -197,11 +206,18 @@
                  * It is provided as the error message may need information from the element i.e. ng-min (the min allowed value).
                  */
                 this.getErrorMessage = function (errorKey, el) {
+                    var defer;
                     if (this.errorMessageResolver === undefined) {
                         throw new Error('Please set an error message resolver via the setErrorMessageResolver function before attempting to resolve an error message.');
                     }
 
-                    return this.errorMessageResolver(errorKey, el);
+                    if (attributeExists(el, 'disable-validation-message')) {
+                        defer = angular.injector(['ng']).get('$q').defer();
+                        defer.resolve('');
+                        return defer.promise;
+                    } else {
+                        return this.errorMessageResolver(errorKey, el);
+                    }
                 };
 
                 /**
@@ -926,7 +942,9 @@
                             return frmElement !== undefined;
                         }
 
-                        angular.forEach(frmElement[0], function (ctrlElement) {
+                        // IE8 holds the child controls collection in the all property
+                        // Firefox in the elements and chrome as a child iterator
+                        angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (ctrlElement) {
                             processElement(ctrlElement);
                         });
 

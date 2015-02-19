@@ -66,6 +66,28 @@
 
                     $rootScope.$apply();
                 });
+
+                it('should not call get error message on the set error message resolver it validation message is disabled', function (done) {
+                    var errorMessage = '',
+                        defer = $q.defer(),
+                        invocationCount = 0,
+                        resolverFunc = function () {
+                            invocationCount += 1;
+                            return defer.promise;
+                        },
+                        el = angular.element('<input type="text" required="" disable-validation-message=""/>');
+
+                    validator.setErrorMessageResolver(resolverFunc);
+                    defer.resolve(errorMessage);
+
+                    validator.getErrorMessage('error_key', el).then(function (msg) {
+                        expect(invocationCount).to.equal(0);
+                        expect(msg).to.equal(errorMessage);
+                        done();
+                    });
+
+                    $rootScope.$apply();
+                });
             });
 
             describe('getDomModifier', function () {

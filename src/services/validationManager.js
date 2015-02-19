@@ -133,7 +133,9 @@
                             return frmElement !== undefined;
                         }
 
-                        angular.forEach(frmElement[0], function (ctrlElement) {
+                        // IE8 holds the child controls collection in the all property
+                        // Firefox in the elements and chrome as a child iterator
+                        angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (ctrlElement) {
                             processElement(ctrlElement);
                         });
 

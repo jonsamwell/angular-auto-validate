@@ -3,7 +3,6 @@
 
     angular.module('jcs-autoValidate')
         .provider('validator', [
-
             function () {
                 var elementStateModifiers = {},
                     enableValidElementStyling = true,
@@ -30,6 +29,16 @@
                         }
 
                         return val;
+                    },
+
+                    attributeExists = function (el, attrName) {
+                        var exists;
+
+                        if (el !== undefined) {
+                            exists = el.attr(attrName) !== undefined || el.attr('data-' + attrName) !== undefined;
+                        }
+
+                        return exists;
                     },
 
                     getBooleanAttributeValue = function (el, attrName) {
@@ -186,11 +195,18 @@
                  * It is provided as the error message may need information from the element i.e. ng-min (the min allowed value).
                  */
                 this.getErrorMessage = function (errorKey, el) {
+                    var defer;
                     if (this.errorMessageResolver === undefined) {
                         throw new Error('Please set an error message resolver via the setErrorMessageResolver function before attempting to resolve an error message.');
                     }
 
-                    return this.errorMessageResolver(errorKey, el);
+                    if (attributeExists(el, 'disable-validation-message')) {
+                        defer = angular.injector(['ng']).get('$q').defer();
+                        defer.resolve('');
+                        return defer.promise;
+                    } else {
+                        return this.errorMessageResolver(errorKey, el);
+                    }
                 };
 
                 /**

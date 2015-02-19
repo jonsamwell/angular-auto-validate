@@ -1,3 +1,7 @@
+V1.16.22 19/02/2105
+Fixed an issue with IE8 when iterating through the form child controls collect when a form is being validated.
+Added the ability to disable validation messages from appearing on elements.
+
 V1.15.22 13/02/2015
 Fixed issue #32: register-custom-form-control not validating via debounce due to missing force flag.
 Thanks to help from @abobwhite @slupekdev @pjwalmsley. Added a check in the validationManager
