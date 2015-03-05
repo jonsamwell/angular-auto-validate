@@ -56,7 +56,18 @@
                 expect(ctrl.autoValidated).to.equal(true);
             });
 
-            it('should not be autoValidated it the formnovalidate attribute is present on the element', function () {
+            it('should set modelCtrl touched and validate if a blur event has occured', function () {
+                validationManager.validateElement = sinon.spy();
+                compileElement('<input ng-model="model" />');
+                expect(element).to.exist;
+                var ctrl = element.controller('ngModel');
+                // fire blur event
+                element.trigger('blur');
+                expect(ctrl.$touched).to.equal(true);
+                expect(validationManager.validateElement.calledOnce);
+            });
+
+            it('should not be autoValidated if the formnovalidate attribute is present on the element', function () {
                 compileElement('<input ng-model="model" formnovalidate />');
                 var ctrl = element.controller('ngModel');
                 expect(ctrl.autoValidated).to.equal(undefined);

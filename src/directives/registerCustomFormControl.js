@@ -5,16 +5,18 @@
 
         function () {
             var findParentForm = function (el) {
-                var parent = el;
-                for (var i = 0; i <= 10; i += 1) {
-                    if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
-                        break;
-                    } else if (parent !== undefined) {
-                        parent = angular.element(parent).parent()[0];
+                var form;
+                var recursive = function (parent) {
+                    if (parent !== undefined) {
+                        if (parent.nodeName.toLowerCase() === 'form') {
+                            form = parent;
+                        } else {
+                            recursive(angular.element(parent).parent()[0]);
+                        }
                     }
-                }
-
-                return parent;
+                };
+                recursive(el);
+                return form;
             };
 
             return {

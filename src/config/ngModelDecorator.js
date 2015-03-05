@@ -24,6 +24,12 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
+                            element.bind('blur', function () {
+                                console.log('fired');
+                                ngModelCtrl.$setTouched();
+                                validationManager.validateElement(ngModelCtrl, element);
+                            });
+
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
                             // needs to be invoked to get at the link functions.
                             if (supportsNgModelOptions && angular.isFunction(link)) {
@@ -35,7 +41,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
+                            if (!('formnovalidate' in attrs) || (frmCtrl ? frmCtrl.disableDynamicValidation === false : false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);

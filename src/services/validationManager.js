@@ -1,30 +1,11 @@
 (function (angular) {
     'use strict';
 
-
-    angular.module('jcs-autoValidate')
-        .factory('jcs-elementUtils', [
-            function () {
-                var isElementVisible = function (el) {
-                    return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
-                };
-
-                return {
-                    isElementVisible: isElementVisible
-                };
-            }
-        ]);
-
     angular.module('jcs-autoValidate')
         .factory('validationManager', [
             'validator',
-            'jcs-elementUtils',
             function (validator, elementUtils) {
                 var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
-
-                    elementIsVisible = function (el) {
-                        return elementUtils.isElementVisible(el);
-                    },
 
                     /**
                      * Only validate if the element is present, it is visible
@@ -36,7 +17,6 @@
                     shouldValidateElement = function (el) {
                         return el &&
                             el.length > 0 &&
-                            elementIsVisible(el) &&
                             (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
                                 el[0].hasAttribute('register-custom-form-control'));
                     },
@@ -51,7 +31,7 @@
                      */
                     validateElement = function (modelCtrl, el, forceValidation) {
                         var isValid = true,
-                            needsValidation = modelCtrl.$pristine === false || forceValidation,
+                            needsValidation = !modelCtrl.$pristine || modelCtrl.$touched || forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,

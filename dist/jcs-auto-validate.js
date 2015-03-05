@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.16.22 - 2015-02-19
+ * angular-auto-validate - v1.17.26 - 2015-03-05
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -810,30 +810,11 @@
 (function (angular) {
     'use strict';
 
-
-    angular.module('jcs-autoValidate')
-        .factory('jcs-elementUtils', [
-            function () {
-                var isElementVisible = function (el) {
-                    return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
-                };
-
-                return {
-                    isElementVisible: isElementVisible
-                };
-            }
-        ]);
-
     angular.module('jcs-autoValidate')
         .factory('validationManager', [
             'validator',
-            'jcs-elementUtils',
             function (validator, elementUtils) {
                 var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
-
-                    elementIsVisible = function (el) {
-                        return elementUtils.isElementVisible(el);
-                    },
 
                     /**
                      * Only validate if the element is present, it is visible
@@ -845,7 +826,6 @@
                     shouldValidateElement = function (el) {
                         return el &&
                             el.length > 0 &&
-                            elementIsVisible(el) &&
                             (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
                                 el[0].hasAttribute('register-custom-form-control'));
                     },
@@ -860,7 +840,7 @@
                      */
                     validateElement = function (modelCtrl, el, forceValidation) {
                         var isValid = true,
-                            needsValidation = modelCtrl.$pristine === false || forceValidation,
+                            needsValidation = !modelCtrl.$pristine || modelCtrl.$touched || forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
@@ -1015,16 +995,18 @@
 
         function () {
             var findParentForm = function (el) {
-                var parent = el;
-                for (var i = 0; i <= 10; i += 1) {
-                    if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
-                        break;
-                    } else if (parent !== undefined) {
-                        parent = angular.element(parent).parent()[0];
+                var form;
+                var recursive = function (parent) {
+                    if (parent !== undefined) {
+                        if (parent.nodeName.toLowerCase() === 'form') {
+                            form = parent;
+                        } else {
+                            recursive(angular.element(parent).parent()[0]);
+                        }
                     }
-                }
-
-                return parent;
+                };
+                recursive(el);
+                return form;
             };
 
             return {
@@ -1124,6 +1106,12 @@
                                     validationManager.validateElement(ngModelCtrl, element);
                                 }, 100);
 
+                            element.bind('blur', function () {
+                                console.log('fired');
+                                ngModelCtrl.$setTouched();
+                                validationManager.validateElement(ngModelCtrl, element);
+                            });
+
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
                             // needs to be invoked to get at the link functions.
                             if (supportsNgModelOptions && angular.isFunction(link)) {
@@ -1135,7 +1123,7 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
+                            if (!('formnovalidate' in attrs) || (frmCtrl ? frmCtrl.disableDynamicValidation === false : false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);

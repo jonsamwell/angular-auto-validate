@@ -2,7 +2,7 @@
     'use strict';
 
     describe('jcs-autoValidate validationManager', function () {
-        var sandbox, $rootScope, $compile, $q, validator, validationManager, modelCtrl, defer, elementUtils,
+        var sandbox, $rootScope, $compile, $q, validator, validationManager, modelCtrl, defer,
             setModelCtrl = function () {
                 modelCtrl = {
                     $parsers: [],
@@ -28,7 +28,6 @@
                 defer = $q.defer();
                 validator = $injector.get('validator');
                 validationManager = $injector.get('validationManager');
-                elementUtils = $injector.get('jcs-elementUtils');
 
                 sandbox.stub(validator, 'makeValid');
                 sandbox.stub(validator, 'makeInvalid');
@@ -50,8 +49,6 @@
                 it('should return true if the control is pristine and not make the element valid', function () {
                     var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
                         result;
-
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$pristine = true;
                     result = validationManager.validateElement(modelCtrl, el);
                     expect(result).to.equal(true);
@@ -62,8 +59,6 @@
                 it('should make the element valid and return true if the control is not pristine and has no validation requirements', function () {
                     var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
                         result;
-
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$pristine = false;
                     result = validationManager.validateElement(modelCtrl, el);
                     expect(result).to.equal(true);
@@ -71,27 +66,31 @@
                     expect(validator.makeInvalid.called).to.equal(false);
                 });
 
-                it('should not validate the element if it is not visible on the screen', function () {
+                it('should return true if the control is not touched and not make the element valid', function () {
                     var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
                         result;
-
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(false);
-                    modelCtrl.$pristine = false;
+                    modelCtrl.$touched = false;
                     result = validationManager.validateElement(modelCtrl, el);
-
                     expect(result).to.equal(true);
-                    expect(validator.makeValid.called).to.equal(false);
+                    expect(validator.makeValid.called).to.equal(true);
+                    expect(validator.makeInvalid.called).to.equal(false);
+                });
+
+                it('should make the element valid and return true if the control is touched and has no validation requirements', function () {
+                    var el = angular.element('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>'),
+                        result;
+                    modelCtrl.$touched = true;
+                    result = validationManager.validateElement(modelCtrl, el);
+                    expect(result).to.equal(true);
+                    expect(validator.makeValid.called).to.equal(true);
                     expect(validator.makeInvalid.called).to.equal(false);
                 });
 
                 it('should call validator to make element valid when there are $formatters and the form is valid', function () {
                     var el = angular.element('<input type="text" ng-model="propOne"/>');
-
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$formatters.push(angular.noop);
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = false;
-
                     validationManager.validateElement(modelCtrl, el);
                     expect(validator.makeValid.calledOnce).to.equal(true);
                     expect(validator.makeValid.calledWith(el)).to.equal(true);
@@ -100,8 +99,6 @@
                 it('should call validator to make element invalid when there are $formatters and the form is invalid', function () {
                     var el = angular.element('<input type="text" ng-model="propOne" />'),
                         errorMsg = 'msg';
-
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$formatters.push(angular.noop);
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = true;
@@ -122,7 +119,6 @@
                     var el = angular.element('<input type="text" ng-model="propOne"/>'),
                         errorMsg = 'msg';
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$parsers.push(angular.noop);
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = true;
@@ -143,7 +139,6 @@
                     var el = angular.element('<input type="text" ng-model="propertyOne" />'),
                         result;
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     result = validationManager.validateElement(modelCtrl, el);
 
                     expect(result).to.equal(true);
@@ -152,7 +147,6 @@
                 it('should call validator to make element valid it the control is marked as a custom form control', function () {
                     var el = angular.element('<div type="text" ng-model="propOne" register-custom-form-control=""></div>');
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$formatters.push(angular.noop);
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = false;
@@ -166,7 +160,6 @@
                     var el = angular.element('<div type="text" ng-model="propOne" register-custom-form-control=""></div>'),
                         errorMsg = 'msg';
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$formatters.push(angular.noop);
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = true;
@@ -203,7 +196,6 @@
                         inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />'),
                         isValid;
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     frm.append(inpt);
                     inpt.controller('ngModel').$setValidity('minlength', false);
                     $rootScope.$apply();
@@ -224,7 +216,6 @@
                         inpt2 = compileElement('<input type="text" ng-model="name" ng-maxlength="2" />'),
                         isValid;
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     frm.append(inpt);
                     frm.append(inpt2);
                     inpt.controller('ngModel').$setValidity('minlength', false);
@@ -246,7 +237,6 @@
                         inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />'),
                         isValid;
 
-                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     ngFrm.append(inpt);
                     frm.append(ngFrm);
                     inpt.controller('ngModel').$setValidity('minlength', false);
