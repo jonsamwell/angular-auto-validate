@@ -1,4 +1,4 @@
-V1.17.22 09/03/2015
+V1.17.23 09/03/2015
 Added Brazilian Portuguese i18n file translated by 'Silvana Marx Nakle'.
 Raised the recursion limit to find the parent form when using the registerCustomFormControl.
 Added the ability to disable validation on a form basis and also validate non visible elements on a form basis.

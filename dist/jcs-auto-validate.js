@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.16.22 - 2015-02-19
+ * angular-auto-validate - v1.17.23 - 2015-03-10
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -810,7 +810,6 @@
 (function (angular) {
     'use strict';
 
-
     angular.module('jcs-autoValidate')
         .factory('jcs-elementUtils', [
             function () {
@@ -835,32 +834,48 @@
                         return elementUtils.isElementVisible(el);
                     },
 
+                    getFormOptions = function (el) {
+                        var frmCtrl = angular.element(el).controller('form');
+                        return frmCtrl.autoValidateFormOptions;
+                    },
+
                     /**
                      * Only validate if the element is present, it is visible
                      * it is either a valid user input control (input, select, textare, form) or
                      * it is a custom control register by the developer.
                      * @param el
+                     * @param formOptions The validation options of the parent form
                      * @returns {boolean} true to indicate it should be validated
                      */
-                    shouldValidateElement = function (el) {
-                        return el &&
+                    shouldValidateElement = function (el, formOptions) {
+                        var result = el &&
                             el.length > 0 &&
-                            elementIsVisible(el) &&
+                            (elementIsVisible(el) || formOptions.validateNonVisibleControls) &&
                             (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
                                 el[0].hasAttribute('register-custom-form-control'));
+                        return result;
                     },
 
                     /**
                      * @ngdoc validateElement
                      * @name validation#validateElement
                      * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
-                     * @param {Boolean} forceValidation if set to true forces the validation even if the element is pristine
+                     * @param {options}
+                     *  - forceValidation if set to true forces the validation even if the element is pristine
+                     *  - disabled if set to true forces the validation is disabled and will return true
+                     *  - validateNonVisibleControls if set to true forces the validation of non visible element i.e. display:block
                      * @description
                      * Validate the form element and make invalid/valid element model status.
+                     *
+                     * As of v1.17.22:
+                     * BREAKING CHANGE to validateElement on the validationManger.  The third parameter is now the parent form's
+                     * autoValidateFormOptions object on the form controller.  This can be left blank and will be found by the
+                     * validationManager.
                      */
-                    validateElement = function (modelCtrl, el, forceValidation) {
+                    validateElement = function (modelCtrl, el, options) {
                         var isValid = true,
-                            needsValidation = modelCtrl.$pristine === false || forceValidation,
+                            frmOptions = options || getFormOptions(el),
+                            needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
@@ -875,15 +890,15 @@
                                 return errorTypeToReturn;
                             };
 
-                        if ((forceValidation || (shouldValidateElement(el) && modelCtrl && needsValidation))) {
+                        if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
                             isValid = !modelCtrl.$invalid;
 
                             if (isValid) {
                                 validator.makeValid(el);
                             } else {
-                                errorType = findErrorType(modelCtrl.$error);
-
+                                errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
                                 if (errorType === undefined) {
+
                                     // we have a weird situation some users are encountering where a custom control
                                     // is valid but the ngModel is report it isn't and thus no valid error type can be found
                                     isValid = true;
@@ -922,30 +937,35 @@
                     validateForm = function (frmElement) {
                         var frmValid = true,
                             frmCtrl = frmElement ? angular.element(frmElement).controller('form') : undefined,
-                            processElement = function (ctrlElement, force) {
+                            processElement = function (ctrlElement, force, formOptions) {
                                 var controller, isValid;
                                 ctrlElement = angular.element(ctrlElement);
                                 controller = ctrlElement.controller('ngModel');
 
-                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement))) {
+                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement, frmCtrl.autoValidateFormOptions))) {
                                     if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                         // we probably have a sub form
                                         validateForm(ctrlElement);
                                     } else {
-                                        isValid = validateElement(controller, ctrlElement, true);
+                                        isValid = validateElement(controller, ctrlElement, formOptions);
                                         frmValid = frmValid && isValid;
                                     }
                                 }
-                            };
+                            },
+                            clonedOptions;
 
-                        if (frmElement === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation)) {
+                        if (frmElement === undefined || (frmCtrl !== undefined && frmCtrl.autoValidateFormOptions.disabled)) {
                             return frmElement !== undefined;
                         }
+
+                        //force the validation of controls
+                        clonedOptions = angular.copy(frmCtrl.autoValidateFormOptions);
+                        clonedOptions.forceValidation = true;
 
                         // IE8 holds the child controls collection in the all property
                         // Firefox in the elements and chrome as a child iterator
                         angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (ctrlElement) {
-                            processElement(ctrlElement);
+                            processElement(ctrlElement, false, clonedOptions);
                         });
 
                         // If you have a custom form control that should be validated i.e.
@@ -958,7 +978,7 @@
                             angular.forEach(frmElement[0].customHTMLFormControlsCollection, function (ctrlElement) {
                                 // need to force the validation as the element might not be a known form input type
                                 // so the normal validation process will ignore it.
-                                processElement(ctrlElement, true);
+                                processElement(ctrlElement, true, clonedOptions);
                             });
                         }
 
@@ -1012,11 +1032,10 @@
     'use strict';
 
     angular.module('jcs-autoValidate').directive('registerCustomFormControl', [
-
         function () {
             var findParentForm = function (el) {
                 var parent = el;
-                for (var i = 0; i <= 10; i += 1) {
+                for (var i = 0; i <= 50; i += 1) {
                     if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
                         break;
                     } else if (parent !== undefined) {
@@ -1044,30 +1063,6 @@
 (function (angular) {
     'use strict';
 
-    angular.module('jcs-autoValidate').directive('form', [
-        'validator',
-        function (validator) {
-            return {
-                restrict: 'E',
-                require: 'form',
-                compile: function () {
-                    return {
-                        pre: function (scope, element, attrs, ctrl) {
-                            ctrl.disableDynamicValidation = !validator.isEnabled();
-                            if (attrs.disableDynamicValidation !== undefined) {
-                                ctrl.disableDynamicValidation = attrs.disableDynamicValidation === undefined || attrs.disableDynamicValidation === '' || attrs.disableDynamicValidation === 'true';
-                            }
-                        }
-                    };
-                }
-            };
-        }
-    ]);
-}(angular));
-
-(function (angular) {
-    'use strict';
-
     angular.module('jcs-autoValidate').config(['$provide',
         function ($provide) {
             $provide.decorator('ngSubmitDirective', [
@@ -1075,9 +1070,10 @@
                 '$parse',
                 'validationManager',
                 function ($delegate, $parse, validationManager) {
-                    $delegate[0].compile = function ($element, attr) {
-                        var fn = $parse(attr.ngSubmit),
-                            force = attr.ngSubmitForce === 'true';
+                    $delegate[0].compile = function ($element, attrs) {
+                        var fn = $parse(attrs.ngSubmit),
+                            force = attrs.ngSubmitForce === 'true';
+
                         return function (scope, element) {
                             element.on('submit', function (event) {
                                 scope.$apply(function () {
@@ -1121,7 +1117,7 @@
                                 setValidity = ngModelCtrl.$setValidity,
                                 setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
-                                    validationManager.validateElement(ngModelCtrl, element);
+                                    validationManager.validateElement(ngModelCtrl, element, frmCtrl.autoValidateFormOptions);
                                 }, 100);
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which
