@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Proszę o uzupełnienie wiadomości błędu dla {0}",
+    "email": "Proszę o podanie prawidłowego adresu email",
+    "minlength": "Proszę o podanie przynajmniej {0} znaków",
+    "maxlength": "Proszę o podanie nie więcej niż {0} znaków.",
+    "min": "Proszę o podanie wartości większej bądź równej {0}",
+    "max": "Proszę o podanie wartości mniejszej bądź równej {0}",
+    "required": "To pole jest wymagane",
+    "date": "Proszę o podanie prawidłowej daty",
+    "pattern": "Proszę o podanie wartości zgodnej ze wzorcem {0}",
+    "number": "Proszę o podanie prawidłowej liczby",
+    "url": "Proszę o podanie prawidłowego URL w formacie http(s)://wwww.google.com"
+}
