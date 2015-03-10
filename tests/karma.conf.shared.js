@@ -73,16 +73,7 @@ shared.files = [
 
     // app libraries
     'src/jcs-auto-validate.js',
-    'src/services/defaultErrorMessageResolver.js',
-    'src/services/bootstrap3ElementModifier.js',
-    'src/services/foundation5ElementModifier.js',
-    'src/services/debounce.js',
-    'src/services/validationManager.js',
-    'src/directives/formReset.js',
-    'src/directives/disableDynamicValidation.js',
-    'src/providers/validator.js',
-    'src/config/ngModelDecorator.js',
-    'src/config/ngSubmitDecorator.js',
+    'src/**/*.js',
 
     'src/jcs-auto-validate-run.js'
 ];

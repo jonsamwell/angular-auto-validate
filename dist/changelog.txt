@@ -1,4 +1,12 @@
-V1.16.22 19/02/2105
+V1.17.22 09/03/2015
+Added Brazilian Portuguese i18n file translated by 'Silvana Marx Nakle'.
+Raised the recursion limit to find the parent form when using the registerCustomFormControl.
+Added the ability to disable validation on a form basis and also validate non visible elements on a form basis.
+BREAKING CHANGE to validateElement on the validationManger.  The third parameter is now the parent form's
+autoValidateFormOptions object on the form controller.  This can be left blank and will be found by the
+validationManager.
+
+V1.16.22 19/02/2015
 Fixed an issue with IE8 when iterating through the form child controls collect when a form is being validated.
 Added the ability to disable validation messages from appearing on elements.
 

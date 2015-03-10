@@ -1,0 +1,13 @@
+﻿{
+  "defaultMsg": "Por favor adicione mensagem de erro para {0}",
+  "email": "Por favor digite um endereço de email válido",
+  "minlength": "Por favor digite pelo menos {0} caracteres",
+  "maxlength": "Você digitou mais do que o máximo de {0} caracteres",
+  "min": "Por favor digite o número maior que {0}",
+  "max": "Por favor digite o número menor que {0}",
+  "required": "Este campo é obrigatório",
+  "date": "Por favor digite uma data válida",
+  "pattern": "Por favor certifique-se que a informação digitada segue o padrão {0}",
+  "number": "Por favor digite um número válido",
+  "url": "Por favor digite uma URL válida no formato http(s)://wwww.google.com"
+}

@@ -2,11 +2,10 @@
     'use strict';
 
     angular.module('jcs-autoValidate').directive('registerCustomFormControl', [
-
         function () {
             var findParentForm = function (el) {
                 var parent = el;
-                for (var i = 0; i <= 10; i += 1) {
+                for (var i = 0; i <= 50; i += 1) {
                     if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
                         break;
                     } else if (parent !== undefined) {

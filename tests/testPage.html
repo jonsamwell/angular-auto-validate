@@ -12,7 +12,10 @@
             <p>
                 <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
             </p>
-            <form role="form" name="testFrm" novalidate="novalidate" ng-submit="submit();" disable-dynamic-validatio--n>
+            <form role="form" name="testFrm" novalidate="novalidate"
+                  ng-submit="submit();"
+                  validate-non-visible-controls
+                  disable-dynamic-validatio_n>
                 <button type="button" class="btn btn-primary" ng-click="setExternalError(testFrm);">Set External Error On Firstname</button>
                 <div class="form-group">
                     <label class="control-label">Name</label>
@@ -28,8 +31,7 @@
                         <input type="email" name="email" class="form-control"
                                ng-model="user.email"
                                placeholder="Enter email address"
-                               ng-required
-                               disable-validation-message/>
+                               ng-required="true"/>
 
                     </div>
                 </div>
@@ -147,7 +149,8 @@
     <script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
     <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
     <script type="text/javascript" src="../src/directives/formReset.js"></script>
-    <script type="text/javascript" src="../src/directives/disableDynamicValidation.js"></script>
+    <script type="text/javascript" src="../src/directives/autoValidateFormOptions.js"></script>
+    <script type="text/javascript" src="../src/directives/registerCustomFormControl.js.js"></script>
     <script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
 
     <script type="text/javascript">

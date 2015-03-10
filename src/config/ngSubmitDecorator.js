@@ -8,9 +8,10 @@
                 '$parse',
                 'validationManager',
                 function ($delegate, $parse, validationManager) {
-                    $delegate[0].compile = function ($element, attr) {
-                        var fn = $parse(attr.ngSubmit),
-                            force = attr.ngSubmitForce === 'true';
+                    $delegate[0].compile = function ($element, attrs) {
+                        var fn = $parse(attrs.ngSubmit),
+                            force = attrs.ngSubmitForce === 'true';
+
                         return function (scope, element) {
                             element.on('submit', function (event) {
                                 scope.$apply(function () {
