@@ -21,7 +21,8 @@
                                 setValidity = ngModelCtrl.$setValidity,
                                 setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
-                                    validationManager.validateElement(ngModelCtrl, element, frmCtrl.autoValidateFormOptions);
+                                    var validateOptions = frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : undefined;
+                                    validationManager.validateElement(ngModelCtrl, element, validateOptions);
                                 }, 100);
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which

@@ -273,6 +273,12 @@
                     }
                 };
 
+                this.defaultFormValidationOptions = {
+                    forceValidation: false,
+                    disabled: false,
+                    validateNonVisibleControls: false
+                };
+
                 this.$get = [
                     function () {
                         return this;

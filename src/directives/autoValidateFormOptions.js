@@ -6,7 +6,7 @@
     }
 
     function parseOptions(ctrl, validator, attrs) {
-        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || {};
+        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || validator.defaultFormValidationOptions;
         opts.forceValidation = false;
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);

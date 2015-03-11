@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.01 - 2015-03-10
+ * angular-auto-validate - v1.18.02 - 2015-03-11
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -282,6 +282,12 @@
                     if (dm.makeDefault) {
                         dm.makeDefault(el);
                     }
+                };
+
+                this.defaultFormValidationOptions = {
+                    forceValidation: false,
+                    disabled: false,
+                    validateNonVisibleControls: false
                 };
 
                 this.$get = [
@@ -836,7 +842,7 @@
 
                     getFormOptions = function (el) {
                         var frmCtrl = angular.element(el).controller('form');
-                        return frmCtrl.autoValidateFormOptions;
+                        return frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : validator.defaultFormValidationOptions;
                     },
 
                     /**
@@ -1014,7 +1020,7 @@
     }
 
     function parseOptions(ctrl, validator, attrs) {
-        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || {};
+        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || validator.defaultFormValidationOptions;
         opts.forceValidation = false;
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
@@ -1168,7 +1174,8 @@
                                 setValidity = ngModelCtrl.$setValidity,
                                 setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
-                                    validationManager.validateElement(ngModelCtrl, element, frmCtrl.autoValidateFormOptions);
+                                    var validateOptions = frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : undefined;
+                                    validationManager.validateElement(ngModelCtrl, element, validateOptions);
                                 }, 100);
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which

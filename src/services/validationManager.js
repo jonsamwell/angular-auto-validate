@@ -27,7 +27,7 @@
 
                     getFormOptions = function (el) {
                         var frmCtrl = angular.element(el).controller('form');
-                        return frmCtrl.autoValidateFormOptions;
+                        return frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : validator.defaultFormValidationOptions;
                     },
 
                     /**

@@ -115,6 +115,28 @@
                     expect(validator.makeInvalid.called).to.equal(true);
                 });
 
+                it.only('should validate the element regardless of whether there is a parent form', function () {
+                    var el = compileElement('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>', true),
+                        result,
+                        frmOptions = getDefaultFormOptions();
+
+                    frmOptions.validateNonVisibleControls = true;
+                    sandbox.stub(elementUtils, 'isElementVisible').returns(false);
+                    modelCtrl.$pristine = false;
+                    modelCtrl.$invalid = true;
+                    modelCtrl.$errors = {
+                        required: true
+                    };
+                    result = validationManager.validateElement(modelCtrl, el, frmOptions);
+
+                    defer.resolve('error message');
+                    $rootScope.$apply();
+
+                    expect(result).to.equal(false);
+                    expect(validator.makeValid.called).to.equal(false);
+                    expect(validator.makeInvalid.called).to.equal(true);
+                });
+
                 it('should call validator to make element valid when there are $formatters and the form is valid', function () {
                     var el = angular.element('<input type="text" ng-model="propOne"/>');
 
