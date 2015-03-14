@@ -9,5 +9,5 @@
   "date": "Por favor digite uma data válida",
   "pattern": "Por favor certifique-se que a informação digitada segue o padrão {0}",
   "number": "Por favor digite um número válido",
-  "url": "Por favor digite uma URL válida no formato http(s)://wwww.google.com"
+  "url": "Por favor digite uma URL válida no formato http(s)://www.google.com"
 }

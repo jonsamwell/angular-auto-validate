@@ -9,5 +9,5 @@
     "date": "Veuillez saisir une date valide",
     "pattern": "Veuillez vous assurer que les informations saisies correspondent au format {0}",
     "number": "Veuillez saisir un nombre valide",
-    "url": "Veuillez saisir une URL valide sous la forme http(s)://wwww.google.com"
+    "url": "Veuillez saisir une URL valide sous la forme http(s)://www.google.com"
 }
