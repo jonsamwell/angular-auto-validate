@@ -9,5 +9,5 @@
     "date": "Inserisci una data valida",
     "pattern": "Assicurati che l'informazione che hai inserito rispecchi lo schema {0}",
     "number": "Inserisci un numero valido",
-    "url": "Inserisci un valido URL nel formato http(s)://wwww.google.com"
+    "url": "Inserisci un valido URL nel formato http(s)://www.google.com"
 }
