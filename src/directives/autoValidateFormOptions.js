@@ -6,7 +6,7 @@
     }
 
     function parseOptions(ctrl, validator, attrs) {
-        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || validator.defaultFormValidationOptions;
+        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || angular.copy(validator.defaultFormValidationOptions);
         opts.forceValidation = false;
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
@@ -34,7 +34,7 @@
         'validator',
         function (validator) {
             return {
-                restrict: 'E',
+                restrict: 'EA',
                 require: 'form',
                 priority: 9999,
                 compile: function () {

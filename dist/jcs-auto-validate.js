@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.02 - 2015-03-11
+ * angular-auto-validate - v1.18.02 - 2015-03-12
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -896,22 +896,25 @@
                                 return errorTypeToReturn;
                             };
 
-                        if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
-                            isValid = !modelCtrl.$invalid;
+                        if (frmOptions.disabled === false) {
 
-                            if (isValid) {
-                                validator.makeValid(el);
-                            } else {
-                                errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
-                                if (errorType === undefined) {
+                            if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
+                                isValid = !modelCtrl.$invalid;
 
-                                    // we have a weird situation some users are encountering where a custom control
-                                    // is valid but the ngModel is report it isn't and thus no valid error type can be found
-                                    isValid = true;
+                                if (isValid) {
+                                    validator.makeValid(el);
                                 } else {
-                                    validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                                        validator.makeInvalid(el, errorMsg);
-                                    });
+                                    errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
+                                    if (errorType === undefined) {
+
+                                        // we have a weird situation some users are encountering where a custom control
+                                        // is valid but the ngModel is report it isn't and thus no valid error type can be found
+                                        isValid = true;
+                                    } else {
+                                        validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                                            validator.makeInvalid(el, errorMsg);
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -953,7 +956,7 @@
                                         // we probably have a sub form
                                         validateForm(ctrlElement);
                                     } else {
-                                        isValid = validateElement(controller, ctrlElement, formOptions);
+                                        isValid = validateElement(controller, ctrlElement, getFormOptions(ctrlElement));
                                         frmValid = frmValid && isValid;
                                     }
                                 }
@@ -1020,7 +1023,7 @@
     }
 
     function parseOptions(ctrl, validator, attrs) {
-        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || validator.defaultFormValidationOptions;
+        var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || angular.copy(validator.defaultFormValidationOptions);
         opts.forceValidation = false;
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
@@ -1048,7 +1051,7 @@
         'validator',
         function (validator) {
             return {
-                restrict: 'E',
+                restrict: 'EA',
                 require: 'form',
                 priority: 9999,
                 compile: function () {

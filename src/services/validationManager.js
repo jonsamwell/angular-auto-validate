@@ -81,22 +81,25 @@
                                 return errorTypeToReturn;
                             };
 
-                        if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
-                            isValid = !modelCtrl.$invalid;
+                        if (frmOptions.disabled === false) {
 
-                            if (isValid) {
-                                validator.makeValid(el);
-                            } else {
-                                errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
-                                if (errorType === undefined) {
+                            if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
+                                isValid = !modelCtrl.$invalid;
 
-                                    // we have a weird situation some users are encountering where a custom control
-                                    // is valid but the ngModel is report it isn't and thus no valid error type can be found
-                                    isValid = true;
+                                if (isValid) {
+                                    validator.makeValid(el);
                                 } else {
-                                    validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                                        validator.makeInvalid(el, errorMsg);
-                                    });
+                                    errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
+                                    if (errorType === undefined) {
+
+                                        // we have a weird situation some users are encountering where a custom control
+                                        // is valid but the ngModel is report it isn't and thus no valid error type can be found
+                                        isValid = true;
+                                    } else {
+                                        validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                                            validator.makeInvalid(el, errorMsg);
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -138,7 +141,7 @@
                                         // we probably have a sub form
                                         validateForm(ctrlElement);
                                     } else {
-                                        isValid = validateElement(controller, ctrlElement, formOptions);
+                                        isValid = validateElement(controller, ctrlElement, getFormOptions(ctrlElement));
                                         frmValid = frmValid && isValid;
                                     }
                                 }

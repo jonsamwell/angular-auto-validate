@@ -251,6 +251,58 @@
                     expect(result).to.equal(true);
                 });
 
+                it('should only validate elements on the parent and not disabled subform', function () {
+                    var frm = compileElement('<form name="frm1" ng-submit=""></form>', true),
+                        subFrm = compileElement('<ng-form name="subFrm1" disable-dynamic-validation></ng-form>', true),
+                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />', true),
+                        inpt2 = compileElement('<input type="text" ng-model="surname" ng-minlength="2" />', true),
+                        isValid;
+
+                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
+                    frm.append(inpt);
+                    subFrm.append(inpt2);
+                    inpt.controller('ngModel').$setValidity('minlength', false);
+                    inpt.controller('ngModel').$pristine = false;
+                    inpt2.controller('ngModel').$pristine = false;
+                    inpt2.controller('ngModel').$setValidity('minlength', false);
+                    frm.append(subFrm);
+                    $rootScope.$apply();
+
+                    defer.resolve('errorMsg');
+                    isValid = validationManager.validateForm(frm);
+
+                    $rootScope.$apply();
+
+                    expect(isValid).to.equal(false);
+                    expect(validator.makeInvalid.calledOnce).to.equal(true);
+                });
+
+                it('should only validate elements on the parent and not disabled subform where the subform is via an attribute', function () {
+                    var frm = compileElement('<form name="frm1" ng-submit=""></form>', true),
+                        subFrm = compileElement('<div ng-form name="subFrm1" disable-dynamic-validation></div>', true),
+                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />', true),
+                        inpt2 = compileElement('<input type="text" ng-model="surname" ng-minlength="2" />', true),
+                        isValid;
+
+                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
+                    frm.append(inpt);
+                    subFrm.append(inpt2);
+                    inpt.controller('ngModel').$setValidity('minlength', false);
+                    inpt.controller('ngModel').$pristine = false;
+                    inpt2.controller('ngModel').$pristine = false;
+                    inpt2.controller('ngModel').$setValidity('minlength', false);
+                    frm.append(subFrm);
+                    $rootScope.$apply();
+
+                    defer.resolve('errorMsg');
+                    isValid = validationManager.validateForm(frm);
+
+                    $rootScope.$apply();
+
+                    expect(isValid).to.equal(false);
+                    expect(validator.makeInvalid.calledOnce).to.equal(true);
+                });
+
                 it('should call validator makeInvalid once when a single form input element is invalid', function () {
                     var frm = compileElement('<form name="frm1"></form>', true),
                         inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />', true),
