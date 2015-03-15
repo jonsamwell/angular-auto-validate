@@ -115,7 +115,7 @@
                     expect(validator.makeInvalid.called).to.equal(true);
                 });
 
-                it.only('should validate the element regardless of whether there is a parent form', function () {
+                it('should validate the element regardless of whether there is a parent form', function () {
                     var el = compileElement('<input type="text" ng-model="propOne" required="" ng-minlength="10"/>', true),
                         result,
                         frmOptions = getDefaultFormOptions();
@@ -311,6 +311,8 @@
                     sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     frm.append(inpt);
                     inpt.controller('ngModel').$setValidity('minlength', false);
+                    inpt.controller('ngModel').$pristine = false;
+
                     $rootScope.$apply();
 
                     defer.resolve('errorMsg');
@@ -332,7 +334,9 @@
                     frm.append(inpt);
                     frm.append(inpt2);
                     inpt.controller('ngModel').$setValidity('minlength', false);
+                    inpt.controller('ngModel').$pristine = false;
                     inpt2.controller('ngModel').$setValidity('maxlength', false);
+                    inpt2.controller('ngModel').$pristine = false;
                     $rootScope.$apply();
 
                     defer.resolve('errorMsg');
@@ -354,6 +358,7 @@
                     ngFrm.append(inpt);
                     frm.append(ngFrm);
                     inpt.controller('ngModel').$setValidity('minlength', false);
+                    inpt.controller('ngModel').$pristine = false;
                     $rootScope.$apply();
 
                     defer.resolve('errorMsg');

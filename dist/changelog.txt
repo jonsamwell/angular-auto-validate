@@ -1,7 +1,4 @@
-V1.18.04 15/03/2015
-Fixing bower issue
-
-V1.18.03 15/03/2015
+V1.18.03 16/03/2015
 Fixed typo in all lang files.
 Fixed issue with disabling validation on sub forms.
 
