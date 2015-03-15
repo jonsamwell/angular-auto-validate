@@ -1,3 +1,7 @@
+V1.18.03 15/03/2015
+Fixed typo in all lang files.
+Fixed issue with disabling validation on sub forms.
+
 V1.18.02 10/03/2015
 Fixed null ref issue when a control doesn't have a parent form so no autoValidateOptions were defined.
 

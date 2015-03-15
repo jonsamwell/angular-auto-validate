@@ -9,5 +9,5 @@
     "date": "Bitte ein gültiges Datum eingeben.",
     "pattern": "Die Eingabe sollte diesem Muster entsprechen: {0}",
     "number": "Bitte eine gültige Zahl eingeben.",
-    "url": "Bitte eine gültige URL in diesem Format eingeben: http(s)://wwww.google.com"
+    "url": "Bitte eine gültige URL in diesem Format eingeben: http(s)://www.google.com"
 }

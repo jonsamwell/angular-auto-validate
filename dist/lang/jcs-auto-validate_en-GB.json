@@ -9,5 +9,5 @@
     "date": "Please enter a valid date",
     "pattern": "Please ensure the entered information adheres to this pattern {0}",
     "number": "Please enter a valid number",
-    "url": "Please enter a valid URL in the format of http(s)://wwww.google.com"
+    "url": "Please enter a valid URL in the format of http(s)://www.google.com"
 }
