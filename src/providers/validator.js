@@ -223,7 +223,6 @@
                     enableValidElementStyling = enabled;
                 };
 
-
                 /**
                  * @ngdoc function
                  * @name validator#setInvalidElementStyling
@@ -276,7 +275,8 @@
                 this.defaultFormValidationOptions = {
                     forceValidation: false,
                     disabled: false,
-                    validateNonVisibleControls: false
+                    validateNonVisibleControls: false,
+                    removeExternalValidationErrorsOnSubmit: true
                 };
 
                 this.$get = [

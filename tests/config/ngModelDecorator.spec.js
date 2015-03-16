@@ -158,6 +158,76 @@
 
                     expect(ngModelController.setExternalValidation).to.not.equal(undefined);
                 });
+
+                it('should set a key in the errors collection', function () {
+                    var ngModelController,
+                        errorKey = 'errorKey';
+
+                    compileElement('<input ng-model="model" />');
+                    ngModelController = element.controller('ngModel');
+                    ngModelController.setExternalValidation(errorKey, 'msgKey', true);
+
+
+                    expect(ngModelController.$error[errorKey]).to.equal(false);
+                    expect(ngModelController.externalErrors[errorKey]).to.equal(false);
+                });
+            });
+
+            describe('removeExternalValidation', function () {
+                it('should be defined on the ngModelCtrl', function () {
+                    var ngModelController;
+
+                    compileElement('<input ng-model="model" />');
+                    ngModelController = element.controller('ngModel');
+
+                    expect(ngModelController.removeExternalValidation).to.not.equal(undefined);
+                });
+
+                it('should set a key in the errors collection', function () {
+                    var ngModelController,
+                        errorKey = 'errorKey';
+
+                    compileElement('<input ng-model="model" />');
+                    ngModelController = element.controller('ngModel');
+                    ngModelController.setExternalValidation(errorKey, 'msgKey', true);
+
+
+                    expect(ngModelController.$error[errorKey]).to.equal(false);
+                    expect(ngModelController.externalErrors[errorKey]).to.equal(false);
+
+                    ngModelController.removeExternalValidation(errorKey, true);
+
+                    expect(ngModelController.$error[errorKey]).to.equal(true);
+                    expect(ngModelController.externalErrors[errorKey]).to.equal(undefined);
+                });
+            });
+
+            describe('removeAllExternalValidation', function () {
+                it('should be defined on the ngModelCtrl', function () {
+                    var ngModelController;
+
+                    compileElement('<input ng-model="model" />');
+                    ngModelController = element.controller('ngModel');
+
+                    expect(ngModelController.removeAllExternalValidation).to.not.equal(undefined);
+                });
+
+                it('should set a key in the errors collection', function () {
+                    var ngModelController,
+                        errorKey = 'errorKey';
+
+                    compileElement('<input ng-model="model" />');
+                    ngModelController = element.controller('ngModel');
+                    ngModelController.setExternalValidation(errorKey, 'msgKey', true);
+
+                    expect(ngModelController.$error[errorKey]).to.equal(false);
+                    expect(ngModelController.externalErrors[errorKey]).to.equal(false);
+
+                    ngModelController.removeAllExternalValidation();
+
+                    expect(ngModelController.$error[errorKey]).to.equal(true);
+                    expect(ngModelController.externalErrors[errorKey]).to.equal(undefined);
+                });
             });
         });
     });

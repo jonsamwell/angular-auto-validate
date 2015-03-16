@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.3 - 2015-03-16
+ * angular-auto-validate - v1.18.4 - 2015-03-16
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -234,7 +234,6 @@
                     enableValidElementStyling = enabled;
                 };
 
-
                 /**
                  * @ngdoc function
                  * @name validator#setInvalidElementStyling
@@ -287,7 +286,8 @@
                 this.defaultFormValidationOptions = {
                     forceValidation: false,
                     disabled: false,
-                    validateNonVisibleControls: false
+                    validateNonVisibleControls: false,
+                    removeExternalValidationErrorsOnSubmit: true
                 };
 
                 this.$get = [
@@ -897,9 +897,12 @@
                             };
 
                         if (frmOptions.disabled === false) {
-
                             if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
                                 isValid = !modelCtrl.$invalid;
+
+                                if (frmOptions.removeExternalValidationErrorsOnSubmit && modelCtrl.removeAllExternalValidation) {
+                                    modelCtrl.removeAllExternalValidation();
+                                }
 
                                 if (isValid) {
                                     validator.makeValid(el);
@@ -1027,6 +1030,7 @@
         opts.forceValidation = false;
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
+        opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
     }
 
     angular.module('jcs-autoValidate').directive('form', [
@@ -1225,27 +1229,42 @@
 
                             ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
                                 if (addToModelErrors) {
-                                    if (ngModelCtrl.$error) {
-                                        ngModelCtrl.$error[errorMsgKey] = false;
-                                    } else {
-                                        ngModelCtrl.$errors[errorMsgKey] = false;
-                                    }
+                                    var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
+                                    collection[errorMsgKey] = false;
                                 }
 
+                                ngModelCtrl.externalErrors = ngModelCtrl.externalErrors || {};
+                                ngModelCtrl.externalErrors[errorMsgKey] = false;
                                 validationManager.setElementValidationError(element, errorMsgKey, errorMessage);
                             };
 
                             ngModelCtrl.removeExternalValidation = function (errorMsgKey, addToModelErrors) {
                                 if (addToModelErrors) {
-                                    if (ngModelCtrl.$error) {
-                                        ngModelCtrl.$error[errorMsgKey] = true;
-                                    } else {
-                                        ngModelCtrl.$errors[errorMsgKey] = true;
-                                    }
+                                    var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
+                                    collection[errorMsgKey] = true;
+                                }
+
+                                if (ngModelCtrl.externalErrors) {
+                                    delete ngModelCtrl.externalErrors[errorMsgKey];
                                 }
 
                                 validationManager.resetElement(element);
                             };
+
+                            ngModelCtrl.removeAllExternalValidation = function () {
+                                if (ngModelCtrl.externalErrors) {
+                                    var errorCollection = ngModelCtrl.$error || ngModelCtrl.$errors;
+                                    angular.forEach(ngModelCtrl.externalErrors, function (value, key) {
+                                        errorCollection[key] = true;
+                                    });
+
+                                    ngModelCtrl.externalErrors = {};
+
+                                    validationManager.resetElement(element);
+                                }
+                            };
+
+
 
                             if (frmCtrl) {
                                 frmCtrl.setExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {
