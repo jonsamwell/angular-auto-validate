@@ -369,6 +369,26 @@
                     expect(isValid).to.equal(false);
                     expect(validator.makeInvalid.calledOnce).to.equal(true);
                 });
+
+              it('should call validator makeInvalid once when a single form input element is invalid and the form is submitted', function () {
+                var frm = compileElement('<form name="frm1" ng-submit=""></form>', true),
+                    inpt = compileElement('<input type="text" ng-model="name" required="required" ng-minlength="2" />', true);
+
+                sandbox.stub(elementUtils, 'isElementVisible').returns(true);
+                frm.append(inpt);
+                $rootScope.$apply();
+
+                frm.on('submit', function (event) {
+                  event.preventDefault();
+                });
+
+                defer.resolve('errorMsg');
+                frm.trigger('submit');
+
+                $rootScope.$apply();
+
+                expect(validator.makeInvalid.calledOnce).to.equal(true);
+              });
             });
 
             describe('resetForm', function () {

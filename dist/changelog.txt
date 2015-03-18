@@ -1,3 +1,6 @@
+V1.18.5 18/03/2015
+Fixed issue where a form would not validate when the submit button was clicked.
+
 V1.18.4 16/03/2015
 Added form attr option 'removeExternalValidationErrorsOnSubmit' to clear all the external validation warnings
 on an element when a form is validated.  Note: this is true by default so you don't need to include the attribute on the

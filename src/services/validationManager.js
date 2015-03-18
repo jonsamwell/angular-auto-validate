@@ -135,16 +135,21 @@
                         var frmValid = true,
                             frmCtrl = frmElement ? angular.element(frmElement).controller('form') : undefined,
                             processElement = function (ctrlElement, force, formOptions) {
-                                var controller, isValid;
+                                var controller, isValid, ctrlFormOptions;
+
                                 ctrlElement = angular.element(ctrlElement);
                                 controller = ctrlElement.controller('ngModel');
 
-                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement, frmCtrl.autoValidateFormOptions))) {
+                                if (controller !== undefined && (force || shouldValidateElement(ctrlElement, formOptions))) {
                                     if (ctrlElement[0].nodeName.toLowerCase() === 'form') {
                                         // we probably have a sub form
                                         validateForm(ctrlElement);
                                     } else {
-                                        isValid = validateElement(controller, ctrlElement, getFormOptions(ctrlElement));
+                                        // we need to get the options for the element rather than use the passed in as the
+                                        // element could be an ng-form and have different options to the parent form.
+                                        ctrlFormOptions = getFormOptions(ctrlElement);
+                                        ctrlFormOptions.forceValidation = force;
+                                        isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
                                         frmValid = frmValid && isValid;
                                     }
                                 }
@@ -162,7 +167,7 @@
                         // IE8 holds the child controls collection in the all property
                         // Firefox in the elements and chrome as a child iterator
                         angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (ctrlElement) {
-                            processElement(ctrlElement, false, clonedOptions);
+                            processElement(ctrlElement, true, clonedOptions);
                         });
 
                         // If you have a custom form control that should be validated i.e.

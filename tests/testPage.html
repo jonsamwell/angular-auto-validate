@@ -150,7 +150,7 @@
     <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
     <script type="text/javascript" src="../src/directives/formReset.js"></script>
     <script type="text/javascript" src="../src/directives/autoValidateFormOptions.js"></script>
-    <script type="text/javascript" src="../src/directives/registerCustomFormControl.js.js"></script>
+    <script type="text/javascript" src="../src/directives/registerCustomFormControl.js"></script>
     <script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
 
     <script type="text/javascript">
@@ -158,9 +158,10 @@
         var app = angular.module('jcs-demo', ['jcs-autoValidate']);
 
         app.controller('demoCtrl', [
+            '$http',
             '$scope',
             'bootstrap3ElementModifier',
-            function ($scope, bootstrap3ElementModifier) {
+            function ($http, $scope, bootstrap3ElementModifier) {
                 $scope.user = {};
                 $scope.bs3Icons = false;
 
