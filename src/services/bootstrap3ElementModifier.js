@@ -16,19 +16,23 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var retuenEl,
-                            parent = el;
-                        for (var i = 0; i <= 3; i += 1) {
-                            if (parent !== undefined && parent.hasClass(klass)) {
-                                retuenEl = parent;
-                                break;
-                            } else if (parent !== undefined) {
-                                parent = parent.parent();
+                        var retuenEl;
+                        var recursiveCheckClassPrescenceOn = function (parent) {
+                            if (parent.length > 0) {
+                                if (parent.hasClass(klass)) {
+                                    retuenEl = parent;
+                                } else {
+                                    recursiveCheckClassPrescenceOn(angular.element(parent).parent());
+                                }
+                            } else {
+                                $log.error('Angular-auto-validate: no element with class ' + klass + 'found ascending from element:');
+                                $log.error(el);
                             }
-                        }
-
+                        };
+                        recursiveCheckClassPrescenceOn(el);
                         return retuenEl;
                     },
+
 
                     findWithClassElementDesc = function (el, klass) {
                         var child;

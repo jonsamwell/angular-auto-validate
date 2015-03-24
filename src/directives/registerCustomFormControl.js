@@ -4,16 +4,18 @@
     angular.module('jcs-autoValidate').directive('registerCustomFormControl', [
         function () {
             var findParentForm = function (el) {
-                var parent = el;
-                for (var i = 0; i <= 50; i += 1) {
-                    if (parent !== undefined && parent.nodeName.toLowerCase() === 'form') {
-                        break;
-                    } else if (parent !== undefined) {
-                        parent = angular.element(parent).parent()[0];
+                var form;
+                var recursiveUntilFormElm = function (parent) {
+                    if (parent !== undefined) {
+                        if (parent.nodeName.toLowerCase() === 'form') {
+                            form = parent;
+                        } else {
+                            recursiveUntilFormElm(angular.element(parent).parent()[0]);
+                        }
                     }
-                }
-
-                return parent;
+                };
+                recursiveUntilFormElm(el);
+                return form;
             };
 
             return {
