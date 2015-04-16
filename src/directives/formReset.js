@@ -7,13 +7,19 @@
             return {
                 restrict: 'E',
                 link: function (scope, el) {
-                    el.on('reset', function () {
-                        validationManager.resetForm(el);
-                    });
+                    var formController = el.controller('form');
 
-                    scope.$on('$destroy', function () {
-                        el.off('reset');
-                    });
+                    if (formController !== undefined &&
+                        formController.autoValidateFormOptions &&
+                        formController.autoValidateFormOptions.disabled === false) {
+                        el.on('reset', function () {
+                            validationManager.resetForm(el);
+                        });
+
+                        scope.$on('$destroy', function () {
+                            el.off('reset');
+                        });
+                    }
                 }
             };
         }

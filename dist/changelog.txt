@@ -1,3 +1,7 @@
+V1.18.6 16/04/2015
+Increased limit on findWithClassElementAsc in BS3Modifier to find an element.
+Fixed issues with globally disabling validation and only applying it on certain forms.
+
 V1.18.5 18/03/2015
 Fixed issue where a form would not validate when the submit button was clicked.
 

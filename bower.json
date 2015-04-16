@@ -1,8 +1,8 @@
 {
   "name": "angular-auto-validate",
-  "version": "1.18.5",
+  "version": "1.18.6",
   "description": "An automatic validation module for AngularJS which gets rid of excess html in favour of dynamic element modification to notify the user of validation errors",
-  "main": "dist/jcs-auto-validate.min.js",
+  "main": "dist/jcs-auto-validate.js",
   "keywords": [
     "angularjs",
     "angular",

@@ -115,7 +115,7 @@
                     },
 
                     resetForm = function (frmElement) {
-                        angular.forEach(frmElement[0], function (element) {
+                        angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (element) {
                             var controller,
                                 ctrlElement = angular.element(element);
                             controller = ctrlElement.controller('ngModel');

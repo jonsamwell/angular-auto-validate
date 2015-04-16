@@ -1,7 +1,7 @@
 (function (document, angular, sinon) {
     'use strict';
     var sandbox, $rootScope,
-        element, $compile,
+        element, $compile, validator,
         compileElement = function (html) {
             element = angular.element(html);
             $compile(element)($rootScope);
@@ -15,6 +15,7 @@
             sandbox = sinon.sandbox.create();
             $rootScope = $injector.get('$rootScope');
             $compile = $injector.get('$compile');
+            validator = $injector.get('validator');
         }));
 
         afterEach(function () {
@@ -47,6 +48,13 @@
             });
 
             it('should set the property "disableDynamicValidation" on the form controller to false', function () {
+                compileElement('<form name="test" disable-dynamic-validation="false"></form>');
+
+                expect(element.controller('form').autoValidateFormOptions.disabled).to.equal(false);
+            });
+
+            it('should set the property "disableDynamicValidation" on the form controller to false', function () {
+                sandbox.stub(validator, 'isEnabled').returns(false);
                 compileElement('<form name="test" disable-dynamic-validation="false"></form>');
 
                 expect(element.controller('form').autoValidateFormOptions.disabled).to.equal(false);

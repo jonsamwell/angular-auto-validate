@@ -370,37 +370,32 @@
                     expect(validator.makeInvalid.calledOnce).to.equal(true);
                 });
 
-              it('should call validator makeInvalid once when a single form input element is invalid and the form is submitted', function () {
-                var frm = compileElement('<form name="frm1" ng-submit=""></form>', true),
-                    inpt = compileElement('<input type="text" ng-model="name" required="required" ng-minlength="2" />', true);
+                it('should call validator makeInvalid once when a single form input element is invalid and the form is submitted', function () {
+                    var frm = compileElement('<form name="frm1" ng-submit=""></form>', true),
+                        inpt = compileElement('<input type="text" ng-model="name" required="required" ng-minlength="2" />', true);
 
-                sandbox.stub(elementUtils, 'isElementVisible').returns(true);
-                frm.append(inpt);
-                $rootScope.$apply();
+                    sandbox.stub(elementUtils, 'isElementVisible').returns(true);
+                    frm.append(inpt);
+                    $rootScope.$apply();
 
-                frm.on('submit', function (event) {
-                  event.preventDefault();
+                    frm.on('submit', function (event) {
+                        event.preventDefault();
+                    });
+
+                    defer.resolve('errorMsg');
+                    frm.trigger('submit');
+
+                    $rootScope.$apply();
+
+                    expect(validator.makeInvalid.calledOnce).to.equal(true);
                 });
-
-                defer.resolve('errorMsg');
-                frm.trigger('submit');
-
-                $rootScope.$apply();
-
-                expect(validator.makeInvalid.calledOnce).to.equal(true);
-              });
             });
 
             describe('resetForm', function () {
                 it('should call validator.makeDefault for every input type element in the form', function () {
-                    var frm = compileElement('<form name="frm1"></form>', true),
-                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />', true),
-                        inpt2 = compileElement('<input type="text" ng-model="lastname" ng-maxlength="2" />', true);
-
+                    var frm = compileElement('<form name="frm1"><input type="text" ng-model="name" ng-minlength="2" /><input type="text" ng-model="lastname" ng-maxlength="2" /></form>', true);
                     sandbox.stub(validator, 'makeDefault');
 
-                    frm.append(inpt);
-                    frm.append(inpt2);
                     $rootScope.$apply();
 
                     validationManager.resetForm(frm);
@@ -411,14 +406,9 @@
                 });
 
                 it('should call validator makeDefault once when a single form input element is invalid in a child ng-form', function () {
-                    var frm = compileElement('<form name="frm1"></form>', true),
-                        ngFrm = compileElement('<ng-form name="childFrm"></ng-form>', true),
-                        inpt = compileElement('<input type="text" ng-model="name" ng-minlength="2" />', true);
-
+                    var frm = compileElement('<form name="frm1"><ng-form name="childFrm"><input type="text" ng-model="name" ng-minlength="2" /></ng-form></form>', true);
                     sandbox.stub(validator, 'makeDefault');
 
-                    ngFrm.append(inpt);
-                    frm.append(ngFrm);
                     $rootScope.$apply();
 
                     validationManager.resetForm(frm);

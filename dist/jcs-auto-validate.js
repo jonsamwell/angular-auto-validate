@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.5 - 2015-03-18
+ * angular-auto-validate - v1.18.6 - 2015-04-16
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -317,18 +317,18 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var retuenEl,
+                        var returnEl,
                             parent = el;
-                        for (var i = 0; i <= 3; i += 1) {
+                        for (var i = 0; i <= 10; i += 1) {
                             if (parent !== undefined && parent.hasClass(klass)) {
-                                retuenEl = parent;
+                                returnEl = parent;
                                 break;
                             } else if (parent !== undefined) {
                                 parent = parent.parent();
                             }
                         }
 
-                        return retuenEl;
+                        return returnEl;
                     },
 
                     findWithClassElementDesc = function (el, klass) {
@@ -930,7 +930,7 @@
                     },
 
                     resetForm = function (frmElement) {
-                        angular.forEach(frmElement[0], function (element) {
+                        angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (element) {
                             var controller,
                                 ctrlElement = angular.element(element);
                             controller = ctrlElement.controller('ngModel');
@@ -1036,6 +1036,10 @@
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
         opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
+
+        if (validator.isEnabled() === false && parseBooleanAttributeValue(attrs.disableDynamicValidation) === false) {
+            opts.disabled = false;
+        }
     }
 
     angular.module('jcs-autoValidate').directive('form', [
@@ -1084,13 +1088,19 @@
             return {
                 restrict: 'E',
                 link: function (scope, el) {
-                    el.on('reset', function () {
-                        validationManager.resetForm(el);
-                    });
+                    var formController = el.controller('form');
 
-                    scope.$on('$destroy', function () {
-                        el.off('reset');
-                    });
+                    if (formController !== undefined &&
+                        formController.autoValidateFormOptions &&
+                        formController.autoValidateFormOptions.disabled === false) {
+                        el.on('reset', function () {
+                            validationManager.resetForm(el);
+                        });
+
+                        scope.$on('$destroy', function () {
+                            el.off('reset');
+                        });
+                    }
                 }
             };
         }
@@ -1144,14 +1154,29 @@
                             force = attrs.ngSubmitForce === 'true';
 
                         return function (scope, element) {
-                            element.on('submit', function (event) {
+                            function handlerFn(event) {
                                 scope.$apply(function () {
-                                    if (validationManager.validateForm(element) || force === true) {
+                                    var formController = $element.controller('form');
+                                    if (formController !== undefined &&
+                                        formController !== null &&
+                                        formController.autoValidateFormOptions &&
+                                        formController.autoValidateFormOptions.disabled === true) {
                                         fn(scope, {
                                             $event: event
                                         });
+                                    } else {
+                                        if (validationManager.validateForm(element) || force === true) {
+                                            fn(scope, {
+                                                $event: event
+                                            });
+                                        }
                                     }
                                 });
+                            }
+
+                            element.on('submit', handlerFn);
+                            scope.$on('$destroy', function () {
+                                element.off('submit', handlerFn);
                             });
                         };
                     };
@@ -1201,7 +1226,9 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
+                            if (attrs.formnovalidate === undefined &&
+                                (frmCtrl !== undefined && frmCtrl !== null && frmCtrl.autoValidateFormOptions &&
+                                    frmCtrl.autoValidateFormOptions.disabled === false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);
@@ -1268,8 +1295,6 @@
                                     validationManager.resetElement(element);
                                 }
                             };
-
-
 
                             if (frmCtrl) {
                                 frmCtrl.setExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {

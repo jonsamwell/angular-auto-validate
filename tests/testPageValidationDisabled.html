@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html ng-app="jcs-demo">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Angular Auto Validate Test Page</title>
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="row" ng-controller="demoCtrl">
+        <div class="col-sm-8 col-sm-offset-1">
+            <form role="form" name="testFrm" novalidate="novalidate"
+                  ng-submit="submit();">
+                <div class="form-group">
+                    <label class="control-label">Name</label>
+                    <input type="text" name="firstname" class="form-control" placeholder="Enter Your Name"
+                           ng-model="user.name" required="required" ng-minlength="3" ng-required-err-type="nameRequired"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-envelope"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control"
+                               ng-model="user.email"
+                               placeholder="Enter email address"
+                               ng-required="true"/>
+
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="reset" class="btn btn-default">Reset</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+
+    <!--<script type="text/javascript" src="../dist/jcs-auto-validate.min.js"></script>-->
+
+    <script type="text/javascript" src="../src/jcs-auto-validate.js"></script>
+    <script type="text/javascript" src="../src/providers/validator.js"></script>
+    <script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/debounce.js"></script>
+    <script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>
+    <script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/validationManager.js"></script>
+    <script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
+    <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
+    <script type="text/javascript" src="../src/directives/formReset.js"></script>
+    <script type="text/javascript" src="../src/directives/autoValidateFormOptions.js"></script>
+    <script type="text/javascript" src="../src/directives/registerCustomFormControl.js"></script>
+    <script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
+
+    <script type="text/javascript">
+    (function (angular) {
+        var app = angular.module('jcs-demo', ['jcs-autoValidate']);
+
+        app.controller('demoCtrl', [
+            '$http',
+            '$scope',
+            'bootstrap3ElementModifier',
+            function ($http, $scope, bootstrap3ElementModifier) {
+                $scope.user = {};
+                $scope.bs3Icons = false;
+
+                $scope.toggleBS3Icons = function () {
+                    $scope.bs3Icons = !$scope.bs3Icons;
+                    bootstrap3ElementModifier.enableValidationStateIcons($scope.bs3Icons);
+                };
+
+                $scope.submit = function (frmCtrl) {
+                    $http.post('https://api.app.com/users', $scope.user).then(function (response) {
+                        if (response.data.validationErrors) {
+                            angular.forEach(response.data.validationErrors, function (error) {
+                                frmCtrl.setExternalValidation(error.key, error.messageKey, error.message);
+                            })
+                        }
+                    });
+                };
+
+                $scope.setExternalError = function (frm) {
+                    frm.setExternalValidation('firstname', undefined, 'hello joe');
+                };
+
+                $scope.toggleBS3Icons();
+            }
+        ]);
+
+        app.run([
+            'validator',
+            'defaultErrorMessageResolver',
+            function (validator, defaultErrorMessageResolver) {
+                validator.enable(false);
+                defaultErrorMessageResolver.setI18nFileRootPath('../src/lang/');
+                defaultErrorMessageResolver.setCulture('en-gb');
+
+                defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                    errorMessages['pattern'] = 'Custom Error Message {0}';
+                    errorMessages['mustcontainword'] = 'Please enter the word "{0}"';
+                    errorMessages['nameRequired'] = 'Please enter your name';
+                });
+            }
+        ]);
+    }(angular));
+    </script>
+</body>
+</html>

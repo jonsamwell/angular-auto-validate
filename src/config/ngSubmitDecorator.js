@@ -13,14 +13,29 @@
                             force = attrs.ngSubmitForce === 'true';
 
                         return function (scope, element) {
-                            element.on('submit', function (event) {
+                            function handlerFn(event) {
                                 scope.$apply(function () {
-                                    if (validationManager.validateForm(element) || force === true) {
+                                    var formController = $element.controller('form');
+                                    if (formController !== undefined &&
+                                        formController !== null &&
+                                        formController.autoValidateFormOptions &&
+                                        formController.autoValidateFormOptions.disabled === true) {
                                         fn(scope, {
                                             $event: event
                                         });
+                                    } else {
+                                        if (validationManager.validateForm(element) || force === true) {
+                                            fn(scope, {
+                                                $event: event
+                                            });
+                                        }
                                     }
                                 });
+                            }
+
+                            element.on('submit', handlerFn);
+                            scope.$on('$destroy', function () {
+                                element.off('submit', handlerFn);
                             });
                         };
                     };

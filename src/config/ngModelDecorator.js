@@ -36,7 +36,9 @@
                                 ngModelOptions = ngModelCtrl.$options === undefined ? undefined : ngModelCtrl.$options;
                             }
 
-                            if (attrs.formnovalidate === undefined || (frmCtrl !== undefined && frmCtrl.disableDynamicValidation === false)) {
+                            if (attrs.formnovalidate === undefined &&
+                                (frmCtrl !== undefined && frmCtrl !== null && frmCtrl.autoValidateFormOptions &&
+                                    frmCtrl.autoValidateFormOptions.disabled === false)) {
                                 if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                                     ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                                         setValidity.call(ngModelCtrl, validationErrorKey, isValid);
@@ -103,8 +105,6 @@
                                     validationManager.resetElement(element);
                                 }
                             };
-
-
 
                             if (frmCtrl) {
                                 frmCtrl.setExternalValidation = function (modelProperty, errorMsgKey, errorMessageOverride, addToModelErrors) {

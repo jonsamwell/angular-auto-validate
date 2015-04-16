@@ -11,6 +11,10 @@
         opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
         opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
+
+        if (validator.isEnabled() === false && parseBooleanAttributeValue(attrs.disableDynamicValidation) === false) {
+            opts.disabled = false;
+        }
     }
 
     angular.module('jcs-autoValidate').directive('form', [

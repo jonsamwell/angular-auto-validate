@@ -16,18 +16,18 @@
                         el.removeClass('has-success has-error has-feedback');
                     },
                     findWithClassElementAsc = function (el, klass) {
-                        var retuenEl,
+                        var returnEl,
                             parent = el;
-                        for (var i = 0; i <= 3; i += 1) {
+                        for (var i = 0; i <= 10; i += 1) {
                             if (parent !== undefined && parent.hasClass(klass)) {
-                                retuenEl = parent;
+                                returnEl = parent;
                                 break;
                             } else if (parent !== undefined) {
                                 parent = parent.parent();
                             }
                         }
 
-                        return retuenEl;
+                        return returnEl;
                     },
 
                     findWithClassElementDesc = function (el, klass) {
