@@ -97,7 +97,7 @@
                                 if (ngModelCtrl.externalErrors) {
                                     var errorCollection = ngModelCtrl.$error || ngModelCtrl.$errors;
                                     angular.forEach(ngModelCtrl.externalErrors, function (value, key) {
-                                        errorCollection[key] = true;
+                                        delete errorCollection[key];
                                     });
 
                                     ngModelCtrl.externalErrors = {};
