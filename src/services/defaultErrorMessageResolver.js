@@ -115,6 +115,15 @@
                         return defer.promise;
                     },
 
+                    /**
+                     * @param {string} errorType
+                     * @param {Element} el
+                     * @returns {string|undefined} Returns value of specified attribute, otherwise undefined
+                     */
+                    getElementErrorKey = function (errorType, el) {
+                        return el.attr('ng-' + errorType) || el.attr('data-ng-' + errorType) || el.attr(errorType);
+                    },
+
                     getMessageTypeOverride = function (errorType, el) {
                         var overrideKey;
 
@@ -122,11 +131,7 @@
                             // try and find an attribute which overrides the given error type in the form of errorType-err-type="someMsgKey"
                             errorType += '-err-type';
 
-
-                            overrideKey = el.attr('ng-' + errorType);
-                            if (overrideKey === undefined) {
-                                overrideKey = el.attr('data-ng-' + errorType) || el.attr(errorType);
-                            }
+                            overrideKey = getElementErrorKey(errorType, el);
 
                             if (overrideKey) {
                                 overrideKey = overrideKey.replace(/[\W]/g, '');
@@ -173,13 +178,14 @@
                             }
 
                             if (el && el.attr) {
-                                try {
-                                    parameter = el.attr('ng-' + errorType);
-                                    if (parameter === undefined) {
-                                        parameter = el.attr('data-ng-' + errorType) || el.attr(errorType);
-                                    }
+                                if (el.attr(errorType + '-error-message')) {
+                                    errMsg = el.attr(errorType + '-error-message');
+                                }
 
-                                    parameters.push(parameter || '');
+                                try {
+                                    parameter = getElementErrorKey(errorType, el) || '';
+
+                                    parameters.push(parameter);
 
                                     errMsg = errMsg.format(parameters);
                                 } catch (e) {}

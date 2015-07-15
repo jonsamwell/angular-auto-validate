@@ -3,13 +3,44 @@
 
     angular.module('jcs-autoValidate')
         .factory('jcs-elementUtils', [
-            function () {
-                var isElementVisible = function (el) {
+            'validator',
+            function (validator) {
+
+                function isElementVisible(el) {
                     return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
-                };
+                }
+
+                /**
+                 * @param {FormController} formController - Instance of FormController
+                 * @param {Array.<string>} excludedErrors - Array contains list of excluded errors names
+                 */
+                function hasErrorsOtherThanExcluded(formController, excludedErrors) {
+                    /**
+                     * @param {string} errorName - Name of an error
+                     * @return {boolean} Returns true if specified error name is in the list of exluded errors, otherwise false
+                     */
+                    var isExludedError = function (errorName) {
+                        return excludedErrors.indexOf(errorName) > -1;
+                    };
+
+                    for (var errorName in formController.$error) {
+                        if (!isExludedError(errorName) && formController.$error[errorName]) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                function getFormOptions(el) {
+                    var frmCtrl = angular.element(el).controller('form');
+                    return frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : validator.defaultFormValidationOptions;
+                }
 
                 return {
-                    isElementVisible: isElementVisible
+                    isElementVisible: isElementVisible,
+                    hasErrorsOtherThanExcluded: hasErrorsOtherThanExcluded,
+                    getFormOptions: getFormOptions
                 };
             }
         ]);
@@ -26,8 +57,7 @@
                     },
 
                     getFormOptions = function (el) {
-                        var frmCtrl = angular.element(el).controller('form');
-                        return frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : validator.defaultFormValidationOptions;
+                        return elementUtils.getFormOptions(el);
                     },
 
                     /**
@@ -39,22 +69,22 @@
                      * @returns {boolean} true to indicate it should be validated
                      */
                     shouldValidateElement = function (el, formOptions) {
-                        var result = el &&
+                        return el &&
                             el.length > 0 &&
                             (elementIsVisible(el) || formOptions.validateNonVisibleControls) &&
-                            (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
-                                el[0].hasAttribute('register-custom-form-control'));
-                        return result;
+                            (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 || el[0].hasAttribute('register-custom-form-control'));
                     },
 
                     /**
                      * @ngdoc validateElement
                      * @name validation#validateElement
+                     * @param {Object} frmCtrl is an instance of FormController, holds the information about the whole form
                      * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
                      * @param {options}
                      *  - forceValidation if set to true forces the validation even if the element is pristine
                      *  - disabled if set to true forces the validation is disabled and will return true
                      *  - validateNonVisibleControls if set to true forces the validation of non visible element i.e. display:block
+                     *  - displayErrorsAfterSubmit If set to true, it will display errors only after the first try of submitting the form
                      * @description
                      * Validate the form element and make invalid/valid element model status.
                      *
@@ -63,26 +93,31 @@
                      * autoValidateFormOptions object on the form controller.  This can be left blank and will be found by the
                      * validationManager.
                      */
-                    validateElement = function (modelCtrl, el, options) {
+                    validateElement = function (frmCtrl, modelCtrl, el, options) {
                         var isValid = true,
                             frmOptions = options || getFormOptions(el),
                             needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
+                                    isErrorAllowedOnSubmit = false,
                                     errorTypeToReturn;
+
                                 angular.forEach($errors, function (status, errortype) {
-                                    if (keepGoing && status) {
+                                    if (status && (keepGoing || isErrorAllowedOnSubmit)) {
                                         keepGoing = false;
                                         errorTypeToReturn = errortype;
+                                        isErrorAllowedOnSubmit = frmOptions.errorsAllowedOnSubmit.indexOf(errorTypeToReturn) > -1;
                                     }
                                 });
 
                                 return errorTypeToReturn;
                             };
 
+                        frmCtrl = frmCtrl || {};
+
                         if (frmOptions.disabled === false) {
-                            if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
+                            if ((frmOptions.forceValidation || (modelCtrl && needsValidation)) && shouldValidateElement(el, frmOptions)) {
                                 isValid = !modelCtrl.$invalid;
 
                                 if (frmOptions.removeExternalValidationErrorsOnSubmit && modelCtrl.removeAllExternalValidation) {
@@ -99,9 +134,11 @@
                                         // is valid but the ngModel is report it isn't and thus no valid error type can be found
                                         isValid = true;
                                     } else {
-                                        validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                                            validator.makeInvalid(el, errorMsg);
-                                        });
+
+                                        if (!frmOptions.displayErrorsAfterSubmit || frmCtrl.$submitted) {
+                                            setElementValidationError(el, errorType);
+                                        }
+
                                     }
                                 }
                             }
@@ -149,7 +186,7 @@
                                         // element could be an ng-form and have different options to the parent form.
                                         ctrlFormOptions = getFormOptions(ctrlElement);
                                         ctrlFormOptions.forceValidation = force;
-                                        isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
+                                        isValid = validateElement(frmCtrl, controller, ctrlElement, ctrlFormOptions);
                                         frmValid = frmValid && isValid;
                                     }
                                 }

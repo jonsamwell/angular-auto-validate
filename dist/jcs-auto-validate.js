@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.6 - 2015-04-16
+ * angular-auto-validate - v1.18.6 - 2015-05-27
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -287,7 +287,9 @@
                     forceValidation: false,
                     disabled: false,
                     validateNonVisibleControls: false,
-                    removeExternalValidationErrorsOnSubmit: true
+                    displayErrorsAfterSubmit: false,
+                    removeExternalValidationErrorsOnSubmit: true,
+                    errorsAllowedOnSubmit: []
                 };
 
                 this.$get = [
@@ -636,6 +638,15 @@
                         return defer.promise;
                     },
 
+                    /**
+                     * @param {string} errorType
+                     * @param {Element} el
+                     * @returns {string|undefined} Returns value of specified attribute, otherwise undefined
+                     */
+                    getElementErrorKey = function (errorType, el) {
+                        return el.attr('ng-' + errorType) || el.attr('data-ng-' + errorType) || el.attr(errorType);
+                    },
+
                     getMessageTypeOverride = function (errorType, el) {
                         var overrideKey;
 
@@ -643,11 +654,7 @@
                             // try and find an attribute which overrides the given error type in the form of errorType-err-type="someMsgKey"
                             errorType += '-err-type';
 
-
-                            overrideKey = el.attr('ng-' + errorType);
-                            if (overrideKey === undefined) {
-                                overrideKey = el.attr('data-ng-' + errorType) || el.attr(errorType);
-                            }
+                            overrideKey = getElementErrorKey(errorType, el);
 
                             if (overrideKey) {
                                 overrideKey = overrideKey.replace(/[\W]/g, '');
@@ -694,13 +701,14 @@
                             }
 
                             if (el && el.attr) {
-                                try {
-                                    parameter = el.attr('ng-' + errorType);
-                                    if (parameter === undefined) {
-                                        parameter = el.attr('data-ng-' + errorType) || el.attr(errorType);
-                                    }
+                                if (el.attr(errorType + '-error-message')) {
+                                    errMsg = el.attr(errorType + '-error-message');
+                                }
 
-                                    parameters.push(parameter || '');
+                                try {
+                                    parameter = getElementErrorKey(errorType, el) || '';
+
+                                    parameters.push(parameter);
 
                                     errMsg = errMsg.format(parameters);
                                 } catch (e) {}
@@ -729,26 +737,15 @@
         .factory('foundation5ElementModifier', [
 
             function () {
-                var reset = function (el, inputEl) {
-                        angular.forEach(el.find('small'), function (smallEl) {
-                            if (angular.element(smallEl).hasClass('error')) {
-                                angular.element(smallEl).remove();
-                            }
-                        });
-
-                        inputEl.removeClass('error');
-                    },
-                    findParentColumn = function (el) {
-                        var parent = el;
-                        for (var i = 0; i <= 3; i += 1) {
-                            if (parent !== undefined && parent.hasClass('columns')) {
-                                break;
-                            } else if (parent !== undefined) {
-                                parent = parent.parent();
-                            }
+                /**
+                 * @param {Element} el - The input control element that is the target of the validation.
+                 */
+                var reset = function (el) {
+                        var nextEl = el.next();
+                        if (nextEl.hasClass('error')) {
+                            nextEl.remove();
                         }
-
-                        return parent;
+                        el.removeClass('error');
                     },
 
                     /**
@@ -763,8 +760,7 @@
                      * @param {Element} el - The input control element that is the target of the validation.
                      */
                     makeValid = function (el) {
-                        var parentColumn = findParentColumn(el);
-                        reset(parentColumn && parentColumn.length > 0 ? parentColumn : el, el);
+                        reset(el);
                     },
 
                     /**
@@ -779,14 +775,9 @@
                      * @param {Element} el - The input control element that is the target of the validation.
                      */
                     makeInvalid = function (el, errorMsg) {
-                        var parentColumn = findParentColumn(el),
-                            helpTextEl;
-                        reset(parentColumn || el, el);
+                        reset(el);
                         el.addClass('error');
-                        if (parentColumn) {
-                            helpTextEl = angular.element('<small class="error">' + errorMsg + '</small>');
-                            parentColumn.append(helpTextEl);
-                        }
+                        el.after(angular.element('<small class="error">' + errorMsg + '</small>'));
                     },
 
                     /**
@@ -818,13 +809,44 @@
 
     angular.module('jcs-autoValidate')
         .factory('jcs-elementUtils', [
-            function () {
-                var isElementVisible = function (el) {
+            'validator',
+            function (validator) {
+
+                function isElementVisible(el) {
                     return el[0].offsetWidth > 0 && el[0].offsetHeight > 0;
-                };
+                }
+
+                /**
+                 * @param {FormController} formController - Instance of FormController
+                 * @param {Array.<string>} excludedErrors - Array contains list of excluded errors names
+                 */
+                function hasErrorsOtherThanExcluded(formController, excludedErrors) {
+                    /**
+                     * @param {string} errorName - Name of an error
+                     * @return {boolean} Returns true if specified error name is in the list of exluded errors, otherwise false
+                     */
+                    var isExludedError = function (errorName) {
+                        return excludedErrors.indexOf(errorName) > -1;
+                    };
+
+                    for (var errorName in formController.$error) {
+                        if (!isExludedError(errorName) && formController.$error[errorName]) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                function getFormOptions(el) {
+                    var frmCtrl = angular.element(el).controller('form');
+                    return frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : validator.defaultFormValidationOptions;
+                }
 
                 return {
-                    isElementVisible: isElementVisible
+                    isElementVisible: isElementVisible,
+                    hasErrorsOtherThanExcluded: hasErrorsOtherThanExcluded,
+                    getFormOptions: getFormOptions
                 };
             }
         ]);
@@ -841,8 +863,7 @@
                     },
 
                     getFormOptions = function (el) {
-                        var frmCtrl = angular.element(el).controller('form');
-                        return frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : validator.defaultFormValidationOptions;
+                        return elementUtils.getFormOptions(el);
                     },
 
                     /**
@@ -854,22 +875,22 @@
                      * @returns {boolean} true to indicate it should be validated
                      */
                     shouldValidateElement = function (el, formOptions) {
-                        var result = el &&
+                        return el &&
                             el.length > 0 &&
                             (elementIsVisible(el) || formOptions.validateNonVisibleControls) &&
-                            (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
-                                el[0].hasAttribute('register-custom-form-control'));
-                        return result;
+                            (elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 || el[0].hasAttribute('register-custom-form-control'));
                     },
 
                     /**
                      * @ngdoc validateElement
                      * @name validation#validateElement
+                     * @param {Object} frmCtrl is an instance of FormController, holds the information about the whole form
                      * @param {object} modelCtrl holds the information about the element e.g. $invalid, $valid
                      * @param {options}
                      *  - forceValidation if set to true forces the validation even if the element is pristine
                      *  - disabled if set to true forces the validation is disabled and will return true
                      *  - validateNonVisibleControls if set to true forces the validation of non visible element i.e. display:block
+                     *  - displayErrorsAfterSubmit If set to true, it will display errors only after the first try of submitting the form
                      * @description
                      * Validate the form element and make invalid/valid element model status.
                      *
@@ -878,26 +899,31 @@
                      * autoValidateFormOptions object on the form controller.  This can be left blank and will be found by the
                      * validationManager.
                      */
-                    validateElement = function (modelCtrl, el, options) {
+                    validateElement = function (frmCtrl, modelCtrl, el, options) {
                         var isValid = true,
                             frmOptions = options || getFormOptions(el),
                             needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
                             errorType,
                             findErrorType = function ($errors) {
                                 var keepGoing = true,
+                                    isErrorAllowedOnSubmit = false,
                                     errorTypeToReturn;
+
                                 angular.forEach($errors, function (status, errortype) {
-                                    if (keepGoing && status) {
+                                    if (status && (keepGoing || isErrorAllowedOnSubmit)) {
                                         keepGoing = false;
                                         errorTypeToReturn = errortype;
+                                        isErrorAllowedOnSubmit = frmOptions.errorsAllowedOnSubmit.indexOf(errorTypeToReturn) > -1;
                                     }
                                 });
 
                                 return errorTypeToReturn;
                             };
 
+                        frmCtrl = frmCtrl || {};
+
                         if (frmOptions.disabled === false) {
-                            if ((frmOptions.forceValidation || (shouldValidateElement(el, frmOptions) && modelCtrl && needsValidation))) {
+                            if ((frmOptions.forceValidation || (modelCtrl && needsValidation)) && shouldValidateElement(el, frmOptions)) {
                                 isValid = !modelCtrl.$invalid;
 
                                 if (frmOptions.removeExternalValidationErrorsOnSubmit && modelCtrl.removeAllExternalValidation) {
@@ -914,9 +940,11 @@
                                         // is valid but the ngModel is report it isn't and thus no valid error type can be found
                                         isValid = true;
                                     } else {
-                                        validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                                            validator.makeInvalid(el, errorMsg);
-                                        });
+
+                                        if (!frmOptions.displayErrorsAfterSubmit || frmCtrl.$submitted) {
+                                            setElementValidationError(el, errorType);
+                                        }
+
                                     }
                                 }
                             }
@@ -964,7 +992,7 @@
                                         // element could be an ng-form and have different options to the parent form.
                                         ctrlFormOptions = getFormOptions(ctrlElement);
                                         ctrlFormOptions.forceValidation = force;
-                                        isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
+                                        isValid = validateElement(frmCtrl, controller, ctrlElement, ctrlFormOptions);
                                         frmValid = frmValid && isValid;
                                     }
                                 }
@@ -1148,28 +1176,34 @@
                 '$delegate',
                 '$parse',
                 'validationManager',
-                function ($delegate, $parse, validationManager) {
+                'jcs-elementUtils',
+                function ($delegate, $parse, validationManager, elementUtils) {
                     $delegate[0].compile = function ($element, attrs) {
                         var fn = $parse(attrs.ngSubmit),
-                            force = attrs.ngSubmitForce === 'true';
+                            isForcedSubmit = attrs.ngSubmitForce === 'true';
 
                         return function (scope, element) {
                             function handlerFn(event) {
                                 scope.$apply(function () {
+                                    var isFormValid;
+                                    var isDisabled;
+                                    var errorsAllowedOnSubmit;
+                                    var hasOnlyAllowedErrors;
                                     var formController = $element.controller('form');
-                                    if (formController !== undefined &&
-                                        formController !== null &&
-                                        formController.autoValidateFormOptions &&
-                                        formController.autoValidateFormOptions.disabled === true) {
+
+                                    if (formController === undefined || formController === null || !formController.autoValidateFormOptions) {
+                                        return;
+                                    }
+
+                                    isFormValid = validationManager.validateForm(element);
+                                    isDisabled = formController.autoValidateFormOptions.disabled === true;
+                                    errorsAllowedOnSubmit = formController.autoValidateFormOptions.errorsAllowedOnSubmit;
+                                    hasOnlyAllowedErrors = errorsAllowedOnSubmit.length > 0 && !elementUtils.hasErrorsOtherThanExcluded(formController, errorsAllowedOnSubmit);
+
+                                    if (isDisabled || isForcedSubmit || isFormValid || (!isFormValid && hasOnlyAllowedErrors)) {
                                         fn(scope, {
                                             $event: event
                                         });
-                                    } else {
-                                        if (validationManager.validateForm(element) || force === true) {
-                                            fn(scope, {
-                                                $event: event
-                                            });
-                                        }
                                     }
                                 });
                             }
@@ -1212,7 +1246,7 @@
                                 setPristine = ngModelCtrl.$setPristine,
                                 setValidationState = debounce.debounce(function () {
                                     var validateOptions = frmCtrl !== undefined && frmCtrl !== null ? frmCtrl.autoValidateFormOptions : undefined;
-                                    validationManager.validateElement(ngModelCtrl, element, validateOptions);
+                                    validationManager.validateElement(frmCtrl, ngModelCtrl, element, validateOptions);
                                 }, 100);
 
                             // in the RC of 1.3 there is no directive.link only the directive.compile which

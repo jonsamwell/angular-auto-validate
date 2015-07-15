@@ -2,12 +2,17 @@
     'use strict';
 
     describe('jcs-autoValidate validationManager', function () {
-        var sandbox, $rootScope, $compile, $q, validator, validationManager, modelCtrl, defer, elementUtils,
+        var sandbox, $rootScope, $compile, $q, validator, validationManager, frmCtrl, modelCtrl, defer, elementUtils,
             setModelCtrl = function () {
                 modelCtrl = {
                     $parsers: [],
                     $formatters: [],
                     $name: 'name'
+                };
+            },
+            setFormCtrl = function () {
+                frmCtrl = {
+                    $submitted: false
                 };
             },
             compileElement = function (html, includesForm) {
@@ -22,7 +27,10 @@
                 return {
                     forceValidation: false,
                     disabled: false,
-                    validateNonVisibleControls: false
+                    validateNonVisibleControls: false,
+                    displayErrorsAfterSubmit: false,
+                    removeExternalValidationErrorsOnSubmit: true,
+                    errorsAllowedOnSubmit: []
                 };
             };
 
@@ -43,11 +51,13 @@
                 sandbox.stub(validator, 'makeInvalid');
                 sandbox.stub(validator, 'getErrorMessage').returns(defer.promise);
 
+                setFormCtrl();
                 setModelCtrl();
             }));
 
             afterEach(function () {
                 sandbox.restore();
+                setFormCtrl();
                 setModelCtrl();
             });
 
@@ -62,7 +72,7 @@
 
                     sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$pristine = true;
-                    result = validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    result = validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
                     expect(result).to.equal(true);
                     expect(validator.makeValid.called).to.equal(false);
                     expect(validator.makeInvalid.called).to.equal(false);
@@ -74,7 +84,7 @@
 
                     sandbox.stub(elementUtils, 'isElementVisible').returns(true);
                     modelCtrl.$pristine = false;
-                    result = validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    result = validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
                     expect(result).to.equal(true);
                     expect(validator.makeValid.called).to.equal(true);
                     expect(validator.makeInvalid.called).to.equal(false);
@@ -86,7 +96,7 @@
 
                     sandbox.stub(elementUtils, 'isElementVisible').returns(false);
                     modelCtrl.$pristine = false;
-                    result = validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    result = validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
 
                     expect(result).to.equal(true);
                     expect(validator.makeValid.called).to.equal(false);
@@ -105,7 +115,7 @@
                     modelCtrl.$errors = {
                         required: true
                     };
-                    result = validationManager.validateElement(modelCtrl, el, frmOptions);
+                    result = validationManager.validateElement(frmCtrl, modelCtrl, el, frmOptions);
 
                     defer.resolve('error message');
                     $rootScope.$apply();
@@ -127,7 +137,7 @@
                     modelCtrl.$errors = {
                         required: true
                     };
-                    result = validationManager.validateElement(modelCtrl, el, frmOptions);
+                    result = validationManager.validateElement(frmCtrl, modelCtrl, el, frmOptions);
 
                     defer.resolve('error message');
                     $rootScope.$apply();
@@ -145,7 +155,7 @@
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = false;
 
-                    validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
                     expect(validator.makeValid.calledOnce).to.equal(true);
                     expect(validator.makeValid.calledWith(el)).to.equal(true);
                 });
@@ -163,7 +173,7 @@
                     };
 
                     defer.resolve(errorMsg);
-                    validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
 
                     $rootScope.$apply();
 
@@ -184,7 +194,7 @@
                     };
 
                     defer.resolve(errorMsg);
-                    validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
 
                     $rootScope.$apply();
 
@@ -197,7 +207,7 @@
                         result;
 
                     sandbox.stub(elementUtils, 'isElementVisible').returns(true);
-                    result = validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    result = validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
 
                     expect(result).to.equal(true);
                 });
@@ -210,7 +220,7 @@
                     modelCtrl.$pristine = false;
                     modelCtrl.$invalid = false;
 
-                    validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
                     expect(validator.makeValid.calledOnce).to.equal(true);
                     expect(validator.makeValid.calledWith(el)).to.equal(true);
                 });
@@ -228,7 +238,7 @@
                     };
 
                     defer.resolve(errorMsg);
-                    validationManager.validateElement(modelCtrl, el, getDefaultFormOptions());
+                    validationManager.validateElement(frmCtrl, modelCtrl, el, getDefaultFormOptions());
 
                     $rootScope.$apply();
 
