@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Agrege el mensaje de error para {0}",
+    "email": "Ingrese un correo válido",
+    "minlength": "Inserte almenos {0} caracteres",
+    "maxlength": "Has ingresado más del número {0} de caracteres permitidos {0}",
+    "min": "Ingrese un valor menor a {0}",
+    "max": "Ingrese un valor mayor a {0}",
+    "required": "Este campo es requerido",
+    "date": "Ingrese una fecha válida",
+    "pattern": "Asegurese que la información ingresada coincide con el patrón {0}",
+    "number": "Ingrese sólo números",
+    "url": "Ingrese una URL válida en el formato http(s)://www.google.com"
+}
