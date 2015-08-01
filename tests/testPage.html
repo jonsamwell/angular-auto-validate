@@ -13,8 +13,8 @@
                 <button type="button" class="btn btn-primary" ng-click="toggleBS3Icons();">Toggle Validation State Icons</button>
             </p>
             <form role="form" name="testFrm" novalidate="novalidate"
-                  ng-submit="submit();"
-                  validate-non-visible-controls
+                  ng-submit="submit(testFrm);"
+                  validate-non-visible-controls="false"
                   disable-dynamic-validatio_n>
                 <button type="button" class="btn btn-primary" ng-click="setExternalError(testFrm);">Set External Error On Firstname</button>
                 <div class="form-group">
@@ -171,6 +171,7 @@
                 };
 
                 $scope.submit = function (frmCtrl) {
+                    frmCtrl.autoValidateFormOptions.resetForm();
                     $http.post('https://api.app.com/users', $scope.user).then(function (response) {
                         if (response.data.validationErrors) {
                             angular.forEach(response.data.validationErrors, function (error) {
