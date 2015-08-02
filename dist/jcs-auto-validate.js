@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.9 - 2015-08-03
+ * angular-auto-validate - v1.18.10 - 2015-08-03
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -1042,7 +1042,8 @@
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
         opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
 
-        if (validator.isEnabled() === false && parseBooleanAttributeValue(attrs.disableDynamicValidation) === false) {
+        // the library might be globally disabled but enabled on a particular form.
+        if (opts.disabled === true && parseBooleanAttributeValue(attrs.disableDynamicValidation) === false) {
             opts.disabled = false;
         }
     }
