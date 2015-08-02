@@ -171,7 +171,8 @@
                 };
 
                 $scope.submit = function (frmCtrl) {
-                    frmCtrl.autoValidateFormOptions.resetForm();
+                    $scope.$broadcast('form:testFrm:reset');
+                    //frmCtrl.autoValidateFormOptions.resetForm();
                     $http.post('https://api.app.com/users', $scope.user).then(function (response) {
                         if (response.data.validationErrors) {
                             angular.forEach(response.data.validationErrors, function (error) {

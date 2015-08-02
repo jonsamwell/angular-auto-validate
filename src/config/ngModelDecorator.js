@@ -83,7 +83,7 @@
                             ngModelCtrl.removeExternalValidation = function (errorMsgKey, addToModelErrors) {
                                 if (addToModelErrors) {
                                     var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
-                                    collection[errorMsgKey] = true;
+                                    delete collection[errorMsgKey];
                                 }
 
                                 if (ngModelCtrl.externalErrors) {

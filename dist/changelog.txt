@@ -1,9 +1,13 @@
+V1.18.8 03/08/2015
+Reset a form programatically is now possible via the resetForm method on the form controllers autoValidateFormOptions object
+or by raising the event 'form:{formName}:reset on the controllers scope.  The formName is the value in the name attribute
+on the form tag which also corresponds to the formController.$name property.
+Fixes issue with removing external validation raised in https://github.com/jonsamwell/angular-auto-validate/issues/39
+
 V1.18.7 01/08/2015
 Added Spanish i18n file.
 Fixed issue https://github.com/jonsamwell/angular-auto-validate/issues/73
 Added the ability to reset the form via the form controller (https://github.com/jonsamwell/angular-auto-validate/issues/82)
-
-
 
 V1.18.6 16/04/2015
 Increased limit on findWithClassElementAsc in BS3Modifier to find an element.

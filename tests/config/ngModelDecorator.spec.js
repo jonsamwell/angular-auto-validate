@@ -197,7 +197,7 @@
 
                     ngModelController.removeExternalValidation(errorKey, true);
 
-                    expect(ngModelController.$error[errorKey]).to.equal(true);
+                    expect(ngModelController.$error[errorKey]).to.equal(undefined);
                     expect(ngModelController.externalErrors[errorKey]).to.equal(undefined);
                 });
             });
@@ -225,7 +225,7 @@
 
                     ngModelController.removeAllExternalValidation();
 
-                    expect(ngModelController.$error[errorKey]).to.equal(true);
+                    expect(ngModelController.$error[errorKey]).to.equal(undefined);
                     expect(ngModelController.externalErrors[errorKey]).to.equal(undefined);
                 });
             });

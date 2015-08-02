@@ -7,7 +7,8 @@
                 force = attrs.ngSubmitForce === 'true';
 
             return function (scope, element) {
-                var formController = element.controller('form');
+                var formController = element.controller('form'),
+                    resetListenerOffFn;
 
                 function handlerFn(event) {
                     scope.$apply(function () {
@@ -29,16 +30,28 @@
                 }
 
                 function resetFormFn() {
-                    validationManager.resetForm(element);
+                    if (element[0].reset) {
+                        element[0].reset();
+                    } else {
+                        validationManager.resetForm(element);
+                    }
                 }
 
                 if (formController && formController.autoValidateFormOptions) {
+                    // allow the form to be reset programatically or via raising the event
+                    // form:formName:reset
                     formController.autoValidateFormOptions.resetForm = resetFormFn;
+                    if (formController.$name !== undefined && formController.$name !== '') {
+                        resetListenerOffFn = scope.$on('form:' + formController.$name + ':reset', resetFormFn);
+                    }
                 }
 
                 element.on('submit', handlerFn);
                 scope.$on('$destroy', function () {
                     element.off('submit', handlerFn);
+                    if (resetListenerOffFn) {
+                        resetListenerOffFn();
+                    }
                 });
             };
         };
