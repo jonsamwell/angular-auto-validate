@@ -65,6 +65,22 @@
 
                 expect(element.controller('form').autoValidateFormOptions.disabled).to.equal(false);
             });
+
+            it('should set the property "disableDynamicValidation" on the form controller to true if the library is disabled', function () {
+                validator.enable(false);
+                compileElement('<form name="test"></form>');
+
+                expect(element.controller('form').autoValidateFormOptions.disabled).to.equal(true);
+                validator.enable(true);
+            });
+
+            it('should set the property "disableDynamicValidation" on the form controller to false if the library is disabled but the form is enabled', function () {
+                validator.enable(false);
+                compileElement('<form name="test" disable-dynamic-validation="false"></form>');
+
+                expect(element.controller('form').autoValidateFormOptions.disabled).to.equal(false);
+                validator.enable(true);
+            });
         });
 
         describe('validateNonVisibleControls', function () {

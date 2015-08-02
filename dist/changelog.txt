@@ -1,5 +1,5 @@
 V1.18.10 03/08/2015
-Fixed issue #61 with gloablly disabling the library and enabling it for a particular form
+Fixed issue #61 with globally disabling the library and enabling it for a particular form
 
 V1.18.9 03/08/2015
 Fixed #68

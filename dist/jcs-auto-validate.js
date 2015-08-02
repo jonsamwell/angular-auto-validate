@@ -1042,8 +1042,9 @@
         opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
         opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
 
-        // the library might be globally disabled but enabled on a particular form.
-        if (opts.disabled === true && parseBooleanAttributeValue(attrs.disableDynamicValidation) === false) {
+        // the library might be globally disabled but enabled on a particular form so check the
+        // disableDynamicValidation attribute is on the form
+        if (validator.isEnabled() === false && attrs.disableDynamicValidation === 'false') {
             opts.disabled = false;
         }
     }
