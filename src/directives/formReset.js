@@ -14,6 +14,13 @@
                         formController.autoValidateFormOptions.disabled === false) {
                         el.on('reset', function () {
                             validationManager.resetForm(el);
+                            if (formController.$setPristine) {
+                                formController.$setPristine();
+                            }
+
+                            if (formController.$setUntouched) {
+                                formController.$setUntouched();
+                            }
                         });
 
                         scope.$on('$destroy', function () {

@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.8 - 2015-08-03
+ * angular-auto-validate - v1.18.9 - 2015-08-03
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -950,7 +950,7 @@
                         var frmValid = true,
                             frmCtrl = frmElement ? angular.element(frmElement).controller('form') : undefined,
                             processElement = function (ctrlElement, force, formOptions) {
-                                var controller, isValid, ctrlFormOptions;
+                                var controller, isValid, ctrlFormOptions, originalForceValue;
 
                                 ctrlElement = angular.element(ctrlElement);
                                 controller = ctrlElement.controller('ngModel');
@@ -963,9 +963,14 @@
                                         // we need to get the options for the element rather than use the passed in as the
                                         // element could be an ng-form and have different options to the parent form.
                                         ctrlFormOptions = getFormOptions(ctrlElement);
+                                        originalForceValue = ctrlFormOptions.forceValidation;
                                         ctrlFormOptions.forceValidation = force;
-                                        isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
-                                        frmValid = frmValid && isValid;
+                                        try {
+                                            isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
+                                            frmValid = frmValid && isValid;
+                                        } finally {
+                                            ctrlFormOptions.forceValidation = originalForceValue;
+                                        }
                                     }
                                 }
                             },
@@ -1095,6 +1100,13 @@
                         formController.autoValidateFormOptions.disabled === false) {
                         el.on('reset', function () {
                             validationManager.resetForm(el);
+                            if (formController.$setPristine) {
+                                formController.$setPristine();
+                            }
+
+                            if (formController.$setUntouched) {
+                                formController.$setUntouched();
+                            }
                         });
 
                         scope.$on('$destroy', function () {

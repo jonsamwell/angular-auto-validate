@@ -1,3 +1,7 @@
+V1.18.9 03/08/2015
+Fixed #68
+Setting form to untouched and pristine when a form reset is requested
+
 V1.18.8 03/08/2015
 Reset a form programatically is now possible via the resetForm method on the form controllers autoValidateFormOptions object
 or by raising the event 'form:{formName}:reset on the controllers scope.  The formName is the value in the name attribute
