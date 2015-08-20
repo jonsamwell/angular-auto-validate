@@ -1,76 +1,33 @@
 {
-    "passfail"      : false,
-    "maxerr"        : 10,
-
-
-    "browser"       : true,
-
-    "node"          : false,
-    "rhino"         : false,
-    "couch"         : false,
-    "wsh"           : false,
-
-    "jquery"        : true,
-    "prototypejs"   : false,
-    "mootools"      : false,
-    "dojo"          : false,
-
-    "predef"        : [
-        "angular",
-        "_",
-
-        "beforeEach",
-        "afterEach",
-        "inject",
-        "describe",
-        "expect",
-        "it",
-        "module",
-        "sinon"
-    ],
-
-
-    "debug"         : false,
-    "devel"         : true,
-
-
-    "es3"           : true,
-    "es5"           : false,
-    "strict"        : true,
-    "globalstrict"  : false,
-
-
-    "asi"           : false,
-    "laxbreak"      : false,
-    "bitwise"       : true,
-    "boss"          : false,
-    "curly"         : true,
-    "eqeqeq"        : true,
-    "eqnull"        : false,
-    "evil"          : false,
-    "expr"          : true,
-    "forin"         : false,
-    "immed"         : true,
-    "latedef"       : true,
-    "loopfunc"      : false,
-    "noarg"         : true,
-    "regexp"        : true,
-    "regexdash"     : false,
-    "scripturl"     : true,
-    "shadow"        : false,
-    "supernew"      : false,
-    "undef"         : true,
-
-    "newcap"        : true,
-    "noempty"       : true,
-    "nonew"         : true,
-    "nomen"         : true,
-    "onevar"        : true,
-    "plusplus"      : true,
-    "sub"           : false,
-    "trailing"      : true,
-    "white"         : true,
-    "indent"        : 4,
-    "unused"        : "vars",
-    "quotmark"      : "single"
+    "bitwise": true,
+    "immed": true,
+    "newcap": true,
+    "noarg": true,
+    "noempty": true,
+    "nonew": true,
+    "trailing": true,
+    "maxlen": 512,
+    "boss": true,
+    "eqnull": false,
+    "expr": true,
+    "globalstrict": false,
+    "laxbreak": true,
+    "loopfunc": true,
+    "sub": true,
+    "undef": true,
+    "indent": 2,
+    "globals": {
+        "document": true,
+        "window": true,
+        "angular": true,
+        "sinon": true,
+        "module": true,
+        "beforeEach": true,
+        "afterEach": true,
+        "inject": true,
+        "describe": true,
+        "expect": true,
+        "it": true,
+        "should": true
+    }
 }

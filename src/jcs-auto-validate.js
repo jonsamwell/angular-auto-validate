@@ -1,5 +1,1 @@
-(function (angular) {
-    'use strict';
-
-    angular.module('jcs-autoValidate', []);
-}(angular));
+angular.module('jcs-autoValidate', []);
