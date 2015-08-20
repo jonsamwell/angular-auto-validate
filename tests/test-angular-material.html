@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Auto Validate - Angular-Material Test</title>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    <meta name="viewport" content="initial-scale=1" />
+</head>
+
+<body>
+
+<div ng-app="app">
+    <form role="form" novalidate="novalidate" ng-submit="submit()">
+
+        <md-content class="md-padding" ng-controller="MainCtrl">
+            <div class="form-group">
+                <md-input-container>
+                    <md-select class="form-control" ng-model-options="{trackBy: '$value.code'}" ng-model="tmp.myObj">
+                        <md-option ng-repeat="item in myObjects track by item.code" ng-value="item">{{item.name}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-button class="md-raised md-primary">Primary</md-button>
+            </div>
+        </md-content>
+    </form>
+</div>
+
+<script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.js"></script>
+
+
+<!--<script type="text/javascript" src="../dist/jcs-auto-validate.min.js"></script>-->
+
+<script type="text/javascript" src="../src/jcs-auto-validate.js"></script>
+<script type="text/javascript" src="../src/providers/validator.js"></script>
+<script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>
+<script type="text/javascript" src="../src/services/debounce.js"></script>
+<script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>
+<script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>
+<script type="text/javascript" src="../src/services/validationManager.js"></script>
+<script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
+<script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
+<script type="text/javascript" src="../src/directives/formReset.js"></script>
+<script type="text/javascript" src="../src/directives/autoValidateFormOptions.js"></script>
+<script type="text/javascript" src="../src/directives/registerCustomFormControl.js"></script>
+<script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
+
+<script>
+    angular.module('app', [
+        'ngMaterial',
+        'jcs-autoValidate'
+    ]).controller('MainCtrl', function ($scope) {
+        $scope.myObjects = [
+            {
+                name: 'Name 1',
+                code: 'name1'
+            },
+            {
+                name: 'Name 2',
+                code: 'name2'
+            },
+            {
+                name: 'Name 3',
+                code: 'name3'
+            }
+        ];
+        $scope.tmp = {};
+        $scope.tmp.myObj = {
+            name: 'Name 2',
+            code: 'name2'
+        };
+    });
+</script>
+
+</body>
+</html>

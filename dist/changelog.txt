@@ -1,3 +1,6 @@
+V1.18.11 20/08/2015
+Fixed issue ngModelDecorator not working with angular-material due to incorrect pre and post function invocations
+
 V1.18.10 03/08/2015
 Fixed issue #61 with globally disabling the library and enabling it for a particular form
 
