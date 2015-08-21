@@ -1,3 +1,6 @@
+V1.18.13 21/08/2015
+Added a default value for the form option validateOnFormSubmit in the validator.
+
 V1.18.12 20/08/2015
 Added the ability to defer validation until after a form submit by adding the attribute 'validate-on-form-submit="true"'
 to the form element.

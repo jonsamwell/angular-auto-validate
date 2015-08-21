@@ -271,7 +271,8 @@ function ValidatorFn() {
     forceValidation: false,
     disabled: false,
     validateNonVisibleControls: false,
-    removeExternalValidationErrorsOnSubmit: true
+    removeExternalValidationErrorsOnSubmit: true,
+    validateOnFormSubmit: false
   };
 
   this.$get = [

@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.12 - 2015-08-21
+ * angular-auto-validate - v1.18.13 - 2015-08-21
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -281,7 +281,8 @@ function ValidatorFn() {
     forceValidation: false,
     disabled: false,
     validateNonVisibleControls: false,
-    removeExternalValidationErrorsOnSubmit: true
+    removeExternalValidationErrorsOnSubmit: true,
+    validateOnFormSubmit: false
   };
 
   this.$get = [
