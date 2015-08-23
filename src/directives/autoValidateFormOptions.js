@@ -1,15 +1,21 @@
-function parseBooleanAttributeValue(val) {
-  return val !== undefined && val !== 'false';
+function parseBooleanAttributeValue(val, defaultValue) {
+  if ((val === undefined || val === null) && defaultValue !== undefined) {
+    return defaultValue;
+  } else {
+    return val !== 'false';
+  }
 }
 
 function parseOptions(ctrl, validator, attrs) {
   var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || angular.copy(validator.defaultFormValidationOptions);
   opts.formController = ctrl;
   opts.forceValidation = false;
-  opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
-  opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
-  opts.validateOnFormSubmit = parseBooleanAttributeValue(attrs.validateOnFormSubmit);
-  opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
+  opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
+  opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);
+  opts.validateOnFormSubmit = parseBooleanAttributeValue(attrs.validateOnFormSubmit, opts.validateOnFormSubmit);
+  opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ?
+    opts.removeExternalValidationErrorsOnSubmit :
+    parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit, opts.removeExternalValidationErrorsOnSubmit);
 
   // the library might be globally disabled but enabled on a particular form so check the
   // disableDynamicValidation attribute is on the form

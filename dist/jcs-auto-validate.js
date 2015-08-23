@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.13 - 2015-08-21
+ * angular-auto-validate - v1.18.14 - 2015-08-23
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -1027,18 +1027,24 @@ ValidationManagerFn.$inject = [
 angular.module('jcs-autoValidate').factory('jcs-elementUtils', ElementUtilsFn);
 angular.module('jcs-autoValidate').factory('validationManager', ValidationManagerFn);
 
-function parseBooleanAttributeValue(val) {
-  return val !== undefined && val !== 'false';
+function parseBooleanAttributeValue(val, defaultValue) {
+  if ((val === undefined || val === null) && defaultValue !== undefined) {
+    return defaultValue;
+  } else {
+    return val !== 'false';
+  }
 }
 
 function parseOptions(ctrl, validator, attrs) {
   var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || angular.copy(validator.defaultFormValidationOptions);
   opts.formController = ctrl;
   opts.forceValidation = false;
-  opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation);
-  opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls);
-  opts.validateOnFormSubmit = parseBooleanAttributeValue(attrs.validateOnFormSubmit);
-  opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ? true : parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit);
+  opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
+  opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);
+  opts.validateOnFormSubmit = parseBooleanAttributeValue(attrs.validateOnFormSubmit, opts.validateOnFormSubmit);
+  opts.removeExternalValidationErrorsOnSubmit = attrs.removeExternalValidationErrorsOnSubmit === undefined ?
+    opts.removeExternalValidationErrorsOnSubmit :
+    parseBooleanAttributeValue(attrs.removeExternalValidationErrorsOnSubmit, opts.removeExternalValidationErrorsOnSubmit);
 
   // the library might be globally disabled but enabled on a particular form so check the
   // disableDynamicValidation attribute is on the form

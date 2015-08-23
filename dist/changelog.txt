@@ -1,3 +1,6 @@
+V1.18.14 23/08/2015
+Fixed issue with globally changing default form validation options.
+
 V1.18.13 21/08/2015
 Added a default value for the form option validateOnFormSubmit in the validator.
 

@@ -29,6 +29,20 @@
     });
 
     describe('disableDynamicValidation', function () {
+      it('should set the default value if config properties are not on form', function () {
+        sandbox.stub(validator, 'defaultFormValidationOptions', {
+          validateNonVisibleControls: 2,
+          removeExternalValidationErrorsOnSubmit: 3,
+          validateOnFormSubmit: 4
+        });
+
+        compileElement('<form name="test"></form>');
+        var controller = element.controller('form');
+        expect(controller.autoValidateFormOptions.validateNonVisibleControls).to.equal(2);
+        expect(controller.autoValidateFormOptions.removeExternalValidationErrorsOnSubmit).to.equal(3);
+        expect(controller.autoValidateFormOptions.validateOnFormSubmit).to.equal(4);
+      });
+
       it('should set the property "disableDynamicValidation" on the form controller to true', function () {
         compileElement('<form name="test" disable-dynamic-validation="true"></form>');
         var controller = element.controller('form');
@@ -53,7 +67,7 @@
         expect(element.controller('form').autoValidateFormOptions.disabled).to.equal(false);
       });
 
-      it('should set the property "disableDynamicValidation" on the form controller to false', function () {
+      it('should set the property "disableDynamicValidation" on the form controller to false when validator is disabled', function () {
         sandbox.stub(validator, 'isEnabled').returns(false);
         compileElement('<form name="test" disable-dynamic-validation="false"></form>');
 
