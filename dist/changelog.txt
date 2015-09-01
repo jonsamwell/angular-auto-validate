@@ -1,3 +1,8 @@
+V1.18.15 01/09/2015
+Added nl-nl (Dutch) language file thanks to <Jonathan voor de Poorte>
+Foundation modifier now checks for either the 'columns' or 'column' class as you can you either with foundation 5.
+Fixed issue https://github.com/jonsamwell/angular-auto-validate/issues/85 supportsNgModelOptions logic mistake
+
 V1.18.14 23/08/2015
 Fixed issue with globally changing default form validation options.
 

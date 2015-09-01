@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Voeg een foutmelding toe voor {0}",
+    "email": "Vul een geldig e-mailadres in",
+    "minlength": "Vul tenminste {0} karakters in",
+    "maxlength": "Er is meer dan de maximale {0} karakters ingevoerd",
+    "min": "Vul minimaal {0} in",
+    "max": "Vul maximaal {0} in",
+    "required": "Dit veld is verplicht",
+    "date": "Vul een geldige datum in",
+    "pattern": "De invoer komt niet overeen met het formaat: {0}",
+    "number": "Vul een geldig nummer in",
+    "url": "Vul een geldige url in. Het formaat is: http(s)://www.google.com"
+}

@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.14 - 2015-08-23
+ * angular-auto-validate - v1.18.15 - 2015-09-01
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -725,7 +725,7 @@ function Foundation5ElementModifierFn() {
     findParentColumn = function (el) {
       var parent = el;
       for (var i = 0; i <= 3; i += 1) {
-        if (parent !== undefined && parent.hasClass('columns')) {
+        if (parent !== undefined && (parent.hasClass('columns') || parent.hasClass('column'))) {
           break;
         } else if (parent !== undefined) {
           parent = parent.parent();
@@ -1268,7 +1268,7 @@ angular.module('jcs-autoValidate').config(['$provide',
               if (attrs.formnovalidate === undefined &&
                 (frmCtrl !== undefined && frmCtrl !== null && frmCtrl.autoValidateFormOptions &&
                   frmCtrl.autoValidateFormOptions.disabled === false)) {
-                if (supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
+                if (!supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
                   ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                     setValidity.call(ngModelCtrl, validationErrorKey, isValid);
                     setValidationState();

@@ -40,6 +40,13 @@
           expect(element.hasClass('error')).to.equal(false);
         });
 
+        it('should remove the error class from the parent element with .column class', function () {
+          var element = angular.element('<div class="column error"><input type="text" /></div>');
+          foundation5ElementModifier.makeDefault(element);
+
+          expect(element.hasClass('error')).to.equal(false);
+        });
+
         it('should remove the small.error element from the parent element with .columns class', function () {
           var element = angular.element('<div class="columns error"><input type="text" /><small class="error">error text</small></div>');
           foundation5ElementModifier.makeDefault(element);
