@@ -74,6 +74,18 @@
 
           expect(element.find('.help-block').length).to.equal(1);
         });
+
+        it('should handle checkbox with a label correctly', function () {
+          var element = angular.element('<div class="form-group"><label>' +
+            '<input id="el5" type="checkbox" class="form-control" required="required" ng-model="model.hasEmail">Label Value</label></div>');
+
+          bootstrap3ElementModifier.makeInvalid(element.find('#el5'));
+          $rootScope.$apply();
+
+          expect(element[0].outerHTML).to.equal('<div class="form-group has-error has-feedback"><label>' +
+            '<input id="el5" type="checkbox" class="form-control" required="required" ng-model="model.hasEmail">Label Value</label>' +
+            '<span class="help-block has-error error-msg">undefined</span></div>');
+        });
       });
 
       describe('makeValid', function () {

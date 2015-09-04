@@ -29,7 +29,7 @@ function ValidationManagerFn(validator, elementUtils) {
     },
 
     /**
-     * Only validate if the element is present, it is visible
+     * Only validate if the element is present, it is visible, if it is not a comment,
      * it is either a valid user input control (input, select, textare, form) or
      * it is a custom control register by the developer.
      * @param el
@@ -38,11 +38,12 @@ function ValidationManagerFn(validator, elementUtils) {
      */
     shouldValidateElement = function (el, formOptions, formSubmitted) {
       var elementExists = el && el.length > 0,
+        isElementAComment = elementExists && el[0].nodeName.toLowerCase() === '#comment',
         correctVisibilityToValidate,
         correctTypeToValidate,
         correctPhaseToValidate;
 
-      if (elementExists) {
+      if (elementExists && isElementAComment === false) {
         correctVisibilityToValidate = elementIsVisible(el) || formOptions.validateNonVisibleControls;
         correctTypeToValidate = elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
           el[0].hasAttribute('register-custom-form-control');
@@ -50,7 +51,7 @@ function ValidationManagerFn(validator, elementUtils) {
           (formOptions.validateOnFormSubmit === true && formSubmitted === true);
       }
 
-      return elementExists && correctVisibilityToValidate && correctTypeToValidate && correctPhaseToValidate;
+      return elementExists && !isElementAComment && correctVisibilityToValidate && correctTypeToValidate && correctPhaseToValidate;
 
     },
 

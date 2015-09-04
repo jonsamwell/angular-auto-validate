@@ -131,7 +131,7 @@ function Bootstrap3ElementModifierFn($log) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
         frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
-        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : el, helpTextEl);
+        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : getCorrectElementToPlaceErrorElementAfter(el), helpTextEl);
         if (addValidationStateIcons) {
           var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
@@ -139,11 +139,22 @@ function Bootstrap3ElementModifierFn($log) {
             iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
           }
 
-          insertAfter(el, angular.element(iconElText));
+          insertAfter(getCorrectElementToPlaceErrorElementAfter(el), angular.element(iconElText));
         }
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
       }
+    },
+
+    getCorrectElementToPlaceErrorElementAfter = function (el) {
+      var correctEl = el,
+        elType = el[0].type ? el[0].type.toLowerCase() : '';
+
+      if ((elType === 'checkbox' || elType === 'radio') && el.parent()[0].nodeName.toLowerCase() === 'label') {
+        correctEl = el.parent();
+      }
+
+      return correctEl;
     },
 
     /**

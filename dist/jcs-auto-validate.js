@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.15 - 2015-09-01
+ * angular-auto-validate - v1.18.16 - 2015-09-04
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -427,7 +427,7 @@ function Bootstrap3ElementModifierFn($log) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
         frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
-        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : el, helpTextEl);
+        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : getCorrectElementToPlaceErrorElementAfter(el), helpTextEl);
         if (addValidationStateIcons) {
           var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
@@ -435,11 +435,22 @@ function Bootstrap3ElementModifierFn($log) {
             iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
           }
 
-          insertAfter(el, angular.element(iconElText));
+          insertAfter(getCorrectElementToPlaceErrorElementAfter(el), angular.element(iconElText));
         }
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
       }
+    },
+
+    getCorrectElementToPlaceErrorElementAfter = function (el) {
+      var correctEl = el,
+        elType = el[0].type ? el[0].type.toLowerCase() : '';
+
+      if ((elType === 'checkbox' || elType === 'radio') && el.parent()[0].nodeName.toLowerCase() === 'label') {
+        correctEl = el.parent();
+      }
+
+      return correctEl;
     },
 
     /**
@@ -828,7 +839,7 @@ function ValidationManagerFn(validator, elementUtils) {
     },
 
     /**
-     * Only validate if the element is present, it is visible
+     * Only validate if the element is present, it is visible, if it is not a comment,
      * it is either a valid user input control (input, select, textare, form) or
      * it is a custom control register by the developer.
      * @param el
@@ -837,11 +848,12 @@ function ValidationManagerFn(validator, elementUtils) {
      */
     shouldValidateElement = function (el, formOptions, formSubmitted) {
       var elementExists = el && el.length > 0,
+        isElementAComment = elementExists && el[0].nodeName.toLowerCase() === '#comment',
         correctVisibilityToValidate,
         correctTypeToValidate,
         correctPhaseToValidate;
 
-      if (elementExists) {
+      if (elementExists && isElementAComment === false) {
         correctVisibilityToValidate = elementIsVisible(el) || formOptions.validateNonVisibleControls;
         correctTypeToValidate = elementTypesToValidate.indexOf(el[0].nodeName.toLowerCase()) > -1 ||
           el[0].hasAttribute('register-custom-form-control');
@@ -849,7 +861,7 @@ function ValidationManagerFn(validator, elementUtils) {
           (formOptions.validateOnFormSubmit === true && formSubmitted === true);
       }
 
-      return elementExists && correctVisibilityToValidate && correctTypeToValidate && correctPhaseToValidate;
+      return elementExists && !isElementAComment && correctVisibilityToValidate && correctTypeToValidate && correctPhaseToValidate;
 
     },
 
