@@ -1,3 +1,6 @@
+v1.18.17 2/09/2015
+Added pt-pt and zh-tw lang files
+
 v1.18.16 03/09/2015
 Fixes issue (https://github.com/jonsamwell/angular-auto-validate/issues/88) where the node is a comment.
 Fixes issue with validation error message placement with checkboxes and radio groups for the BS3 modifier.
