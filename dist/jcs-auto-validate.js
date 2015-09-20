@@ -552,6 +552,20 @@ angular.autoValidate.errorMessages['en-us'] = angular.autoValidate.errorMessages
   url: 'Please enter a valid URL in the format of http(s)://www.google.com'
 };
 
+angular.autoValidate.errorMessages['pt-br'] = angular.autoValidate.errorMessages['pt-pt'] = {
+  defaultMsg: 'Por favor adicione uma mensagem de erro para {0}',
+  email: 'Por favor informe um endereço de e-mail válido',
+  minlength: 'Por favor informe no mínimo {0} caracteres',
+  maxlength: 'O tamanho máximo do campo é {0} caracteres.'
+  min: 'Por favor informe um número maior ou igual a {0}',
+  max: 'Por favor informe um número menor que {0}',
+  required: 'Esse campo é obrigatório',
+  date: 'Por favor informe uma data válida',
+  pattern: 'Por favor certifique-se que o dado informado siga o seguinte padrão: {0}',
+  number: 'Por favor informe um número válido',
+  url: 'Por favor informe uma URL válida, no formato http(s)://www.google.com'
+};
+
 function DefaultErrorMessageResolverFn($q, $http) {
   var currentCulture = 'en-gb',
 
