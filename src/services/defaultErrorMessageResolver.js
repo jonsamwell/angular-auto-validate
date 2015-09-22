@@ -161,7 +161,9 @@ function DefaultErrorMessageResolverFn($q, $http) {
           errMsg = angular.autoValidate.errorMessages[currentCulture][messageTypeOverride];
         }
 
-        if (errMsg === undefined) {
+        if (errMsg === undefined && messageTypeOverride !== undefined) {
+          errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(messageTypeOverride);
+        } else if (errMsg === undefined) {
           errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
         }
 
