@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Lütfen geçerli bir hata mesajı ekleyiniz {0}",
+    "email": "Lütfen geçerli bir e-posta adresi giriniz",
+    "minlength": "Lütfen en az {0} karakter giriniz",
+    "maxlength": "Maksimum {0} karakterden fazla giriş yaptınız",
+    "min": "Lütfen minimum {0} rakam griniz.",
+    "max": "Lütfen maksimum {0} rakam giriniz",
+    "required": "Bu alan zorunludur. Boş bırakılamaz",
+    "date": "Lütfen geçerli bir tarih girin",
+    "pattern": "Lütfen belirtilen {0} ifadeye uygun bir bilgi giriniz",
+    "number": "Lütfen geçerli bir rakam giriniz",
+    "url": "Lütfen geçerli bir URL giriniz. Örneğin: http(s)://www.google.com"
+}
