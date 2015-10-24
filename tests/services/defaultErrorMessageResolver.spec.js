@@ -148,10 +148,13 @@
         it('should return with calling the loadingFn if the culture is already loaded', function (done) {
           var loadingFnCalled = false,
             loadingFn = function () {
+              var defer = $q.defer();
               loadingFnCalled = true;
+              defer.resolve({});
+              return defer.promise;
             };
 
-          defaultErrorMessageResolver.setCulture('en-gb', loadingFn).then(function () {
+          defaultErrorMessageResolver.setCulture('default', loadingFn).then(function () {
             expect(loadingFnCalled).to.equal(false);
             done();
           });

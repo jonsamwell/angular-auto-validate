@@ -548,7 +548,7 @@ angular.autoValidate = angular.autoValidate || {
   errorMessages: {}
 };
 
-angular.autoValidate.errorMessages['en-us'] = angular.autoValidate.errorMessages['en-gb'] = {
+angular.autoValidate.errorMessages['default'] = {
   defaultMsg: 'Please add error message for {0}',
   email: 'Please enter a valid email address',
   minlength: 'Please enter at least {0} characters',
@@ -563,7 +563,7 @@ angular.autoValidate.errorMessages['en-us'] = angular.autoValidate.errorMessages
 };
 
 function DefaultErrorMessageResolverFn($q, $http) {
-  var currentCulture = 'en-gb',
+  var currentCulture = 'default',
 
     i18nFileRootPath = 'js/angular-auto-validate/dist/lang',
 
