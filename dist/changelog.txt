@@ -1,3 +1,13 @@
+v1.19.0 2/09/2015
+Possible breaking change fixing i18n caching issue with en-us and en-gb files.  The default language
+is now 'default' and not en-gb.
+New Turkish translation.
+Updated German translation
+IE10 speed improvement when validating a form.
+The BS3 modifier no longer adds the has-feedback class if state icons are not enabled.
+Fixed issue when serialising the form controller to json
+You can now add the attribute disable-auto-validate="true" to an element and it won't validate.
+
 v1.18.17 2/09/2015
 Added pt-pt and zh-tw lang files
 

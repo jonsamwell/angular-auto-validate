@@ -47,7 +47,7 @@
       describe('makeInvalid', function () {
         it('should remove the .has-success class and add the .has-error and .has-feedback classes', function () {
           var element = angular.element('<div class="form-group has-success"><input type="text"/></div>');
-
+          bootstrap3ElementModifier.enableValidationStateIcons(true);
           bootstrap3ElementModifier.makeInvalid(element);
 
           expect(element.hasClass('has-success')).to.equal(false);
@@ -78,19 +78,20 @@
         it('should handle checkbox with a label correctly', function () {
           var element = angular.element('<div class="form-group"><label>' +
             '<input id="el5" type="checkbox" class="form-control" required="required" ng-model="model.hasEmail">Label Value</label></div>');
-
+          bootstrap3ElementModifier.enableValidationStateIcons(true);
           bootstrap3ElementModifier.makeInvalid(element.find('#el5'));
           $rootScope.$apply();
 
           expect(element[0].outerHTML).to.equal('<div class="form-group has-error has-feedback"><label>' +
             '<input id="el5" type="checkbox" class="form-control" required="required" ng-model="model.hasEmail">Label Value</label>' +
-            '<span class="help-block has-error error-msg">undefined</span></div>');
+            '<span class="glyphicon glyphicon-remove form-control-feedback"></span><span class="help-block has-error error-msg">undefined</span></div>');
         });
       });
 
       describe('makeValid', function () {
         it('should remove the .has-error class and add the .has-success and .has-feedback classes', function () {
           var element = angular.element('<div class="form-group has-error"><input type="text"/></div>');
+          bootstrap3ElementModifier.enableValidationStateIcons(true);
 
           bootstrap3ElementModifier.makeValid(element);
 
@@ -109,15 +110,25 @@
           expect(element.find('.glyphicon.glyphicon-ok.form-control-feedback').length).to.equal(1);
         });
 
-        it('should remove the .error-msg element', function () {
+        it('should add the has-feedback class', function () {
           var element = angular.element('<div class="form-group"><div class="col-sm-10">' +
-            '<input id="el2" type="email" class="form-control" required="required" ng-model="model.email"><span class="help-block error-msg">help text</span></div></div>');
+            '<input id="el3" type="email" class="form-control" required="required" ng-model="model.email"><span class="help-block error-msg">help text</span></div></div>');
           bootstrap3ElementModifier.enableValidationStateIcons(true);
 
 
-          bootstrap3ElementModifier.makeValid(element.find('#el2'));
+          bootstrap3ElementModifier.makeValid(element.find('#el3'));
 
-          expect(element.find('.help-block').length).to.equal(0);
+          expect(element.hasClass('has-feedback')).to.equal(true);
+        });
+
+        it('should not add the has-feedback class', function () {
+          var element = angular.element('<div class="form-group"><div class="col-sm-10">' +
+            '<input id="el4" type="email" class="form-control" required="required" ng-model="model.email"><span class="help-block error-msg">help text</span></div></div>');
+          bootstrap3ElementModifier.enableValidationStateIcons(false);
+
+          bootstrap3ElementModifier.makeValid(element.find('#el4'));
+
+          expect(element.hasClass('has-feedback')).to.equal(false);
         });
       });
     });

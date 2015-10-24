@@ -44,6 +44,10 @@ function ValidatorFn() {
       return enableValidElementStyling && !getBooleanAttributeValue(el, 'disable-valid-styling');
     },
 
+    autoValidateEnabledOnControl = function (el) {
+      return !getBooleanAttributeValue(el, 'disable-auto-validate');
+    },
+
     invalidElementStylingEnabled = function (el) {
       return enableInvalidElementStyling && !getBooleanAttributeValue(el, 'disable-invalid-styling');
     };
@@ -245,25 +249,31 @@ function ValidatorFn() {
   };
 
   this.makeValid = function (el) {
-    if (validElementStylingEnabled(el)) {
-      this.getDomModifier(el).makeValid(el);
-    } else {
-      this.makeDefault(el);
+    if (autoValidateEnabledOnControl(el)) {
+      if (validElementStylingEnabled(el)) {
+        this.getDomModifier(el).makeValid(el);
+      } else {
+        this.makeDefault(el);
+      }
     }
   };
 
   this.makeInvalid = function (el, errorMsg) {
-    if (invalidElementStylingEnabled(el)) {
-      this.getDomModifier(el).makeInvalid(el, errorMsg);
-    } else {
-      this.makeDefault(el);
+    if (autoValidateEnabledOnControl(el)) {
+      if (invalidElementStylingEnabled(el)) {
+        this.getDomModifier(el).makeInvalid(el, errorMsg);
+      } else {
+        this.makeDefault(el);
+      }
     }
   };
 
   this.makeDefault = function (el) {
-    var dm = this.getDomModifier(el);
-    if (dm.makeDefault) {
-      dm.makeDefault(el);
+    if (autoValidateEnabledOnControl(el)) {
+      var dm = this.getDomModifier(el);
+      if (dm.makeDefault) {
+        dm.makeDefault(el);
+      }
     }
   };
 

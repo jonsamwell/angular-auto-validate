@@ -186,6 +186,11 @@
           expect(makeValidInvocationCount).to.equal(1);
         });
 
+        it('should not call makeValid on the dom modifier if the element has disable-auto-validate attribute', function () {
+          validator.makeValid(angular.element('<input type="text" disable-auto-validate="true"/>'));
+          expect(makeValidInvocationCount).to.equal(0);
+        });
+
         it('should not call makeValid on the dom modifier if enableValidElementStyling is false', function () {
           validator.setValidElementStyling(false);
           validator.makeValid(angular.element('<input type="text"/>'));
@@ -244,6 +249,11 @@
         it('should not call makeInvalid on the dom modifier if the element has disabled invalid element styling', function () {
           validator.makeInvalid(angular.element('<input type="text" disable-invalid-styling="true"/>'));
           expect(makeInvalidInvocationCount).to.equal(0);
+        });
+
+        it('should call makeInvalid on the dom modifier if the element has disabled invalid element styling', function () {
+          validator.makeInvalid(angular.element('<input type="text" disable-invalid-styling="false"/>'));
+          expect(makeInvalidInvocationCount).to.equal(1);
         });
 
         it('should call makeDefault on the dom modifier if the element has disabled invalid element styling', function () {

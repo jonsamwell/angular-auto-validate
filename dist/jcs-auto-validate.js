@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.18.17 - 2015-09-21
+ * angular-auto-validate - v1.19.0 - 2015-10-25
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -52,6 +52,10 @@ function ValidatorFn() {
 
     validElementStylingEnabled = function (el) {
       return enableValidElementStyling && !getBooleanAttributeValue(el, 'disable-valid-styling');
+    },
+
+    autoValidateEnabledOnControl = function (el) {
+      return !getBooleanAttributeValue(el, 'disable-auto-validate');
     },
 
     invalidElementStylingEnabled = function (el) {
@@ -255,25 +259,31 @@ function ValidatorFn() {
   };
 
   this.makeValid = function (el) {
-    if (validElementStylingEnabled(el)) {
-      this.getDomModifier(el).makeValid(el);
-    } else {
-      this.makeDefault(el);
+    if (autoValidateEnabledOnControl(el)) {
+      if (validElementStylingEnabled(el)) {
+        this.getDomModifier(el).makeValid(el);
+      } else {
+        this.makeDefault(el);
+      }
     }
   };
 
   this.makeInvalid = function (el, errorMsg) {
-    if (invalidElementStylingEnabled(el)) {
-      this.getDomModifier(el).makeInvalid(el, errorMsg);
-    } else {
-      this.makeDefault(el);
+    if (autoValidateEnabledOnControl(el)) {
+      if (invalidElementStylingEnabled(el)) {
+        this.getDomModifier(el).makeInvalid(el, errorMsg);
+      } else {
+        this.makeDefault(el);
+      }
     }
   };
 
   this.makeDefault = function (el) {
-    var dm = this.getDomModifier(el);
-    if (dm.makeDefault) {
-      dm.makeDefault(el);
+    if (autoValidateEnabledOnControl(el)) {
+      var dm = this.getDomModifier(el);
+      if (dm.makeDefault) {
+        dm.makeDefault(el);
+      }
     }
   };
 
@@ -391,7 +401,7 @@ function Bootstrap3ElementModifierFn($log) {
       if (frmGroupEl) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
-        frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
+        frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
         if (addValidationStateIcons) {
           var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
@@ -426,7 +436,7 @@ function Bootstrap3ElementModifierFn($log) {
       if (frmGroupEl) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
-        frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 ? '' : 'has-feedback'));
+        frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
         insertAfter(inputGroupEl.length > 0 ? inputGroupEl : getCorrectElementToPlaceErrorElementAfter(el), helpTextEl);
         if (addValidationStateIcons) {
           var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
@@ -685,7 +695,9 @@ function DefaultErrorMessageResolverFn($q, $http) {
           errMsg = angular.autoValidate.errorMessages[currentCulture][messageTypeOverride];
         }
 
-        if (errMsg === undefined) {
+        if (errMsg === undefined && messageTypeOverride !== undefined) {
+          errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(messageTypeOverride);
+        } else if (errMsg === undefined) {
           errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
         }
 
@@ -901,7 +913,7 @@ function ValidationManagerFn(validator, elementUtils) {
 
       if (frmOptions.disabled === false) {
         if ((frmOptions.forceValidation ||
-            (shouldValidateElement(el, frmOptions, frmOptions.formController.$submitted) &&
+            (shouldValidateElement(el, frmOptions, frmOptions.getFormController().$submitted) &&
               modelCtrl &&
               needsValidation))) {
           isValid = !modelCtrl.$invalid;
@@ -991,7 +1003,7 @@ function ValidationManagerFn(validator, elementUtils) {
 
       // IE8 holds the child controls collection in the all property
       // Firefox in the elements and chrome as a child iterator
-      angular.forEach((frmElement[0].all || frmElement[0].elements) || frmElement[0], function (ctrlElement) {
+      angular.forEach((frmElement[0].elements || frmElement[0].all) || frmElement[0], function (ctrlElement) {
         processElement(ctrlElement, true, clonedOptions);
       });
 
@@ -1049,7 +1061,11 @@ function parseBooleanAttributeValue(val, defaultValue) {
 
 function parseOptions(ctrl, validator, attrs) {
   var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || angular.copy(validator.defaultFormValidationOptions);
-  opts.formController = ctrl;
+
+  // needed to stop circular ref in json serialisation
+  opts.getFormController = function () {
+    return ctrl;
+  };
   opts.forceValidation = false;
   opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
   opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);

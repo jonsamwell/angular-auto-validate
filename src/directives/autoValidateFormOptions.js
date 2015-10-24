@@ -8,7 +8,11 @@ function parseBooleanAttributeValue(val, defaultValue) {
 
 function parseOptions(ctrl, validator, attrs) {
   var opts = ctrl.autoValidateFormOptions = ctrl.autoValidateFormOptions || angular.copy(validator.defaultFormValidationOptions);
-  opts.formController = ctrl;
+
+  // needed to stop circular ref in json serialisation
+  opts.getFormController = function () {
+    return ctrl;
+  };
   opts.forceValidation = false;
   opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
   opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);

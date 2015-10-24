@@ -127,6 +127,12 @@
 
         expect(element.controller('form').autoValidateFormOptions.validateNonVisibleControls).to.equal(false);
       });
+
+      it('should be serializable', function () {
+        compileElement('<form name="test"><input ng-model="name" required /></form>');
+
+        expect(angular.toJson(element.controller('form'))).to.not.equal(undefined);
+      });
     });
   });
 }(document, angular, sinon));

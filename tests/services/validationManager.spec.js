@@ -19,12 +19,16 @@
         return element;
       },
       getDefaultFormOptions = function () {
+        var internalFormController = {};
         return {
           forceValidation: false,
           disabled: false,
           validateNonVisibleControls: false,
           validateOnFormSubmit: false,
-          formController: {}
+          internalFormController: internalFormController,
+          getFormController: function () {
+            return internalFormController;
+          }
         };
       };
 
@@ -144,7 +148,7 @@
             result;
 
           var formOptions = getDefaultFormOptions();
-          formOptions.formController.$submitted = false;
+          formOptions.internalFormController.$submitted = false;
           formOptions.validateOnFormSubmit = true;
 
           sandbox.stub(elementUtils, 'isElementVisible').returns(true);
@@ -161,7 +165,7 @@
             result;
 
           var formOptions = getDefaultFormOptions();
-          formOptions.formController.$submitted = true;
+          formOptions.internalFormController.$submitted = true;
           formOptions.validateOnFormSubmit = true;
 
           sandbox.stub(elementUtils, 'isElementVisible').returns(true);

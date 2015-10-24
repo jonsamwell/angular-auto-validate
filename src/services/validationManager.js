@@ -91,7 +91,7 @@ function ValidationManagerFn(validator, elementUtils) {
 
       if (frmOptions.disabled === false) {
         if ((frmOptions.forceValidation ||
-            (shouldValidateElement(el, frmOptions, frmOptions.formController.$submitted) &&
+            (shouldValidateElement(el, frmOptions, frmOptions.getFormController().$submitted) &&
               modelCtrl &&
               needsValidation))) {
           isValid = !modelCtrl.$invalid;
