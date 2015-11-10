@@ -8,7 +8,7 @@ function ElementUtilsFn() {
   };
 }
 
-function ValidationManagerFn(validator, elementUtils) {
+function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
   var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
 
     elementIsVisible = function (el) {
@@ -162,6 +162,12 @@ function ValidationManagerFn(validator, elementUtils) {
               ctrlFormOptions.forceValidation = force;
               try {
                 isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
+                if (validator.firstInvalidElementScrollingOnSubmitEnabled() && !isValid && frmValid) {
+                  var ctrlElementId = ctrlElement.attr('id');
+                  if (ctrlElementId) {
+                    $anchorScroll(ctrlElementId);
+                  }
+                }
                 frmValid = frmValid && isValid;
               } finally {
                 ctrlFormOptions.forceValidation = originalForceValue;
@@ -223,7 +229,8 @@ function ValidationManagerFn(validator, elementUtils) {
 
 ValidationManagerFn.$inject = [
   'validator',
-  'jcs-elementUtils'
+  'jcs-elementUtils',
+  '$anchorScroll'
 ];
 
 angular.module('jcs-autoValidate').factory('jcs-elementUtils', ElementUtilsFn);
