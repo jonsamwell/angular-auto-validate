@@ -28,6 +28,8 @@
         "describe": true,
         "expect": true,
         "it": true,
-        "should": true
+        "should": true,
+        "clearTimeout": true,
+        "setTimeout": true
     }
 }

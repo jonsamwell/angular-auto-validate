@@ -1,3 +1,7 @@
+v1.19.1 16/11/2015
+Fixed problem with the de-bounce function in the ngModel decorator.
+Option added to the validator service to automatically scroll to the first invalid input.
+
 v1.19.0 25/10/2015
 Possible breaking change fixing i18n caching issue with en-us and en-gb files.  The default language
 is now 'default' and not en-gb.

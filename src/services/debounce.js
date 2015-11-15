@@ -2,23 +2,24 @@
  * Taken from https://github.com/angular/angular.js/issues/2690#issue-14462164 (with added tests of course!)
  */
 function JCSDebounceFn($timeout) {
-  var debounce = function (fn, timeout, apply) {
-    timeout = angular.isUndefined(timeout) ? 0 : timeout;
-    apply = angular.isUndefined(apply) ? true : apply; // !!default is true! most suitable to my experience
-    var nthCall = 0;
-    return function () { // intercepting fn
-      var that = this;
-      var argz = arguments;
-      nthCall += 1;
-      var later = (function (version) {
-        return function () {
-          if (version === nthCall) {
-            return fn.apply(that, argz);
-          }
-        };
-      })(nthCall);
+  var debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+      var context = this;
+      var args = arguments;
+      var later = function () {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
 
-      return $timeout(later, timeout, apply);
+      var callNow = immediate && !timeout;
+      $timeout.cancel(timeout);
+      timeout = $timeout(later, wait, false);
+      if (callNow) {
+        func.apply(context, args);
+      }
     };
   };
 

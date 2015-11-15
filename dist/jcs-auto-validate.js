@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.19.0 - 2015-10-25
+ * angular-auto-validate - v1.19.1 - 2015-11-16
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -12,6 +12,7 @@ function ValidatorFn() {
   var elementStateModifiers = {},
     enableValidElementStyling = true,
     enableInvalidElementStyling = true,
+    enableFirstInvalidElementScrollingOnSubmit = false,
     validationEnabled = true,
 
     toBoolean = function (value) {
@@ -245,6 +246,25 @@ function ValidatorFn() {
   this.setInvalidElementStyling = function (enabled) {
     enableInvalidElementStyling = enabled;
   };
+
+  /**
+   * @ngdoc function
+   * @name validator#setFirstInvalidElementScrollingOnSubmit
+   * @methodOf validator
+   *
+   * @description
+   * Globally enables first invalid element scrolling on form submit. This is disabled by default.
+   *
+   * @param enabled {Boolean} enabled True to enable scrolling otherwise false.
+   */
+  this.setFirstInvalidElementScrollingOnSubmit = function (enabled) {
+    enableFirstInvalidElementScrollingOnSubmit = enabled;
+  };
+
+  this.firstInvalidElementScrollingOnSubmitEnabled = function () {
+    return enableFirstInvalidElementScrollingOnSubmit;
+  };
+
 
   this.getDomModifier = function (el) {
     var modifierKey = (el !== undefined ? el.attr('element-modifier') : this.defaultElementModifier) ||
@@ -501,23 +521,24 @@ angular.module('jcs-autoValidate').factory('bootstrap3ElementModifier', Bootstra
  * Taken from https://github.com/angular/angular.js/issues/2690#issue-14462164 (with added tests of course!)
  */
 function JCSDebounceFn($timeout) {
-  var debounce = function (fn, timeout, apply) {
-    timeout = angular.isUndefined(timeout) ? 0 : timeout;
-    apply = angular.isUndefined(apply) ? true : apply; // !!default is true! most suitable to my experience
-    var nthCall = 0;
-    return function () { // intercepting fn
-      var that = this;
-      var argz = arguments;
-      nthCall += 1;
-      var later = (function (version) {
-        return function () {
-          if (version === nthCall) {
-            return fn.apply(that, argz);
-          }
-        };
-      })(nthCall);
+  var debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+      var context = this;
+      var args = arguments;
+      var later = function () {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
 
-      return $timeout(later, timeout, apply);
+      var callNow = immediate && !timeout;
+      $timeout.cancel(timeout);
+      timeout = $timeout(later, wait, false);
+      if (callNow) {
+        func.apply(context, args);
+      }
     };
   };
 
@@ -830,7 +851,7 @@ function ElementUtilsFn() {
   };
 }
 
-function ValidationManagerFn(validator, elementUtils) {
+function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
   var elementTypesToValidate = ['input', 'textarea', 'select', 'form'],
 
     elementIsVisible = function (el) {
@@ -984,6 +1005,12 @@ function ValidationManagerFn(validator, elementUtils) {
               ctrlFormOptions.forceValidation = force;
               try {
                 isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
+                if (validator.firstInvalidElementScrollingOnSubmitEnabled() && !isValid && frmValid) {
+                  var ctrlElementId = ctrlElement.attr('id');
+                  if (ctrlElementId) {
+                    $anchorScroll(ctrlElementId);
+                  }
+                }
                 frmValid = frmValid && isValid;
               } finally {
                 ctrlFormOptions.forceValidation = originalForceValue;
@@ -1045,7 +1072,8 @@ function ValidationManagerFn(validator, elementUtils) {
 
 ValidationManagerFn.$inject = [
   'validator',
-  'jcs-elementUtils'
+  'jcs-elementUtils',
+  '$anchorScroll'
 ];
 
 angular.module('jcs-autoValidate').factory('jcs-elementUtils', ElementUtilsFn);
