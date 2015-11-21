@@ -136,7 +136,7 @@ function Bootstrap3ElementModifierFn($log) {
           var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
-            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
           insertAfter(getCorrectElementToPlaceErrorElementAfter(el), angular.element(iconElText));
