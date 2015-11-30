@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html ng-app="jcs-demo">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Angular Auto Validate Test Page</title>
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="row" ng-controller="demoCtrl">
+        <div class="col-sm-8 col-sm-offset-1">
+            <form role="form" name="testFrm" novalidate="novalidate"
+                  ng-submit="submit(testFrm);"
+                  wait-for-async-validators="true">
+                <div class="form-group">
+                    <label class="control-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-envelope"></i>
+                        </span>
+                        <input type="text" name="email" class="form-control"
+                               ng-model="user.email"
+                               placeholder="Enter email address"
+                               ng-required="true"
+                               unique-email-checker/>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Name</label>
+                        <input type="text" name="name" class="form-control"
+                               ng-model="user.name"
+                               placeholder="Enter your name"
+                               ng-required="true"
+                               ng-minlength="3"/>
+
+                </div>
+
+                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="reset" class="btn btn-default">Reset</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+
+    <!--<script type="text/javascript" src="../dist/jcs-auto-validate.min.js"></script>-->
+
+    <script type="text/javascript" src="../src/jcs-auto-validate.js"></script>
+    <script type="text/javascript" src="../src/providers/validator.js"></script>
+    <script type="text/javascript" src="../src/services/bootstrap3ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/debounce.js"></script>
+    <script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>
+    <script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/validationManager.js"></script>
+    <script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
+    <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
+    <script type="text/javascript" src="../src/directives/formReset.js"></script>
+    <script type="text/javascript" src="../src/directives/autoValidateFormOptions.js"></script>
+    <script type="text/javascript" src="../src/directives/registerCustomFormControl.js"></script>
+    <script type="text/javascript" src="../src/jcs-auto-validate-run.js"></script>
+
+    <script type="text/javascript">
+    (function (angular) {
+        var app = angular.module('jcs-demo', ['jcs-autoValidate']);
+
+        app.controller('demoCtrl', [
+            '$http',
+            '$scope',
+            'bootstrap3ElementModifier',
+            function ($http, $scope, bootstrap3ElementModifier) {
+                $scope.user = {};
+
+                bootstrap3ElementModifier.enableValidationStateIcons(true);
+
+                $scope.submit = function (frmCtrl) {
+                    alert('submitted');
+                };
+            }
+        ]);
+
+        app.directive('uniqueEmailChecker', [
+            '$timeout',
+            '$q',
+            function($timeout, $q) {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function(scope, elm, attrs, ctrl) {
+                        ctrl.$asyncValidators.uniqueEmailChecker = function(modelValue, viewValue) {
+                            var defer = $q.defer();
+                            $timeout(function() {
+                                defer.resolve(viewValue);
+                            }, 2000);
+
+                            return defer.promise;
+                        };
+                    }
+                }
+            }]);
+
+        // now register the custom element modifier with the auto-validate module and set it as the default one for all elements
+        app.run([
+            'validator',
+            'defaultErrorMessageResolver',
+            function (validator, defaultErrorMessageResolver) {
+                defaultErrorMessageResolver.setI18nFileRootPath('../src/lang/');
+                defaultErrorMessageResolver.setCulture('en-gb');
+
+                defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+                    errorMessages['pattern'] = 'Custom Error Message {0}';
+                    errorMessages['uniqueEmailChecker'] = 'Please enter another email';
+                });
+            }
+        ]);
+    }(angular));
+    </script>
+</body>
+</html>

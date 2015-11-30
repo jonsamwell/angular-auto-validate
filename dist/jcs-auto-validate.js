@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.19.1 - 2015-11-16
+ * angular-auto-validate - v1.19.2 - 2015-11-30
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -307,12 +307,22 @@ function ValidatorFn() {
     }
   };
 
+  this.waitForAsyncValidators = function (el) {
+    if (autoValidateEnabledOnControl(el)) {
+      var dm = this.getDomModifier(el);
+      if (dm.waitForAsyncValidators) {
+        dm.waitForAsyncValidators(el);
+      }
+    }
+  };
+
   this.defaultFormValidationOptions = {
     forceValidation: false,
     disabled: false,
     validateNonVisibleControls: false,
     removeExternalValidationErrorsOnSubmit: true,
-    validateOnFormSubmit: false
+    validateOnFormSubmit: false,
+    waitForAsyncValidators: true
   };
 
   this.$get = [
@@ -325,6 +335,37 @@ function ValidatorFn() {
 angular.module('jcs-autoValidate').provider('validator', ValidatorFn);
 
 function Bootstrap3ElementModifierFn($log) {
+  var customCss = [
+    '<style>' +
+    '.glyphicon-spin-jcs {' +
+    '-webkit-animation: spin 1000ms infinite linear;' +
+    'animation: spin 1000ms infinite linear;' +
+    '}' +
+    '@-webkit-keyframes spin {' +
+    '0% {' +
+    '-webkit-transform: rotate(0deg);' +
+    'transform: rotate(0deg);' +
+    '}' +
+    '100% {' +
+    '-webkit-transform: rotate(359deg);' +
+    'transform: rotate(359deg);' +
+    '}' +
+    '}' +
+    '@keyframes spin {' +
+    '0% {' +
+    '-webkit-transform: rotate(0deg);' +
+    'transform: rotate(0deg);' +
+    '}' +
+    '100% {' +
+    '-webkit-transform: rotate(359deg);' +
+    'transform: rotate(359deg);' +
+    '}' +
+    '}' +
+    '</style>'
+  ].join('');
+
+  angular.element(document.body).append(angular.element(customCss));
+
   var reset = function (el) {
       angular.forEach(el.find('span'), function (spanEl) {
         spanEl = angular.element(spanEl);
@@ -462,7 +503,7 @@ function Bootstrap3ElementModifierFn($log) {
           var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
-            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
           insertAfter(getCorrectElementToPlaceErrorElementAfter(el), angular.element(iconElText));
@@ -500,12 +541,35 @@ function Bootstrap3ElementModifierFn($log) {
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
       }
+    },
+
+    waitForAsyncValidators = function (el) {
+      var frmGroupEl = findFormGroupElement(el),
+        inputGroupEl;
+
+      if (frmGroupEl) {
+        reset(frmGroupEl);
+        inputGroupEl = findInputGroupElement(frmGroupEl[0]);
+        frmGroupEl.addClass('has-feedback ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
+        if (addValidationStateIcons) {
+          var iconElText = '<span class="glyphicon glyphicon-repeat glyphicon-spin-jcs form-control-feedback"></span>';
+          if (inputGroupEl.length > 0) {
+            iconElText = iconElText.replace('form-', '');
+            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
+          }
+
+          insertAfter(el, angular.element(iconElText));
+        }
+      } else {
+        $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
+      }
     };
 
   return {
     makeValid: makeValid,
     makeInvalid: makeInvalid,
     makeDefault: makeDefault,
+    waitForAsyncValidators: waitForAsyncValidators,
     enableValidationStateIcons: enableValidationStateIcons,
     key: 'bs3'
   };
@@ -943,18 +1007,23 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
             modelCtrl.removeAllExternalValidation();
           }
 
-          if (isValid) {
-            validator.makeValid(el);
+          if (modelCtrl.$pending !== undefined && options.waitForAsyncValidators === true) {
+            // we have pending async validators
+            validator.waitForAsyncValidators(el);
           } else {
-            errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
-            if (errorType === undefined) {
-              // we have a weird situation some users are encountering where a custom control
-              // is valid but the ngModel is report it isn't and thus no valid error type can be found
-              isValid = true;
+            if (isValid) {
+              validator.makeValid(el);
             } else {
-              validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                validator.makeInvalid(el, errorMsg);
-              });
+              errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
+              if (errorType === undefined) {
+                // we have a weird situation some users are encountering where a custom control
+                // is valid but the ngModel is report it isn't and thus no valid error type can be found
+                isValid = true;
+              } else {
+                validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                  validator.makeInvalid(el, errorMsg);
+                });
+              }
             }
           }
         }
@@ -1094,6 +1163,7 @@ function parseOptions(ctrl, validator, attrs) {
   opts.getFormController = function () {
     return ctrl;
   };
+  opts.waitForAsyncValidators = parseBooleanAttributeValue(attrs.waitForAsyncValidators, opts.waitForAsyncValidators);
   opts.forceValidation = false;
   opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
   opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);

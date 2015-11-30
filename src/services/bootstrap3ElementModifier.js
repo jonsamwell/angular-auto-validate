@@ -1,4 +1,35 @@
 function Bootstrap3ElementModifierFn($log) {
+  var customCss = [
+    '<style>' +
+    '.glyphicon-spin-jcs {' +
+    '-webkit-animation: spin 1000ms infinite linear;' +
+    'animation: spin 1000ms infinite linear;' +
+    '}' +
+    '@-webkit-keyframes spin {' +
+    '0% {' +
+    '-webkit-transform: rotate(0deg);' +
+    'transform: rotate(0deg);' +
+    '}' +
+    '100% {' +
+    '-webkit-transform: rotate(359deg);' +
+    'transform: rotate(359deg);' +
+    '}' +
+    '}' +
+    '@keyframes spin {' +
+    '0% {' +
+    '-webkit-transform: rotate(0deg);' +
+    'transform: rotate(0deg);' +
+    '}' +
+    '100% {' +
+    '-webkit-transform: rotate(359deg);' +
+    'transform: rotate(359deg);' +
+    '}' +
+    '}' +
+    '</style>'
+  ].join('');
+
+  angular.element(document.body).append(angular.element(customCss));
+
   var reset = function (el) {
       angular.forEach(el.find('span'), function (spanEl) {
         spanEl = angular.element(spanEl);
@@ -174,12 +205,35 @@ function Bootstrap3ElementModifierFn($log) {
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
       }
+    },
+
+    waitForAsyncValidators = function (el) {
+      var frmGroupEl = findFormGroupElement(el),
+        inputGroupEl;
+
+      if (frmGroupEl) {
+        reset(frmGroupEl);
+        inputGroupEl = findInputGroupElement(frmGroupEl[0]);
+        frmGroupEl.addClass('has-feedback ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
+        if (addValidationStateIcons) {
+          var iconElText = '<span class="glyphicon glyphicon-repeat glyphicon-spin-jcs form-control-feedback"></span>';
+          if (inputGroupEl.length > 0) {
+            iconElText = iconElText.replace('form-', '');
+            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
+          }
+
+          insertAfter(el, angular.element(iconElText));
+        }
+      } else {
+        $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
+      }
     };
 
   return {
     makeValid: makeValid,
     makeInvalid: makeInvalid,
     makeDefault: makeDefault,
+    waitForAsyncValidators: waitForAsyncValidators,
     enableValidationStateIcons: enableValidationStateIcons,
     key: 'bs3'
   };

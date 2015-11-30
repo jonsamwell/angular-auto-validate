@@ -13,6 +13,7 @@ function parseOptions(ctrl, validator, attrs) {
   opts.getFormController = function () {
     return ctrl;
   };
+  opts.waitForAsyncValidators = parseBooleanAttributeValue(attrs.waitForAsyncValidators, opts.waitForAsyncValidators);
   opts.forceValidation = false;
   opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
   opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);

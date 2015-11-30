@@ -297,12 +297,22 @@ function ValidatorFn() {
     }
   };
 
+  this.waitForAsyncValidators = function (el) {
+    if (autoValidateEnabledOnControl(el)) {
+      var dm = this.getDomModifier(el);
+      if (dm.waitForAsyncValidators) {
+        dm.waitForAsyncValidators(el);
+      }
+    }
+  };
+
   this.defaultFormValidationOptions = {
     forceValidation: false,
     disabled: false,
     validateNonVisibleControls: false,
     removeExternalValidationErrorsOnSubmit: true,
-    validateOnFormSubmit: false
+    validateOnFormSubmit: false,
+    waitForAsyncValidators: true
   };
 
   this.$get = [

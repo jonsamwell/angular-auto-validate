@@ -100,18 +100,23 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
             modelCtrl.removeAllExternalValidation();
           }
 
-          if (isValid) {
-            validator.makeValid(el);
+          if (modelCtrl.$pending !== undefined && options.waitForAsyncValidators === true) {
+            // we have pending async validators
+            validator.waitForAsyncValidators(el);
           } else {
-            errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
-            if (errorType === undefined) {
-              // we have a weird situation some users are encountering where a custom control
-              // is valid but the ngModel is report it isn't and thus no valid error type can be found
-              isValid = true;
+            if (isValid) {
+              validator.makeValid(el);
             } else {
-              validator.getErrorMessage(errorType, el).then(function (errorMsg) {
-                validator.makeInvalid(el, errorMsg);
-              });
+              errorType = findErrorType(modelCtrl.$errors || modelCtrl.$error);
+              if (errorType === undefined) {
+                // we have a weird situation some users are encountering where a custom control
+                // is valid but the ngModel is report it isn't and thus no valid error type can be found
+                isValid = true;
+              } else {
+                validator.getErrorMessage(errorType, el).then(function (errorMsg) {
+                  validator.makeInvalid(el, errorMsg);
+                });
+              }
             }
           }
         }
