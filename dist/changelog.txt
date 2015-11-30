@@ -2,7 +2,7 @@ v1.19.2 30/11/2015
 Added ability for the library to delay showing validation hints on an element while async validators are firing.
 This functionality is enabled by default - to disbale it change the 'waitForAsyncValidators' option in the defaultFormValidationOptions
 on the validation provider. Or on a per form basis by adding the attribute wait-for-async-validators="true|false" on
-a form.
+a form. See http://plnkr.co/edit/3YXEQAU051N4gFCRPi7S?p=preview for a demo.
 
 v1.19.1 16/11/2015
 Fixed problem with the de-bounce function in the ngModel decorator.
