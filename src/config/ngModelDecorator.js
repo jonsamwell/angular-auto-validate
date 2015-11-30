@@ -34,7 +34,10 @@ angular.module('jcs-autoValidate').config(['$provide',
               if (attrs.formnovalidate === undefined &&
                 (frmCtrl !== undefined && frmCtrl !== null && frmCtrl.autoValidateFormOptions &&
                   frmCtrl.autoValidateFormOptions.disabled === false)) {
-                if (!supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '') {
+                // if the version of angular supports ng-model-options let angular handle the element.on bit
+                // fixes issue with async validators
+                if (supportsNgModelOptions ||
+                  (!supportsNgModelOptions || ngModelOptions === undefined || ngModelOptions.updateOn === undefined || ngModelOptions.updateOn === '')) {
                   ngModelCtrl.$setValidity = function (validationErrorKey, isValid) {
                     setValidity.call(ngModelCtrl, validationErrorKey, isValid);
                     setValidationState();

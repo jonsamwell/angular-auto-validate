@@ -20,21 +20,22 @@
                         </span>
                         <input type="text" name="email" class="form-control"
                                ng-model="user.email"
+                               ng-model-options="{ updateOn: 'default', debounce: 400 }"
                                placeholder="Enter email address"
                                ng-required="true"
                                unique-email-checker/>
 
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label">Name</label>
-                        <input type="text" name="name" class="form-control"
-                               ng-model="user.name"
-                               placeholder="Enter your name"
-                               ng-required="true"
-                               ng-minlength="3"/>
+                <!--<div class="form-group">-->
+                    <!--<label class="control-label">Name</label>-->
+                        <!--<input type="text" name="name" class="form-control"-->
+                               <!--ng-model="user.name"-->
+                               <!--placeholder="Enter your name"-->
+                               <!--ng-required="true"-->
+                               <!--ng-minlength="3"/>-->
 
-                </div>
+                <!--</div>-->
 
                 <button type="submit" class="btn btn-default">Submit</button>
                 <button type="reset" class="btn btn-default">Reset</button>
@@ -90,7 +91,7 @@
                         ctrl.$asyncValidators.uniqueEmailChecker = function(modelValue, viewValue) {
                             var defer = $q.defer();
                             $timeout(function() {
-                                defer.resolve(viewValue);
+                                defer.reject(viewValue);
                             }, 2000);
 
                             return defer.promise;

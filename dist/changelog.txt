@@ -1,3 +1,6 @@
+v1.19.3 30/11/2015
+Fixed a problem with ng-model-options updateOn blur/default with debounce not validating - a bit of a tricky problem!
+
 v1.19.2 30/11/2015
 Added ability for the library to delay showing validation hints on an element while async validators are firing.
 This functionality is enabled by default - to disbale it change the 'waitForAsyncValidators' option in the defaultFormValidationOptions
