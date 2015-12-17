@@ -1,0 +1,13 @@
+{
+    "defaultMsg": "Ange felmeddelande för {0}",
+    "email": "Ange en giltig epostadress",
+    "minlength": "Ange minst {0} tecken",
+    "maxlength": "Du har angivit mer än maximimum {0} tecken",
+    "min": "Ange minimum värde {0}",
+    "max": "Ange maximum värde {0}",
+    "required": "Detta fält är obligatoriskt",
+    "date": "Ange ett giltigt datum",
+    "pattern": "Se till att värdet stämmer med mönstret {0}",
+    "number": "Ange ett giltigt nummer",
+    "url": "Ange en giltig URL i formatet http(s)://www.google.com"
+}
