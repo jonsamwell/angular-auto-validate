@@ -35,7 +35,6 @@ angular.module('jcs-autoValidate').directive('form', [
     return {
       restrict: 'E',
       require: 'form',
-      priority: 9999,
       compile: function () {
         return {
           pre: function (scope, element, attrs, ctrl) {
