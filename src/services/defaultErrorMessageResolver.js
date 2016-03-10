@@ -1,13 +1,10 @@
 /**
  * Replaces string placeholders with corresponding template string
  */
-if (!('format' in String.prototype)) {
-  String.prototype.format = function () {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] !== undefined ? args[number] : match;
-    });
-  };
+function formatString(string, params) {
+  return string.replace(/{(\d+)}/g, function (match, number) {
+    return typeof params[number] !== undefined ? params[number] : match;
+  });
 }
 
 angular.autoValidate = angular.autoValidate || {
@@ -36,7 +33,7 @@ function DefaultErrorMessageResolverFn($q, $http) {
     cultureRetrievalPromise,
 
     loadRemoteCulture = function (culture) {
-      cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture.toLowerCase()));
+      cultureRetrievalPromise = $http.get(formatString('{0}/jcs-auto-validate_{1}.json', [i18nFileRootPath, culture.toLowerCase()]));
       return cultureRetrievalPromise;
     },
 
@@ -162,9 +159,9 @@ function DefaultErrorMessageResolverFn($q, $http) {
         }
 
         if (errMsg === undefined && messageTypeOverride !== undefined) {
-          errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(messageTypeOverride);
+          errMsg = formatString(angular.autoValidate.errorMessages[currentCulture].defaultMsg, [messageTypeOverride]);
         } else if (errMsg === undefined) {
-          errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
+          errMsg = formatString(angular.autoValidate.errorMessages[currentCulture].defaultMsg, [errorType]);
         }
 
         if (el && el.attr) {
@@ -176,7 +173,7 @@ function DefaultErrorMessageResolverFn($q, $http) {
 
             parameters.push(parameter || '');
 
-            errMsg = errMsg.format(parameters);
+            errMsg = formatString(errMsg, parameters);
           } catch (e) {}
         }
 
