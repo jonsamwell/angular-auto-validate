@@ -820,15 +820,15 @@ DefaultErrorMessageResolverFn.$inject = [
 
 angular.module('jcs-autoValidate').factory('defaultErrorMessageResolver', DefaultErrorMessageResolverFn);
 
-function Foundation5ElementModifierFn() {
+function foundation6ElementModifierFn() {
   var reset = function (el, inputEl) {
       angular.forEach(el.find('small'), function (smallEl) {
-        if (angular.element(smallEl).hasClass('error')) {
+        if (angular.element(smallEl).hasClass('form-error is-visible')) {
           angular.element(smallEl).remove();
         }
       });
 
-      inputEl.removeClass('error');
+      inputEl.removeClass('alert callout');
     },
     findParentColumn = function (el) {
       var parent = el;
@@ -845,12 +845,12 @@ function Foundation5ElementModifierFn() {
 
     /**
      * @ngdoc function
-     * @name foundation5ElementModifier#makeValid
-     * @methodOf foundation5ElementModifier
+     * @name foundation6ElementModifier#makeValid
+     * @methodOf foundation6ElementModifier
      *
      * @description
-     * Makes an element appear valid by apply Foundation 5 specific styles and child elements.
-     * See: http://foundation.zurb.com/docs/components/forms.html
+     * Makes an element appear valid by apply Foundation 6 specific styles and child elements.
+     * See: http://foundation.zurb.com/sites/docs/forms.html
      *
      * @param {Element} el - The input control element that is the target of the validation.
      */
@@ -861,12 +861,12 @@ function Foundation5ElementModifierFn() {
 
     /**
      * @ngdoc function
-     * @name foundation5ElementModifier#makeInvalid
-     * @methodOf foundation5ElementModifier
+     * @name foundation6ElementModifier#makeInvalid
+     * @methodOf foundation6ElementModifier
      *
      * @description
-     * Makes an element appear invalid by apply Foundation 5 specific styles and child elements.
-     * See: http://foundation.zurb.com/docs/components/forms.html
+     * Makes an element appear invalid by apply Foundation 6 specific styles and child elements.
+     * See: http://foundation.zurb.com/sites/docs/forms.html
      *
      * @param {Element} el - The input control element that is the target of the validation.
      */
@@ -874,20 +874,20 @@ function Foundation5ElementModifierFn() {
       var parentColumn = findParentColumn(el),
         helpTextEl;
       reset(parentColumn || el, el);
-      el.addClass('error');
+      el.addClass('alert callout');
       if (parentColumn) {
-        helpTextEl = angular.element('<small class="error">' + errorMsg + '</small>');
+        helpTextEl = angular.element('<small class="form-error is-visible">' + errorMsg + '</small>');
         parentColumn.append(helpTextEl);
       }
     },
 
     /**
      * @ngdoc function
-     * @name foundation5ElementModifier#makeDefault
-     * @methodOf foundation5ElementModifier
+     * @name foundation6ElementModifier#makeDefault
+     * @methodOf foundation6ElementModifier
      *
      * @description
-     * Makes an element appear in its default visual state by apply foundation 5 specific styles and child elements.
+     * Makes an element appear in its default visual state by apply Foundation 6 specific styles and child elements.
      *
      * @param {Element} el - The input control element that is the target of the validation.
      */
@@ -899,11 +899,11 @@ function Foundation5ElementModifierFn() {
     makeValid: makeValid,
     makeInvalid: makeInvalid,
     makeDefault: makeDefault,
-    key: 'foundation5'
+    key: 'foundation6'
   };
 }
 
-angular.module('jcs-autoValidate').factory('foundation5ElementModifier', Foundation5ElementModifierFn);
+angular.module('jcs-autoValidate').factory('foundation6ElementModifier', foundation6ElementModifierFn);
 
 function ElementUtilsFn() {
   var isElementVisible = function (el) {
@@ -1498,10 +1498,10 @@ angular.module('jcs-autoValidate').config(['$provide',
   }
 ]);
 
-function AutoValidateRunFn(validator, defaultErrorMessageResolver, bootstrap3ElementModifier, foundation5ElementModifier) {
+function AutoValidateRunFn(validator, defaultErrorMessageResolver, bootstrap3ElementModifier, foundation6ElementModifier) {
   validator.setErrorMessageResolver(defaultErrorMessageResolver.resolve);
   validator.registerDomModifier(bootstrap3ElementModifier.key, bootstrap3ElementModifier);
-  validator.registerDomModifier(foundation5ElementModifier.key, foundation5ElementModifier);
+  validator.registerDomModifier(foundation6ElementModifier.key, foundation6ElementModifier);
   validator.setDefaultElementModifier(bootstrap3ElementModifier.key);
 }
 
@@ -1509,7 +1509,7 @@ AutoValidateRunFn.$inject = [
   'validator',
   'defaultErrorMessageResolver',
   'bootstrap3ElementModifier',
-  'foundation5ElementModifier'
+  'foundation6ElementModifier'
 ];
 
 angular.module('jcs-autoValidate').run(AutoValidateRunFn);
