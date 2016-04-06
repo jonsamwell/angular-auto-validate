@@ -111,16 +111,16 @@
               bootstrap3ElementModifier.enableValidationStateIcons(true);
        }]);</code></pre>
 
-            <p>if you are using Foundation 5 you will need to set the Foundation 5 element modifier as the default one</p>
+            <p>if you are using Foundation 6 you will need to set the Foundation 6 element modifier as the default one</p>
             <pre><code class="language-javascript">angular.module('my-app')
        .run([
        'validator',
-       'foundation5ElementModifier',
-       function (validator, foundation5ElementModifier) {
-           validator.setDefaultElementModifier(foundation5ElementModifier.key);
+       'Foundation6ElementModifier',
+       function (validator, Foundation6ElementModifier) {
+           validator.setDefaultElementModifier(Foundation6ElementModifier.key);
        }]);</code></pre>
 
-            <p>If you are not using Bootstrap3 or Foundation5 you will need to create a custom element modifier so <a href="custom_dom_modifiers">see the below section</a></p>
+            <p>If you are not using Bootstrap3 or Foundation6 you will need to create a custom element modifier so <a href="custom_dom_modifiers">see the below section</a></p>
 
             <h3 id="your_form">Your Form</h3>
             <p>Now that you are using auto-validate you haven't got to worry about putting your error messages in you html
@@ -414,7 +414,7 @@ angular.module('my-app')
 
             <h3 id="custom_dom_modifiers">Custom Element Modifier</h3>
 
-            <p>If you are not using Bootstrap3 or Foundation5 CSS libraries you will need to create a custom element modifier
+            <p>If you are not using Bootstrap3 or Foundation6 CSS libraries you will need to create a custom element modifier
                 which takes care of updating the visual state of an element, don't worry this is really easy! You can see a few example
             of what to put in them <a href="" target="_blank">here</a> and <a href="" target="_blank">here</a>.</p>
 <pre><code class="language-javascript">angular.module('my-app')
