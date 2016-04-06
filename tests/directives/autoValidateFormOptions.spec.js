@@ -8,7 +8,16 @@
       $rootScope.$digest();
     };
 
-  beforeEach(module('jcs-autoValidate'));
+  var transcludeModule = angular.module("transclude-test", []);
+  transcludeModule.directive("transcludeExample", function () {
+    return {
+      scope: false,
+      transclude: true,
+      template: '<form ng-if="!editMode" ng-transclude></form>'
+    };
+  });
+
+  beforeEach(module('jcs-autoValidate', transcludeModule.name));
 
   describe('autoValidateFormOptions', function () {
     beforeEach(inject(function ($injector) {
@@ -23,9 +32,15 @@
     });
 
     it('should be defined', function () {
-      compileElement('<form name="test""></form>');
+      compileElement('<form name="test"></form>');
 
       expect(element.controller('form').autoValidateFormOptions).to.exist;
+    });
+
+    it('should not fail when form uses transclude', function () {
+      compileElement("<transclude-example>My Content</transclude-example>");
+
+      expect(element.find('form').controller('form').autoValidateFormOptions).to.exists;
     });
 
     describe('disableDynamicValidation', function () {
