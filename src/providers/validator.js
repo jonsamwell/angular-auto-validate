@@ -4,6 +4,7 @@ function ValidatorFn() {
     enableInvalidElementStyling = true,
     enableFirstInvalidElementScrollingOnSubmit = false,
     validationEnabled = true,
+    enableFocusInputError = true,
 
     toBoolean = function (value) {
       var v;
@@ -253,6 +254,25 @@ function ValidatorFn() {
 
   this.firstInvalidElementScrollingOnSubmitEnabled = function () {
     return enableFirstInvalidElementScrollingOnSubmit;
+  };
+
+  /**
+   * @ngdoc function
+   * @name validator#setFocusInputError
+   * @methodOf validator
+   *
+   * @description
+   * Globally enables focused input error. This is enabled by default.
+   *
+   * @param enabled {Boolean} enabled false to disabled focus otherwise false.
+   */
+
+  this.setFocusInputError = function(enabled){
+    enableFocusInputError = enabled;
+  };
+
+  this.enableFocusInputError = function(){
+    return enableFocusInputError;
   };
 
 
