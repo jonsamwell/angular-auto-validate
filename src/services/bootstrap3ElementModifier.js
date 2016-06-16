@@ -1,38 +1,38 @@
 function Bootstrap3ElementModifierFn($log) {
   var addedCustomCss = false,
-      customCss = [
-    '<style>' +
-    '.glyphicon-spin-jcs {' +
-    '-webkit-animation: spin 1000ms infinite linear;' +
-    'animation: spin 1000ms infinite linear;' +
-    '}' +
-    '@-webkit-keyframes spin {' +
-    '0% {' +
-    '-webkit-transform: rotate(0deg);' +
-    'transform: rotate(0deg);' +
-    '}' +
-    '100% {' +
-    '-webkit-transform: rotate(359deg);' +
-    'transform: rotate(359deg);' +
-    '}' +
-    '}' +
-    '@keyframes spin {' +
-    '0% {' +
-    '-webkit-transform: rotate(0deg);' +
-    'transform: rotate(0deg);' +
-    '}' +
-    '100% {' +
-    '-webkit-transform: rotate(359deg);' +
-    'transform: rotate(359deg);' +
-    '}' +
-    '}' +
-    '</style>'
-  ].join('');
+    customCss = [
+      '<style>' +
+      '.glyphicon-spin-jcs {' +
+      '-webkit-animation: spin 1000ms infinite linear;' +
+      'animation: spin 1000ms infinite linear;' +
+      '}' +
+      '@-webkit-keyframes spin {' +
+      '0% {' +
+      '-webkit-transform: rotate(0deg);' +
+      'transform: rotate(0deg);' +
+      '}' +
+      '100% {' +
+      '-webkit-transform: rotate(359deg);' +
+      'transform: rotate(359deg);' +
+      '}' +
+      '}' +
+      '@keyframes spin {' +
+      '0% {' +
+      '-webkit-transform: rotate(0deg);' +
+      'transform: rotate(0deg);' +
+      '}' +
+      '100% {' +
+      '-webkit-transform: rotate(359deg);' +
+      'transform: rotate(359deg);' +
+      '}' +
+      '}' +
+      '</style>'
+    ].join('');
 
   var reset = function (el) {
       if (addedCustomCss === false) {
         angular.element(document.body).append(angular.element(customCss));
-        addedCustomvCss = true;
+        addedCustomCss = true;
       }
 
       angular.forEach(el.find('span'), function (spanEl) {

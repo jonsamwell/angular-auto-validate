@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.19.3 - 2016-06-16
+ * angular-auto-validate - v1.19.4 - 2016-06-16
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2016 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -355,38 +355,42 @@ function ValidatorFn() {
 angular.module('jcs-autoValidate').provider('validator', ValidatorFn);
 
 function Bootstrap3ElementModifierFn($log) {
-  var customCss = [
-    '<style>' +
-    '.glyphicon-spin-jcs {' +
-    '-webkit-animation: spin 1000ms infinite linear;' +
-    'animation: spin 1000ms infinite linear;' +
-    '}' +
-    '@-webkit-keyframes spin {' +
-    '0% {' +
-    '-webkit-transform: rotate(0deg);' +
-    'transform: rotate(0deg);' +
-    '}' +
-    '100% {' +
-    '-webkit-transform: rotate(359deg);' +
-    'transform: rotate(359deg);' +
-    '}' +
-    '}' +
-    '@keyframes spin {' +
-    '0% {' +
-    '-webkit-transform: rotate(0deg);' +
-    'transform: rotate(0deg);' +
-    '}' +
-    '100% {' +
-    '-webkit-transform: rotate(359deg);' +
-    'transform: rotate(359deg);' +
-    '}' +
-    '}' +
-    '</style>'
-  ].join('');
-
-  angular.element(document.body).append(angular.element(customCss));
+  var addedCustomCss = false,
+    customCss = [
+      '<style>' +
+      '.glyphicon-spin-jcs {' +
+      '-webkit-animation: spin 1000ms infinite linear;' +
+      'animation: spin 1000ms infinite linear;' +
+      '}' +
+      '@-webkit-keyframes spin {' +
+      '0% {' +
+      '-webkit-transform: rotate(0deg);' +
+      'transform: rotate(0deg);' +
+      '}' +
+      '100% {' +
+      '-webkit-transform: rotate(359deg);' +
+      'transform: rotate(359deg);' +
+      '}' +
+      '}' +
+      '@keyframes spin {' +
+      '0% {' +
+      '-webkit-transform: rotate(0deg);' +
+      'transform: rotate(0deg);' +
+      '}' +
+      '100% {' +
+      '-webkit-transform: rotate(359deg);' +
+      'transform: rotate(359deg);' +
+      '}' +
+      '}' +
+      '</style>'
+    ].join('');
 
   var reset = function (el) {
+      if (addedCustomCss === false) {
+        angular.element(document.body).append(angular.element(customCss));
+        addedCustomCss = true;
+      }
+
       angular.forEach(el.find('span'), function (spanEl) {
         spanEl = angular.element(spanEl);
         if (spanEl.hasClass('error-msg') || spanEl.hasClass('form-control-feedback') || spanEl.hasClass('control-feedback')) {
@@ -487,7 +491,7 @@ function Bootstrap3ElementModifierFn($log) {
           var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
-            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
           insertAfter(el, angular.element(iconElText));
