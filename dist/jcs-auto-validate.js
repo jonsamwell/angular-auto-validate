@@ -1,7 +1,7 @@
 /*
- * angular-auto-validate - v1.19.3 - 2015-11-30
+ * angular-auto-validate - v1.19.3 - 2016-06-16
  * https://github.com/jonsamwell/angular-auto-validate
- * Copyright (c) 2015 Jon Samwell (http://www.jonsamwell.com)
+ * Copyright (c) 2016 Jon Samwell (http://www.jonsamwell.com)
  */
 (function (String, angular) {
     'use strict';
@@ -620,13 +620,10 @@ angular.module('jcs-autoValidate').factory('jcs-debounce', JCSDebounceFn);
 /**
  * Replaces string placeholders with corresponding template string
  */
-if (!('format' in String.prototype)) {
-  String.prototype.format = function () {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] !== undefined ? args[number] : match;
-    });
-  };
+function formatString(string, params) {
+  return string.replace(/{(\d+)}/g, function (match, number) {
+    return typeof params[number] !== undefined ? params[number] : match;
+  });
 }
 
 angular.autoValidate = angular.autoValidate || {
@@ -655,7 +652,7 @@ function DefaultErrorMessageResolverFn($q, $http) {
     cultureRetrievalPromise,
 
     loadRemoteCulture = function (culture) {
-      cultureRetrievalPromise = $http.get('{0}/jcs-auto-validate_{1}.json'.format(i18nFileRootPath, culture.toLowerCase()));
+      cultureRetrievalPromise = $http.get(formatString('{0}/jcs-auto-validate_{1}.json', [i18nFileRootPath, culture.toLowerCase()]));
       return cultureRetrievalPromise;
     },
 
@@ -781,9 +778,9 @@ function DefaultErrorMessageResolverFn($q, $http) {
         }
 
         if (errMsg === undefined && messageTypeOverride !== undefined) {
-          errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(messageTypeOverride);
+          errMsg = formatString(angular.autoValidate.errorMessages[currentCulture].defaultMsg, [messageTypeOverride]);
         } else if (errMsg === undefined) {
-          errMsg = angular.autoValidate.errorMessages[currentCulture].defaultMsg.format(errorType);
+          errMsg = formatString(angular.autoValidate.errorMessages[currentCulture].defaultMsg, [errorType]);
         }
 
         if (el && el.attr) {
@@ -795,7 +792,7 @@ function DefaultErrorMessageResolverFn($q, $http) {
 
             parameters.push(parameter || '');
 
-            errMsg = errMsg.format(parameters);
+            errMsg = formatString(errMsg, parameters);
           } catch (e) {}
         }
 
@@ -1121,12 +1118,12 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
     },
 
     setElementValidationError = function (element, errorMsgKey, errorMsg) {
-      if (errorMsgKey) {
+      if (errorMsg) {
+        validator.makeInvalid(element, errorMsg);
+      } else {
         validator.getErrorMessage(errorMsgKey, element).then(function (msg) {
           validator.makeInvalid(element, msg);
         });
-      } else {
-        validator.makeInvalid(element, errorMsg);
       }
     };
 
@@ -1185,7 +1182,6 @@ angular.module('jcs-autoValidate').directive('form', [
     return {
       restrict: 'E',
       require: 'form',
-      priority: 9999,
       compile: function () {
         return {
           pre: function (scope, element, attrs, ctrl) {

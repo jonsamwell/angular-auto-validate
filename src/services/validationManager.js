@@ -214,12 +214,12 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
     },
 
     setElementValidationError = function (element, errorMsgKey, errorMsg) {
-      if (errorMsgKey) {
+      if (errorMsg) {
+        validator.makeInvalid(element, errorMsg);
+      } else {
         validator.getErrorMessage(errorMsgKey, element).then(function (msg) {
           validator.makeInvalid(element, msg);
         });
-      } else {
-        validator.makeInvalid(element, errorMsg);
       }
     };
 
