@@ -159,6 +159,7 @@
             'src/services/debounce.js',
             'src/services/defaultErrorMessageResolver.js',
             'src/services/foundation5ElementModifier.js',
+            'src/services/foundation6ElementModifier.js',
             'src/services/validationManager.js',
             'src/directives/autoValidateFormOptions.js',
             'src/directives/formReset.js',
