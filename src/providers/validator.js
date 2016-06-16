@@ -267,11 +267,11 @@ function ValidatorFn() {
    * @param enabled {Boolean} enabled false to disabled focus otherwise false.
    */
 
-  this.setFocusInputError = function(enabled){
+  this.setFocusInputError = function (enabled) {
     enableFocusInputError = enabled;
   };
 
-  this.enableFocusInputError = function(){
+  this.enableFocusInputError = function () {
     return enableFocusInputError;
   };
 

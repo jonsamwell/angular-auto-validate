@@ -1,5 +1,6 @@
 function Bootstrap3ElementModifierFn($log) {
-  var customCss = [
+  var addedCustomCss = false,
+      customCss = [
     '<style>' +
     '.glyphicon-spin-jcs {' +
     '-webkit-animation: spin 1000ms infinite linear;' +
@@ -28,9 +29,12 @@ function Bootstrap3ElementModifierFn($log) {
     '</style>'
   ].join('');
 
-  angular.element(document.body).append(angular.element(customCss));
-
   var reset = function (el) {
+      if (addedCustomCss === false) {
+        angular.element(document.body).append(angular.element(customCss));
+        addedCustomvCss = true;
+      }
+
       angular.forEach(el.find('span'), function (spanEl) {
         spanEl = angular.element(spanEl);
         if (spanEl.hasClass('error-msg') || spanEl.hasClass('form-control-feedback') || spanEl.hasClass('control-feedback')) {
@@ -131,7 +135,7 @@ function Bootstrap3ElementModifierFn($log) {
           var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
-            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span';
+            iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
           insertAfter(el, angular.element(iconElText));

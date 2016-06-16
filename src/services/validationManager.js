@@ -168,7 +168,7 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
               ctrlFormOptions.forceValidation = force;
               try {
                 isValid = validateElement(controller, ctrlElement, ctrlFormOptions);
-                if(validator.enableFocusInputError() && !isValid && frmValid){
+                if (validator.enableFocusInputError() && !isValid && frmValid) {
                   if (!firstElementError) {
                     firstElementError = ctrlElement[0];
                     firstElementError.focus();
