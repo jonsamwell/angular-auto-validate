@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.19.4 - 2016-06-16
+ * angular-auto-validate - v1.19.6 - 2016-06-17
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2016 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -1535,8 +1535,7 @@ angular.module('jcs-autoValidate').config(['$provide',
 
               ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
                 if (addToModelErrors) {
-                  var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
-                  collection[errorMsgKey] = false;
+                  ngModelCtrl.$setValidity(errorMsgKey, false);
                 }
 
                 ngModelCtrl.externalErrors = ngModelCtrl.externalErrors || {};
@@ -1546,6 +1545,7 @@ angular.module('jcs-autoValidate').config(['$provide',
 
               ngModelCtrl.removeExternalValidation = function (errorMsgKey, addToModelErrors) {
                 if (addToModelErrors) {
+                  ngModelCtrl.$setValidity(errorMsgKey, true);
                   var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
                   delete collection[errorMsgKey];
                 }
@@ -1561,11 +1561,11 @@ angular.module('jcs-autoValidate').config(['$provide',
                 if (ngModelCtrl.externalErrors) {
                   var errorCollection = ngModelCtrl.$error || ngModelCtrl.$errors;
                   angular.forEach(ngModelCtrl.externalErrors, function (value, key) {
+                    ngModelCtrl.$setValidity(key, true);
                     delete errorCollection[key];
                   });
 
                   ngModelCtrl.externalErrors = {};
-
                   validationManager.resetElement(element);
                 }
               };

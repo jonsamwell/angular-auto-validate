@@ -167,8 +167,7 @@
           ngModelController = element.controller('ngModel');
           ngModelController.setExternalValidation(errorKey, 'msgKey', true);
 
-
-          expect(ngModelController.$error[errorKey]).to.equal(false);
+          expect(ngModelController.$error[errorKey]).to.equal(true);
           expect(ngModelController.externalErrors[errorKey]).to.equal(false);
         });
       });
@@ -192,7 +191,7 @@
           ngModelController.setExternalValidation(errorKey, 'msgKey', true);
 
 
-          expect(ngModelController.$error[errorKey]).to.equal(false);
+          expect(ngModelController.$error[errorKey]).to.equal(true);
           expect(ngModelController.externalErrors[errorKey]).to.equal(false);
 
           ngModelController.removeExternalValidation(errorKey, true);
@@ -220,7 +219,7 @@
           ngModelController = element.controller('ngModel');
           ngModelController.setExternalValidation(errorKey, 'msgKey', true);
 
-          expect(ngModelController.$error[errorKey]).to.equal(false);
+          expect(ngModelController.$error[errorKey]).to.equal(true);
           expect(ngModelController.externalErrors[errorKey]).to.equal(false);
 
           ngModelController.removeAllExternalValidation();

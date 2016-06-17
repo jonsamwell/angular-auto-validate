@@ -148,6 +148,7 @@
     <script type="text/javascript" src="../src/services/debounce.js"></script>
     <script type="text/javascript" src="../src/services/defaultErrorMessageResolver.js"></script>
     <script type="text/javascript" src="../src/services/foundation5ElementModifier.js"></script>
+    <script type="text/javascript" src="../src/services/foundation6ElementModifier.js"></script>
     <script type="text/javascript" src="../src/services/validationManager.js"></script>
     <script type="text/javascript" src="../src/config/ngSubmitDecorator.js"></script>
     <script type="text/javascript" src="../src/config/ngModelDecorator.js"></script>
@@ -191,7 +192,7 @@
                 };
 
                 $scope.setExternalError = function (frm) {
-                    frm.setExternalValidation('firstname', undefined, 'hello joe');
+                    frm.setExternalValidation('firstname', "customError", 'hello joe', true);
                 };
 
                 $scope.toggleBS3Icons();

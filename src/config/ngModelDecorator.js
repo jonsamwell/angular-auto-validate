@@ -63,8 +63,7 @@ angular.module('jcs-autoValidate').config(['$provide',
 
               ngModelCtrl.setExternalValidation = function (errorMsgKey, errorMessage, addToModelErrors) {
                 if (addToModelErrors) {
-                  var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
-                  collection[errorMsgKey] = false;
+                  ngModelCtrl.$setValidity(errorMsgKey, false);
                 }
 
                 ngModelCtrl.externalErrors = ngModelCtrl.externalErrors || {};
@@ -74,6 +73,7 @@ angular.module('jcs-autoValidate').config(['$provide',
 
               ngModelCtrl.removeExternalValidation = function (errorMsgKey, addToModelErrors) {
                 if (addToModelErrors) {
+                  ngModelCtrl.$setValidity(errorMsgKey, true);
                   var collection = ngModelCtrl.$error || ngModelCtrl.$errors;
                   delete collection[errorMsgKey];
                 }
@@ -89,11 +89,11 @@ angular.module('jcs-autoValidate').config(['$provide',
                 if (ngModelCtrl.externalErrors) {
                   var errorCollection = ngModelCtrl.$error || ngModelCtrl.$errors;
                   angular.forEach(ngModelCtrl.externalErrors, function (value, key) {
+                    ngModelCtrl.$setValidity(key, true);
                     delete errorCollection[key];
                   });
 
                   ngModelCtrl.externalErrors = {};
-
                   validationManager.resetElement(element);
                 }
               };
