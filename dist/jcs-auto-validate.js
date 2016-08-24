@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.19.6 - 2016-06-17
+ * angular-auto-validate - v1.19.6 - 2016-08-24
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2016 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -481,24 +481,57 @@ function Bootstrap3ElementModifierFn($log) {
      */
     makeValid = function (el) {
       var frmGroupEl = findFormGroupElement(el),
-        inputGroupEl;
+        inputGroupEl,
+        withValidationStateIcon = false,
+        correctElementToPlaceIconAfter;
 
       if (frmGroupEl) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
-        frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
         if (addValidationStateIcons) {
+          correctElementToPlaceIconAfter = getCorrectElementToPlaceIconAfter(el);
+          withValidationStateIcon = angular.isDefined(correctElementToPlaceIconAfter);
+        }
+        frmGroupEl.addClass('has-success ' + (inputGroupEl.length > 0 || !withValidationStateIcon ? '' : 'has-feedback'));
+        if (withValidationStateIcon) {
           var iconElText = '<span class="glyphicon glyphicon-ok form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
             iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
-          insertAfter(el, angular.element(iconElText));
+          insertAfter(correctElementToPlaceIconAfter, angular.element(iconElText));
         }
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
       }
+    },
+
+    getCorrectElementToPlaceHelpTextAfter = function (el, inputGroupEl) {
+      if (inputGroupEl.length > 0) {
+        return inputGroupEl;
+      }
+      var correctEl = el,
+        elType = el[0].type ? el[0].type.toLowerCase() : '';
+
+      if ((elType === 'checkbox' || elType === 'radio') && el.parent()[0].nodeName.toLowerCase() === 'label') {
+        correctEl = el.parent();
+        if (correctEl.hasClass("btn") && correctEl.parent().hasClass("btn-group")) {
+          correctEl = correctEl.parent();
+        }
+      }
+
+      return correctEl;
+    },
+
+    getCorrectElementToPlaceIconAfter = function (el) {
+      var elType = el[0].type ? el[0].type.toLowerCase() : '',
+        elNodeName = el[0].nodeName.toLowerCase();
+
+      if (elType === 'checkbox' || elType === 'radio' || elNodeName === 'select') {
+        return undefined;
+      }
+      return el;
     },
 
     /**
@@ -516,36 +549,38 @@ function Bootstrap3ElementModifierFn($log) {
     makeInvalid = function (el, errorMsg) {
       var frmGroupEl = findFormGroupElement(el),
         helpTextEl = angular.element('<span class="help-block has-error error-msg">' + errorMsg + '</span>'),
-        inputGroupEl;
+        inputGroupEl,
+        withValidationStateIcon = false,
+        correctElementToPlaceIconAfter;
 
       if (frmGroupEl) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
-        frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
-        insertAfter(inputGroupEl.length > 0 ? inputGroupEl : getCorrectElementToPlaceErrorElementAfter(el), helpTextEl);
         if (addValidationStateIcons) {
+          correctElementToPlaceIconAfter = getCorrectElementToPlaceIconAfter(el);
+          withValidationStateIcon = angular.isDefined(correctElementToPlaceIconAfter);
+        }
+        frmGroupEl.addClass('has-error ' + (inputGroupEl.length > 0 || !withValidationStateIcon ? '' : 'has-feedback'));
+
+        var helpBlockContainers = findWithClassElementDesc(frmGroupEl[0], 'help-block-cont');
+        if (helpBlockContainers.length > 0) {
+          helpBlockContainers[0].appendChild(helpTextEl[0]);
+        } else {
+          insertAfter(getCorrectElementToPlaceHelpTextAfter(el, inputGroupEl), helpTextEl);
+        }
+
+        if (withValidationStateIcon) {
           var iconElText = '<span class="glyphicon glyphicon-remove form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
             iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
-          insertAfter(getCorrectElementToPlaceErrorElementAfter(el), angular.element(iconElText));
+          insertAfter(correctElementToPlaceIconAfter, angular.element(iconElText));
         }
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
       }
-    },
-
-    getCorrectElementToPlaceErrorElementAfter = function (el) {
-      var correctEl = el,
-        elType = el[0].type ? el[0].type.toLowerCase() : '';
-
-      if ((elType === 'checkbox' || elType === 'radio') && el.parent()[0].nodeName.toLowerCase() === 'label') {
-        correctEl = el.parent();
-      }
-
-      return correctEl;
     },
 
     /**
@@ -569,20 +604,26 @@ function Bootstrap3ElementModifierFn($log) {
 
     waitForAsyncValidators = function (el) {
       var frmGroupEl = findFormGroupElement(el),
-        inputGroupEl;
+        inputGroupEl,
+        withValidationStateIcon = false,
+        correctElementToPlaceIconAfter;
 
       if (frmGroupEl) {
         reset(frmGroupEl);
         inputGroupEl = findInputGroupElement(frmGroupEl[0]);
-        frmGroupEl.addClass('has-feedback ' + (inputGroupEl.length > 0 || addValidationStateIcons === false ? '' : 'has-feedback'));
         if (addValidationStateIcons) {
+          correctElementToPlaceIconAfter = getCorrectElementToPlaceIconAfter(el);
+          withValidationStateIcon = angular.isDefined(correctElementToPlaceIconAfter);
+        }
+        frmGroupEl.addClass('has-feedback ' + (inputGroupEl.length > 0 || !withValidationStateIcon ? '' : 'has-feedback'));
+        if (withValidationStateIcon) {
           var iconElText = '<span class="glyphicon glyphicon-repeat glyphicon-spin-jcs form-control-feedback"></span>';
           if (inputGroupEl.length > 0) {
             iconElText = iconElText.replace('form-', '');
             iconElText = '<span class="input-group-addon control-feedback">' + iconElText + '</span>';
           }
 
-          insertAfter(el, angular.element(iconElText));
+          insertAfter(correctElementToPlaceIconAfter, angular.element(iconElText));
         }
       } else {
         $log.error('Angular-auto-validate: invalid bs3 form structure elements must be wrapped by a form-group class');
