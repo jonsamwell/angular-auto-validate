@@ -74,7 +74,7 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
     validateElement = function (modelCtrl, el, options) {
       var isValid = true,
         frmOptions = options || getFormOptions(el),
-        needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
+        needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation || (frmOptions.forceValidationIfPopulated && modelCtrl.$viewValue !== undefined && modelCtrl.$viewValue !== ""),
         errorType,
         findErrorType = function ($errors) {
           var keepGoing = true,

@@ -1,5 +1,5 @@
 /*
- * angular-auto-validate - v1.19.6 - 2016-06-17
+ * angular-auto-validate - v1.19.6 - 2016-10-17
  * https://github.com/jonsamwell/angular-auto-validate
  * Copyright (c) 2016 Jon Samwell (http://www.jonsamwell.com)
  */
@@ -338,6 +338,7 @@ function ValidatorFn() {
 
   this.defaultFormValidationOptions = {
     forceValidation: false,
+    forceValidationIfPopulated: false,
     disabled: false,
     validateNonVisibleControls: false,
     removeExternalValidationErrorsOnSubmit: true,
@@ -1087,7 +1088,7 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
     validateElement = function (modelCtrl, el, options) {
       var isValid = true,
         frmOptions = options || getFormOptions(el),
-        needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation,
+        needsValidation = modelCtrl.$pristine === false || frmOptions.forceValidation || (frmOptions.forceValidationIfPopulated && modelCtrl.$viewValue !== undefined && modelCtrl.$viewValue !== ""),
         errorType,
         findErrorType = function ($errors) {
           var keepGoing = true,
@@ -1277,7 +1278,8 @@ function parseOptions(ctrl, validator, attrs) {
     return ctrl;
   };
   opts.waitForAsyncValidators = parseBooleanAttributeValue(attrs.waitForAsyncValidators, opts.waitForAsyncValidators);
-  opts.forceValidation = false;
+  opts.forceValidation = parseBooleanAttributeValue(attrs.forceValidation, opts.forceValidation);
+  opts.forceValidationIfPopulated = parseBooleanAttributeValue(attrs.forceValidationIfPopulated, opts.forceValidationIfPopulated);
   opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
   opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);
   opts.validateOnFormSubmit = parseBooleanAttributeValue(attrs.validateOnFormSubmit, opts.validateOnFormSubmit);

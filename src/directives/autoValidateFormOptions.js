@@ -14,7 +14,8 @@ function parseOptions(ctrl, validator, attrs) {
     return ctrl;
   };
   opts.waitForAsyncValidators = parseBooleanAttributeValue(attrs.waitForAsyncValidators, opts.waitForAsyncValidators);
-  opts.forceValidation = false;
+  opts.forceValidation = parseBooleanAttributeValue(attrs.forceValidation, opts.forceValidation);
+  opts.forceValidationIfPopulated = parseBooleanAttributeValue(attrs.forceValidationIfPopulated, opts.forceValidationIfPopulated);
   opts.disabled = !validator.isEnabled() || parseBooleanAttributeValue(attrs.disableDynamicValidation, opts.disabled);
   opts.validateNonVisibleControls = parseBooleanAttributeValue(attrs.validateNonVisibleControls, opts.validateNonVisibleControls);
   opts.validateOnFormSubmit = parseBooleanAttributeValue(attrs.validateOnFormSubmit, opts.validateOnFormSubmit);
