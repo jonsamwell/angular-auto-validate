@@ -175,7 +175,16 @@ function ValidationManagerFn(validator, elementUtils, $anchorScroll) {
                   }
                 }
                 if (validator.firstInvalidElementScrollingOnSubmitEnabled() && !isValid && frmValid) {
-                  var ctrlElementId = ctrlElement.attr('id');
+                  var ctrlElementId = ctrlElement.attr('id'); // This variable can be deleted
+                  if (!firstElementError) {
+                    firstElementError = ctrlElement[0];
+                    firstElementError.focus();
+                  }
+                  /* This validation can be removed once the 
+                    input is focused the scroll the browser will 
+                    go to the position of the input, with this we can 
+                    remove the dependency on $anchorScroll 
+                  */
                   if (ctrlElementId) {
                     $anchorScroll(ctrlElementId);
                   }
